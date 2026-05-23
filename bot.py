@@ -415,6 +415,25 @@ if __name__ == '__main__':
     async def health_prefix(ctx):
         await perform_health_check(ctx)
 
+    @bot.tree.command(name="debugstatus", description="Show live interaction diagnostics.")
+    async def debugstatus_slash(interaction: discord.Interaction):
+        data = interaction.data or {}
+        payload = {
+            "type": str(interaction.type),
+            "command_name": interaction.command.name if interaction.command else None,
+            "raw_name": data.get("name"),
+            "guild": f"{getattr(interaction.guild, 'name', 'DM')} ({getattr(interaction.guild, 'id', 'dm')})",
+            "channel": f"#{getattr(interaction.channel, 'name', 'unknown')} ({getattr(interaction.channel, 'id', 'unknown')})",
+            "bot_ready": bot.is_ready(),
+            "response_done": interaction.response.is_done(),
+            "tree_commands": len(bot.tree.get_commands()),
+        }
+        logger.info(f"Debug status slash: {json.dumps(payload, ensure_ascii=False)}")
+        await interaction.response.send_message(
+            f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```",
+            ephemeral=True,
+        )
+
     async def perform_health_check(target):
         is_int = isinstance(target, discord.Interaction)
         bot = target.client if is_int else target.bot
