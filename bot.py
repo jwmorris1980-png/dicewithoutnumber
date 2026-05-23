@@ -52,7 +52,6 @@ class WithoutNumberBot(commands.Bot):
         self.web_service = WebService(self)
         self.localizer = localizer
         self.dice_service = DiceService()
-        self._startup_command_sync_done = False
         
         # Configure command tree for modern Discord "App Launcher" (Activities) compatibility
         self.tree.allowed_contexts = discord.app_commands.AppCommandContext(
@@ -139,99 +138,7 @@ class WithoutNumberBot(commands.Bot):
 
     async def on_interaction(self, interaction: discord.Interaction):
         if interaction.type == discord.InteractionType.application_command:
-            command_path = self._interaction_command_path(interaction)
-            logger.info(
-                f"Interaction: /{command_path} from {interaction.user} (ID: {interaction.user.id})"
-            )
-            if self._is_dice_interaction(interaction):
-                asyncio.create_task(self._dice_interaction_watchdog(interaction))
-
-    def _interaction_command_path(self, interaction: discord.Interaction) -> str:
-        """Return a readable slash command path from raw interaction data."""
-        data = interaction.data or {}
-        name = data.get("name") or (interaction.command.name if interaction.command else "unknown")
-        options = data.get("options") or []
-        if name == "dice" and options and isinstance(options[0], dict):
-            subcommand = options[0].get("name", "unknown")
-            return f"dice {subcommand}"
-        return name
-
-    def _is_dice_interaction(self, interaction: discord.Interaction) -> bool:
-        """Identify slash dice commands that should always get a fallback response."""
-        data = interaction.data or {}
-        name = data.get("name")
-        if name in {"roll", "gmroll", "multiroll", "skill", "attack"}:
-            return True
-        options = data.get("options") or []
-        if name == "dice" and options and isinstance(options[0], dict):
-            return options[0].get("name") in {"roll", "gmroll", "multiroll", "skill", "attack"}
-        return False
-
-    async def _dice_interaction_watchdog(self, interaction: discord.Interaction):
-        """Fallback handler that rescues dice slash commands if the main path never replies."""
-        try:
-            await asyncio.sleep(2.2)
-            if interaction.response.is_done():
-                return
-
-            dice_cog = self.get_cog("DiceCog")
-            if not dice_cog:
-                await interaction.response.send_message(
-                    "Dice system is temporarily unavailable.",
-                    ephemeral=True,
-                )
-                return
-
-            data = interaction.data or {}
-            name = data.get("name")
-            options = data.get("options") or []
-            sub_options = options
-
-            if name == "dice" and options and isinstance(options[0], dict):
-                name = options[0].get("name")
-                sub_options = options[0].get("options") or []
-
-            option_map = {}
-            for option in sub_options:
-                if isinstance(option, dict) and "name" in option:
-                    option_map[option["name"]] = option.get("value")
-
-            if name in {"roll", "gmroll"}:
-                expression = option_map.get("expression")
-                if not expression:
-                    await interaction.response.send_message("Missing dice expression.", ephemeral=True)
-                    return
-                comment = option_map.get("comment")
-                multiplier = int(option_map.get("multiplier") or 1)
-                await interaction.response.defer(ephemeral=(name == "gmroll"))
-                await dice_cog._perform_roll(
-                    interaction,
-                    expression,
-                    comment,
-                    multiplier,
-                    is_hidden=(name == "gmroll"),
-                )
-                logger.warning(f"Dice watchdog recovered /{name} for {interaction.user}")
-                return
-
-            if name == "multiroll":
-                times = int(option_map.get("times") or 0)
-                expression = option_map.get("expression")
-                if not times or not expression:
-                    await interaction.response.send_message("Missing multiroll inputs.", ephemeral=True)
-                    return
-                comment = option_map.get("comment")
-                await interaction.response.defer()
-                await dice_cog._perform_roll(interaction, expression, comment, times)
-                logger.warning(f"Dice watchdog recovered /multiroll for {interaction.user}")
-                return
-        except Exception as e:
-            logger.error(f"Dice watchdog failed: {e}", exc_info=True)
-            try:
-                if not interaction.response.is_done():
-                    await interaction.response.send_message(f"An error occurred: `{e}`", ephemeral=True)
-            except Exception:
-                pass
+            logger.info(f"Interaction: /{interaction.command.name if interaction.command else 'unknown'} from {interaction.user} (ID: {interaction.user.id})")
 
     async def setup_hook(self):
         # Initial identity sync in background so it doesn't block web service
@@ -310,31 +217,6 @@ class WithoutNumberBot(commands.Bot):
         for cmd in self.tree.get_commands():
             logger.info(f"/{cmd.name} - {cmd.description}")
         logger.info('------')
-        if not self._startup_command_sync_done:
-            self._startup_command_sync_done = True
-            asyncio.create_task(self._sync_commands_on_startup())
-
-    async def _sync_commands_on_startup(self):
-        """Refresh guild command caches after a fresh boot."""
-        try:
-            await asyncio.sleep(2)
-            synced_total = 0
-            for guild in self.guilds:
-                try:
-                    self.tree.copy_global_to(guild=guild)
-                    synced = await self.tree.sync(guild=guild)
-                    synced_total += len(synced)
-                    logger.info(f"Synced {len(synced)} commands to guild {guild.name} ({guild.id})")
-                except Exception as e:
-                    logger.error(f"Failed to sync commands to guild {guild.name}: {e}", exc_info=True)
-            try:
-                global_synced = await self.tree.sync()
-                logger.info(f"Global command sync complete: {len(global_synced)} command(s).")
-            except Exception as e:
-                logger.error(f"Global command sync failed: {e}", exc_info=True)
-            logger.info(f"Startup command refresh finished. Guild commands synced: {synced_total}")
-        except Exception as e:
-            logger.error(f"Startup command sync task failed: {e}", exc_info=True)
 
     async def on_error(self, event, *args, **kwargs):
         logger.error(f"Error in event {event}:", exc_info=True)
@@ -394,31 +276,11 @@ class WithoutNumberBot(commands.Bot):
         if message.author.bot and not message.webhook_id:
             return
 
-        if message.content and message.content[0] in ("!", "/"):
-            logger.info(
-                f"Message received: {message.content[:120]} from {message.author} "
-                f"in #{getattr(message.channel, 'name', 'unknown')}"
-            )
-
-        try:
-            dice_cog = self.get_cog("DiceCog")
-            if dice_cog and await dice_cog.handle_message(message):
-                return
-        except Exception as e:
-            logger.error(f"Dice fallback handler failed: {e}", exc_info=True)
-            try:
-                await message.channel.send(f"An error occurred while rolling: `{e}`")
-            except Exception:
-                pass
-
-        # Let discord.py resolve prefix commands on every eligible message.
-        # This is safer than pre-filtering here and avoids dropping valid prefixes.
-        try:
+        # Debug log for prefix detection
+        if message.content.startswith(self.command_prefix):
+            logger.info(f"Command detected: {message.content} from {message.author}")
             await self.process_commands(message)
-        except Exception as e:
-            logger.error(f"process_commands failed: {e}", exc_info=True)
-
-        if self.user.mentioned_in(message):
+        elif self.user.mentioned_in(message):
             logger.info(f"Mention detected: {message.content} from {message.author}")
 
         # Social Map: Sync regular messages to DB for the web map
@@ -485,17 +347,6 @@ if __name__ == '__main__':
     @bot.command(name="health", help="Run bot diagnostics.")
     async def health_prefix(ctx):
         await perform_health_check(ctx)
-
-    @bot.tree.command(name="roll", description="Roll a dice expression.")
-    @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
-    async def roll_alias(interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
-        dice_cog = bot.get_cog("DiceCog")
-        if not dice_cog:
-            await interaction.response.send_message("Dice system is temporarily unavailable.", ephemeral=True)
-            return
-        if not interaction.response.is_done():
-            await interaction.response.defer()
-        await dice_cog._perform_roll(interaction, expression, comment, multiplier)
 
     async def perform_health_check(target):
         is_int = isinstance(target, discord.Interaction)

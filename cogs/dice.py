@@ -4,7 +4,6 @@ from discord.ext import commands
 import random
 import re
 import logging
-from types import SimpleNamespace
 
 logger = logging.getLogger(__name__)
 
@@ -40,138 +39,39 @@ async def dice_autocomplete_handler(interaction: discord.Interaction, current: s
 
     return suggestions[:25]
 
-class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling commands"):
+class DiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    async def handle_message(self, message: discord.Message) -> bool:
-        """Direct text-command fallback for dice rolls."""
-        content = message.content.strip()
-        lowered = content.lower()
-        command_map = ("!roll", "!r", "!gmroll", "!gr", "!multiroll", "!skill", "!attack")
-        if not lowered.startswith(command_map):
-            return False
-
-        adapter = SimpleNamespace(
-            author=message.author,
-            user=message.author,
-            channel=message.channel,
-            message=message,
-            send=message.channel.send,
-        )
-
-        parts = content.split(maxsplit=1)
-        command = parts[0].lower()
-        remainder = parts[1].strip() if len(parts) > 1 else ""
-
-        if command in ("!roll", "!r"):
-            if not remainder:
-                await message.channel.send("❌ Usage: `!roll <expression>`")
-                return True
-            try:
-                await self._perform_roll(adapter, remainder, None, 1)
-            except Exception as e:
-                logger.error(f"Direct roll failed: {e}", exc_info=True)
-                await message.channel.send(f"❌ Roll failed: `{e}`")
-            return True
-
-        if command in ("!gmroll", "!gr"):
-            if not remainder:
-                await message.channel.send("❌ Usage: `!gmroll <expression>`")
-                return True
-            try:
-                await self._perform_roll(adapter, remainder, None, 1, is_hidden=True)
-            except Exception as e:
-                logger.error(f"Direct gmroll failed: {e}", exc_info=True)
-                await message.channel.send(f"❌ GM roll failed: `{e}`")
-            return True
-
-        if command == "!multiroll":
-            if not remainder:
-                await message.channel.send("❌ Usage: `!multiroll <times> <expression>`")
-                return True
-            match = re.match(r"^(\d+)\s+(.+)$", remainder)
-            if not match:
-                await message.channel.send("❌ Usage: `!multiroll <times> <expression>`")
-                return True
-            times = int(match.group(1))
-            expression = match.group(2).strip()
-            try:
-                await self._perform_roll(adapter, expression, None, times)
-            except Exception as e:
-                logger.error(f"Direct multiroll failed: {e}", exc_info=True)
-                await message.channel.send(f"❌ Multiroll failed: `{e}`")
-            return True
-
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        if not sheet_cog:
-            await message.channel.send("❌ Character sheet system is unavailable right now.")
-            return True
-
-        char_data = await sheet_cog.get_active_character_data(adapter, allow_none=True)
-        if not char_data:
-            return True
-
-        if command == "!skill":
-            if not remainder:
-                await message.channel.send("❌ Usage: `!skill <name> [attribute] [bonus]`")
-                return True
-            tokens = remainder.split()
-            name = tokens[0]
-            attribute = None
-            bonus = 0
-            if len(tokens) >= 2:
-                if re.fullmatch(r"[-+]?\d+", tokens[1]):
-                    bonus = int(tokens[1])
-                else:
-                    attribute = tokens[1]
-            if len(tokens) >= 3 and re.fullmatch(r"[-+]?\d+", tokens[2]):
-                bonus = int(tokens[2])
-            try:
-                await self._perform_skill(adapter, char_data, name, attribute, bonus)
-            except Exception as e:
-                logger.error(f"Direct skill failed: {e}", exc_info=True)
-                await message.channel.send(f"❌ Skill failed: `{e}`")
-            return True
-
-        if command == "!attack":
-            weapon = None
-            bonus = 0
-            if remainder:
-                tokens = remainder.split()
-                if tokens:
-                    weapon = tokens[0]
-                if len(tokens) >= 2 and re.fullmatch(r"[-+]?\d+", tokens[1]):
-                    bonus = int(tokens[1])
-            try:
-                await self._perform_attack(adapter, char_data, weapon, bonus)
-            except Exception as e:
-                logger.error(f"Direct attack failed: {e}", exc_info=True)
-                await message.channel.send(f"❌ Attack failed: `{e}`")
-            return True
-
-        return False
 
     @app_commands.command(name="roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def roll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        await sheet_cog.get_active_character_data(interaction, allow_none=True) if sheet_cog else None
+        
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, multiplier)
 
     @commands.command(name="roll", aliases=["r"], help="Roll dice. Usage: !roll 1d20+5, !roll 3x 2d6")
     async def roll_prefix(self, ctx, *, expression: str):
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
         await self._perform_roll(ctx, expression, None, 1)
 
     @app_commands.command(name="gmroll", description="Perform a hidden GM roll (only visible to you).")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def gmroll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        await sheet_cog.get_active_character_data(interaction, allow_none=True) if sheet_cog else None
         if not interaction.response.is_done(): await interaction.response.defer(ephemeral=True)
         await self._perform_roll(interaction, expression, comment, multiplier, is_hidden=True)
 
     @commands.command(name="gmroll", aliases=["gr"], help="Hidden GM roll. Usage: !gmroll 1d20+5 (sent via DM)")
     async def gmroll_prefix(self, ctx, *, expression: str):
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
         await self._perform_roll(ctx, expression, None, 1, is_hidden=True)
 
     async def _perform_roll(self, target, expression, comment, multiplier, is_hidden=False):
@@ -236,26 +136,30 @@ class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling co
                     await target.message.delete()
                 except:
                     pass
-                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/dice gmroll` next time!)*_"
+                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/gmroll` next time!)*_"
 
         await send(final_msg, **kwargs)
 
 
     @app_commands.command(name="multiroll")
     async def multiroll_slash(self, interaction: discord.Interaction, times: int, expression: str, comment: str = None):
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        if sheet_cog: await sheet_cog.get_active_character_data(interaction, allow_none=True)
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, times)
 
     @commands.command(name="multiroll")
     async def multiroll_prefix(self, ctx, times: int, expression: str, *, comment: str = None):
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        if sheet_cog: await sheet_cog.get_active_character_data(ctx, allow_none=True)
         await self._perform_roll(ctx, expression, comment, times)
 
     @app_commands.command(name="skill")
     async def skill_slash(self, interaction: discord.Interaction, name: str, attribute: str = None, bonus: int = 0):
-        if not interaction.response.is_done(): await interaction.response.defer()
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(interaction)
         if not char_data: return
+        if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_skill(interaction, char_data, name, attribute, bonus)
 
     @commands.command(name="skill")
@@ -288,10 +192,10 @@ class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling co
 
     @app_commands.command(name="attack")
     async def attack_slash(self, interaction: discord.Interaction, weapon: str = None, bonus: int = 0):
-        if not interaction.response.is_done(): await interaction.response.defer()
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(interaction)
         if not char_data: return
+        if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_attack(interaction, char_data, weapon, bonus)
 
     @commands.command(name="attack")
