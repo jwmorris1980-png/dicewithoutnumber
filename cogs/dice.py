@@ -68,14 +68,22 @@ class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling co
             if not remainder:
                 await message.channel.send("❌ Usage: `!roll <expression>`")
                 return True
-            await self._perform_roll(adapter, remainder, None, 1)
+            try:
+                await self._perform_roll(adapter, remainder, None, 1)
+            except Exception as e:
+                logger.error(f"Direct roll failed: {e}", exc_info=True)
+                await message.channel.send(f"❌ Roll failed: `{e}`")
             return True
 
         if command in ("!gmroll", "!gr"):
             if not remainder:
                 await message.channel.send("❌ Usage: `!gmroll <expression>`")
                 return True
-            await self._perform_roll(adapter, remainder, None, 1, is_hidden=True)
+            try:
+                await self._perform_roll(adapter, remainder, None, 1, is_hidden=True)
+            except Exception as e:
+                logger.error(f"Direct gmroll failed: {e}", exc_info=True)
+                await message.channel.send(f"❌ GM roll failed: `{e}`")
             return True
 
         if command == "!multiroll":
@@ -88,7 +96,11 @@ class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling co
                 return True
             times = int(match.group(1))
             expression = match.group(2).strip()
-            await self._perform_roll(adapter, expression, None, times)
+            try:
+                await self._perform_roll(adapter, expression, None, times)
+            except Exception as e:
+                logger.error(f"Direct multiroll failed: {e}", exc_info=True)
+                await message.channel.send(f"❌ Multiroll failed: `{e}`")
             return True
 
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
@@ -115,7 +127,11 @@ class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling co
                     attribute = tokens[1]
             if len(tokens) >= 3 and re.fullmatch(r"[-+]?\d+", tokens[2]):
                 bonus = int(tokens[2])
-            await self._perform_skill(adapter, char_data, name, attribute, bonus)
+            try:
+                await self._perform_skill(adapter, char_data, name, attribute, bonus)
+            except Exception as e:
+                logger.error(f"Direct skill failed: {e}", exc_info=True)
+                await message.channel.send(f"❌ Skill failed: `{e}`")
             return True
 
         if command == "!attack":
@@ -127,7 +143,11 @@ class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling co
                     weapon = tokens[0]
                 if len(tokens) >= 2 and re.fullmatch(r"[-+]?\d+", tokens[1]):
                     bonus = int(tokens[1])
-            await self._perform_attack(adapter, char_data, weapon, bonus)
+            try:
+                await self._perform_attack(adapter, char_data, weapon, bonus)
+            except Exception as e:
+                logger.error(f"Direct attack failed: {e}", exc_info=True)
+                await message.channel.send(f"❌ Attack failed: `{e}`")
             return True
 
         return False

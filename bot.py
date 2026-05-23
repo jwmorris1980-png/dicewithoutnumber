@@ -302,13 +302,29 @@ class WithoutNumberBot(commands.Bot):
         if message.author.bot and not message.webhook_id:
             return
 
-        dice_cog = self.get_cog("DiceCog")
-        if dice_cog and await dice_cog.handle_message(message):
-            return
+        if message.content and message.content[0] in ("!", "/"):
+            logger.info(
+                f"Message received: {message.content[:120]} from {message.author} "
+                f"in #{getattr(message.channel, 'name', 'unknown')}"
+            )
+
+        try:
+            dice_cog = self.get_cog("DiceCog")
+            if dice_cog and await dice_cog.handle_message(message):
+                return
+        except Exception as e:
+            logger.error(f"Dice fallback handler failed: {e}", exc_info=True)
+            try:
+                await message.channel.send(f"An error occurred while rolling: `{e}`")
+            except Exception:
+                pass
 
         # Let discord.py resolve prefix commands on every eligible message.
         # This is safer than pre-filtering here and avoids dropping valid prefixes.
-        await self.process_commands(message)
+        try:
+            await self.process_commands(message)
+        except Exception as e:
+            logger.error(f"process_commands failed: {e}", exc_info=True)
 
         if self.user.mentioned_in(message):
             logger.info(f"Mention detected: {message.content} from {message.author}")
