@@ -302,11 +302,11 @@ class WithoutNumberBot(commands.Bot):
         if message.author.bot and not message.webhook_id:
             return
 
-        # Debug log for prefix detection
-        if message.content.startswith(self.command_prefix):
-            logger.info(f"Command detected: {message.content} from {message.author}")
-            await self.process_commands(message)
-        elif self.user.mentioned_in(message):
+        # Let discord.py resolve prefix commands on every eligible message.
+        # This is safer than pre-filtering here and avoids dropping valid prefixes.
+        await self.process_commands(message)
+
+        if self.user.mentioned_in(message):
             logger.info(f"Mention detected: {message.content} from {message.author}")
 
         # Social Map: Sync regular messages to DB for the web map
