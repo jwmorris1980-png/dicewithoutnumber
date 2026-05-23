@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="app-title">Voice Remote | DICEwithoutNumber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5865f2;
+            --bg: #121417;
+            --card: #1e1f22;
+        }
+        body {
+            margin: 0; padding: 20px;
+            background: var(--bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100vh; overflow: hidden;
+        }
+        .container {
+            width: 100%; max-width: 400px;
+            background: var(--card);
+            padding: 30px; border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 { font-family: 'Outfit'; font-size: 1.5rem; margin-bottom: 5px; }
+        p { color: #8e9297; font-size: 0.9rem; margin-bottom: 25px; }
+
+        .channel-picker {
+            width: 100%; padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: #8ea1fa;
+            margin-bottom: 20px; outline: none;
+            font-weight: 600;
+        }
+
+        #mic-btn {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none; color: white;
+            font-size: 3rem; cursor: pointer;
+            transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+        }
+        #mic-btn.active {
+            background: #ed4245;
+            animation: pulse-red 1.5s infinite;
+        }
+        #mic-btn:hover:not(.active) { transform: scale(1.05); }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(237, 66, 69, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(237, 66, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(237, 66, 69, 0); }
+        }
+
+        #transcript {
+            min-height: 60px; padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px; font-size: 1rem;
+            color: #dbdee1; line-height: 1.5;
+            margin-bottom: 10px; font-style: italic;
+        }
+
+        .status { font-size: 0.8rem; color: #5865f2; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        .hint { font-size: 0.65rem; color: var(--primary); font-weight: 800; display: block; margin-top: 5px; text-transform: uppercase; }
+
+        .instructions { font-size: 0.75rem; color: #4f545c; margin-top: 20px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Remote</h1>
+        <p>Talk to Discord Hands-Free (DICEwithoutNumber)</p>
+        
+        <div id="google_translate_element" style="margin-bottom: 20px; display: flex; justify-content: center;"></div>
+        <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+        </script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+        <div id="setup-section">
+            <input type="text" id="guild-id" placeholder="Paste Server ID" title="Server ID" aria-label="Server ID Input" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff;">
+            <button id="btn-connect" onclick="loadChannels()" aria-label="Connect to Server" style="width: 100%; padding: 10px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer;">Connect to Server</button>
+            <span class="hint">[Say: Click Connect]</span>
+        </div>
+
+        <div id="main-section" style="display: none;">
+            <select id="channel-select" class="channel-picker" aria-label="Select Channel">
+                <option value="">Select Channel...</option>
+            </select>
+
+            <button id="mic-btn" aria-label="Microphone Toggle"><i class="fas fa-microphone"></i></button>
+            <span class="hint" id="mic-hint" style="margin-bottom: 20px;">[Say: Click Microphone]</span>
+            
+            <div id="transcript" aria-live="polite">Ready to listen...</div>
+            <div class="status" id="status-text">Standby</div>
+        </div>
+
+        <div class="instructions">
+            Say your message or "Roll 2d6". <br>
+            Anything you say is instantly typed into Discord.
+        </div>
+    </div>
+
+    <script>
+        // --- CUSTOMIZATION ---
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const settings = await res.json();
+                const name = settings.app_name || "DICEwithoutNumber";
+                document.title = "Voice Remote | " + name;
+                document.querySelector('h1').textContent = "Voice Remote";
+                document.querySelector('p').innerHTML = `Talk to Discord Hands-Free (<span class="dynamic-app-name">${name}</span>)`;
+                document.querySelectorAll('.dynamic-app-name').forEach(el => el.textContent = name);
+            } catch(e) { console.error("Failed to load settings", e); }
+        }
+        document.addEventListener('DOMContentLoaded', loadSettings);
+
+        const guildInput = document.getElementById('guild-id');
+        const channelSelect = document.getElementById('channel-select');
+        const micBtn = document.getElementById('mic-btn');
+        const transcriptDiv = document.getElementById('transcript');
+        const statusText = document.getElementById('status-text');
+
+        let isListening = false;
+        let recognition = null;
+
+        // Load channel list from bot
+        async function loadChannels() {
+            const gid = guildInput.value.trim();
+            if (!gid) return alert("Please enter a Server ID");
+            
+            try {
+                const res = await fetch(`/api/channels/${gid}`);
+                const data = await res.json();
+                if (data.channels && data.channels.length > 0) {
+                    channelSelect.innerHTML = data.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                    document.getElementById('setup-section').style.display = 'none';
+                    document.getElementById('main-section').style.display = 'block';
+                    localStorage.setItem('voice_guild_id', gid);
+                } else {
+                    alert("No channels found. Ensure the bot is in the server.");
+                }
+            } catch(e) { alert("Error connecting to bot: " + e); }
+        }
+
+        // Auto-focus on load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (document.getElementById('setup-section').style.display !== 'none') {
+                document.getElementById('guild-id').focus();
+            }
+        });
+
+        // Init Speech
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isListening = true;
+                micBtn.classList.add('active');
+                statusText.textContent = "Listening...";
+                transcriptDiv.textContent = "";
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                micBtn.classList.remove('active');
+                statusText.textContent = "Standby";
+            };
+
+            recognition.onresult = (event) => {
+                let current = "";
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    current += event.results[i][0].transcript;
+                }
+                transcriptDiv.textContent = current;
+
+                if (event.results[0].isFinal) {
+                    sendToDiscord(current);
+                }
+            };
+        }
+
+        async function sendToDiscord(text) {
+            const gid = guildInput.value || localStorage.getItem('voice_guild_id');
+            const cid = channelSelect.value;
+            if (!cid) return;
+
+            statusText.textContent = "Sending...";
+            
+            try {
+                // Formatting for common voice-to-text dice patterns
+                let cleanText = text.toLowerCase()
+                    .replace(/to d/g, '2d')
+                    .replace(/too d/g, '2d')
+                    .replace(/for d/g, '4d')
+                    .replace(/four d/g, '4d')
+                    .replace(/three d/g, '3d')
+                    .replace(/ten d/g, '10d')
+                    .replace(/roll /g, '') // remove "roll" if they said "roll 2d6"
+                    .trim();
+
+                // If it looks like a dice expression, add !roll
+                if (cleanText.match(/^\d+d\d+/i)) {
+                    text = "!roll " + cleanText;
+                }
+
+                await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        guild_id: gid,
+                        channel_id: cid,
+                        user_name: "Voice Remote",
+                        message: text
+                    })
+                });
+                statusText.textContent = "Sent ✓";
+            } catch(e) { statusText.textContent = "Error Sending"; }
+        }
+
+        micBtn.onclick = () => {
+            if (isListening) recognition.stop();
+            else recognition.start();
+        };
+
+        // Auto-load if in localstorage
+        const savedGid = localStorage.getItem('voice_guild_id');
+        if (savedGid) {
+            guildInput.value = savedGid;
+            loadChannels();
+        }
+    </script>
+</body>
+</html>

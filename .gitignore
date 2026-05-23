@@ -1,0 +1,22 @@
+# Oracle Deployment Exclusions
+venv/
+.venv/
+__pycache__/
+*.pyc
+.env
+.env_actual
+*.pem
+do_ip.txt
+*.log
+*.zip
+*.tar.gz
+wheels/
+.gemini/
+.agents/
+node_modules/
+dist/
+build/
+.cursorrules
+data/*.db
+data/*.sqlite
+bot_new.log

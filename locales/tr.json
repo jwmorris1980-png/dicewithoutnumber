@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Sayısız Yıldızlar - Hızlı Başlangıç",
+            "step1_title": "1. Adım: Karakter Oluşturma",
+            "step1_desc": "Rastgele bir karakter için \"/swn\"ı veya istatistikleri döndürmek için \"/threshold_wizard\"ı kullanın.\n**[characterswithoutnumber.app](https://characterswithoutnumber.app)** veya `/importsheet` kullanarak Sayısız Sektörler'den içe aktarın.",
+            "step2_title": "Adım 2: Temel Mekanikler",
+            "step2_desc": "• **Beceri Kontrolleri**: '2d6 + Beceri + Nitelik' rulosu. Yüksek daha iyidir.\n• **Savaş**: '1d20 + Saldırı Bonusu + Nitelik' atılır. AC ile tanışın veya onu yenin.\n• **Kaydetmeler**: '1d20'yi yuvarlayın. Kaydetme hedefinize eşit veya bundan daha yüksek.",
+            "step3_title": "Adım 3: Bot Komutları",
+            "step3_desc": "• `/sheet`: İstatistiklerinizi görüntüleyin.\n• `/update`: Kaynak URL ile senkronize et.\n• `/roll 2d6+1`: Genel zar atma."
+        },
+        "wwn": {
+            "title": "⚔️ Sayısız Dünyalar - Hızlı Başlangıç",
+            "step1_title": "1. Adım: Karakter Oluşturma",
+            "step1_desc": "Rastgele bir karakter için '/wwn'ı veya manuel istatistikler için '/threshold_wizard'ı kullanın.\nSayfaları Google'dan veya **[characterswithoutnumber.app](https://characterswithoutnumber.app)**'den içe aktarın.",
+            "step2_title": "Adım 2: Temel Mekanikler",
+            "step2_desc": "• **Beceriler**: '2d6 + Beceri + Nitelik'. Hedef genellikle 6-10'dur.\n• **Savaş**: `1d20 + AB + Özellik`. Hedef Düşman AC'dir.\n• **Şok**: Yakın dövüş silahları genellikle ıskalama durumunda bile hasar verir!",
+            "step3_title": "Adım 3: Bot Komutları",
+            "step3_desc": "• `/skill [isim]`: Belirli bir beceriyi yuvarlayın.\n• `/update`: Karakter istatistiklerinizi senkronize edin.\n• `/attack [silah]`: Saldırı ve hasar verme mantığı."
+        },
+        "cwn": {
+            "title": "💾 Sayısız Şehirler - Hızlı Başlangıç",
+            "step1_title": "1. Adım: Karakter Oluşturma",
+            "step1_desc": "Rastgele bir karakter için '/cwn' veya '/threshold_wizard' kullanın.\nDonanımınızı **[characterswithoutnumber.app](https://characterswithoutnumber.app)** adresinden `/importjson` kullanarak senkronize edin.",
+            "step2_title": "Adım 2: Temel Mekanikler",
+            "step2_desc": "• **Kontroller**: Beceriler için \"2d6\", dövüş için \"1d20\". Standart OSR tabanı.\n• **Hacking**: Özel programları ve siber desteğinizi kullanın.\n• **Travma**: Özel hasar türlerine dikkat edin!",
+            "step3_title": "Adım 3: Bot Komutları",
+            "step3_desc": "• `/gen npc`: Hızlı siberpunk tadı.\n• `/update`: Çevrimiçi oluşturucudan istatistikleri senkronize edin.\n• `/tracker hasarı`: İsme göre hasar verin."
+        },
+        "footer": "Uzman ipucu: Tüm komutlar !prefix ile de çalışır! Daha fazlası için /help yazın."
+    },
+    "commands": {
+        "starthere_desc": "SWN, WWN veya CWN için hızlı başlangıç ​​kılavuzu.",
+        "swnhelp_desc": "Sayısız Yıldızlar için hızlı başlangıç ​​kılavuzu.",
+        "wwnhelp_desc": "Sayısız Dünyalar için hızlı başlangıç ​​kılavuzu.",
+        "cwnhelp_desc": "Numarasız Şehirler için hızlı başlangıç ​​kılavuzu.",
+        "lang_set_success": "✅ Dil **{lang}** olarak ayarlandı.",
+        "lang_invalid": "⚠️ Geçersiz dil! Şunlardan birini seçin: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Numara Bot Yardımı Olmadan",
+        "description": "Hoş geldin! Bu bot zar atmanıza, ekipmanı kontrol etmenize ve karakter sayfanızı yönetmenize yardımcı olur.\n🌐 **Bot Bilgisi:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Şunlarla uyumludur:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Yeni mi? Hızlı bir kılavuz için `/swnhelp`, `/wwnhelp` veya `/cwnhelp` yazın!**\n**Dili Değiştir:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**Tüm komutlar hem `/` (Eğik Çizgi) hem de `!` (Önek) ile çalışır!**",
+        "char_imports_title": "1a. Karakter İçe Aktarmaları",
+        "char_imports_body": "**`/içe aktarma sayfası` | `!importsheet` <url>**\nGoogle E-Tablonuzu (SWN, WWN veya CWN) bağlayın. İstatistikleri yükler ve senkronizasyonu sağlar!\n\n**`/importjson` | `!importjson` <url>**\nHam JSON URL'sinden içe aktarın (*characterswithoutnumber.app* senkronizasyonunun en hızlı yolu).\n\n**`/güncelleme` | `!güncelleme`**\nAktif karakter istatistiklerinizi, depolanan kaynak URL'sinden anında yenileyin.\n\n**`/bağlantı` | `!link` <url>**\nKolay senkronizasyon için karakterinizi kalıcı bir URL'ye (JSON veya Google Sayfası) bağlayın.\n\n**JSON Dosya Yükleme**\n`.json` dışa aktarma dosyanızı sohbete sürükleyip bırakmanız yeterlidir. Bot bunu otomatik olarak halleder!\n\n**`/sayfa` | `!sayfa` | `/sc` | '/sf'**\nKarakterinizi görüntüleyin. Savaş görünümü için **`/sc`**, Tam görünüm için **`/sf`**.",
+        "char_mgmt_title": "1b. Karakter Yönetimi",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <ad>**\nİçe aktarılan karakterleriniz arasında geçiş yapın.\n\n**`/portre` | `!portre` [url]**\nKarakterlerinizden herhangi biri için bir resim ayarlayın. Bir dosya ekleyin VEYA bir URL yapıştırın. `/sheet` üzerinde küçük resim olarak gösterilir!\n\n**`/bind` | `/bağlantıyı kaldır`**\n🎭 Bir karakteri mevcut kanalla ilişkilendirin. Bot, her oyunda hangi kahramanı oynadığınızı hatırlayacaktır!\n\n**`/ödülxp` | `!ödülxp` <tutar>**\nAktif karakterinize XP kazandırın.\n\n**`/swn`, `/wwn`, `/cwn`**\nBu sistem için anında rastgele bir Seviye 1 karakter oluşturun.\n\n**`/eşik` | `/threshold_wizard`**\n3d6 niteliklerini sırayla yuvarlayın veya etkileşimli Sihirbazı kullanın!\n\n**`/swnhelp` | `/wwnhelp' | `/cwnhelp`**\nSeçtiğiniz sistem için hızlı başlangıç kılavuzları (SWN, WWN veya CWN)!",
+        "rolling_title": "2. Yuvarlanma ve Savaş",
+        "rolling_body": "**`/saldırı` | `!saldırı` [silah]**\n1d20 saldırı yapar. Değiştiricileri sayfanızdan otomatik olarak ekler!\n\n**`/gmroll` | `!gmroll`**\nGizli rulo (özel/geçici), böylece sonucu yalnızca siz görürsünüz.\n\n**`/beceri` | `!beceri` [beceri_adı]**\n2d6 beceri kontrolü yapar. (örneğin, `!notice`, `!beceri bildirimi el becerisi`).\n\n**`/roll` | `!roll` <ifade> [yorum]**\nKarmaşık ruloları destekler: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Katlılar:* Bir ruloyu tekrarlamak için `3x 1d20+5` veya `3#2d6`yı kullanın!\n↳ *Emojiler ve Kombinasyonlar:* Aynı anda birden fazla şeyi yuvarlamak için virgül kullanın! (örneğin `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/çoklu rulo` | `!çoklu rulo` <tutar> <ifade>**\nAynı ifadeyi ayrı ayrıntılı çizgilerle birden çok kez yuvarlayın.",
+        "tools_title": "3. Referans ve Araçlar",
+        "tools_body": "**`/gemi` | `!gemi` | `/gemi listesi` | `!gemi listesi`**\nSayısız Sektörler JSON dosyalarından içe aktarılan yıldız gemilerinizi görüntüleyin veya listeleyin.\n\n**`/silah`, `/armor`, `/gear`, `/foci`**\nÖzetteki öğelere göz atın! SWN, WWN ve CWN için çalışır.\n\n**`/kural` | `!kural` <anahtar kelime>**\nBelirli bir ifade veya kural için temel kural kitaplarında arama yapın.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nDövüş, bilgisayar korsanlığı ve uzay savaşı için kısa bilgiler.",
+        "sandbox_title": "4. GM Sandbox Oluşturma",
+        "sandbox_body": "**`/gen <gezegen | npc | şirket | uzaylı>`**\nAnında rastgele özelliklere sahip güzel bir referans kartı oluşturun.\nNPC'ler ve Uzaylılar, kullanıma hazır yerleşik Saldırı, AC ve HP istatistikleriyle birlikte gelir!",
+        "tracker_title": "5. GM Takipçisi ve Taktik Haritası",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Düşman ekleyin (Toplu olarak desteklenir!).\n**`/tracker party`** - Tüm etkin kampanya oyuncularını otomatik olarak ekler.\n**`/tracker haritası`** - Tema açılır menüleriyle **İnteraktif Taktik Haritayı** açar!\n**`/tracker denetleyicisi`** - **Yerel Discord Denetleyicisini** (Düğmeler!) açın.\n**`/importmap <image>`** - Harita için özel bir arka plan yükleyin.\n**`/takipçi sonraki`** | **`/izleyici hasarı`** | **`/izleyiciyi temizle`**\n↳ *Uzman ipucu:* Eğik çizgi komutları güncelliğini kaybetmiş görünüyorsa **`!sync`** kullanın!",
+        "faction_title": "6. Grup Takipçisi",
+        "faction_body": "**`/hizip oluştur`, `/hizip listesi`, `/hizip düzenle`**\nKampanyanızın küresel gruplarını ve istatistiklerini yönetin.\n**`/fraksiyon saldırısı`** - Karşı tarafa bir grup saldırısı yapın.",
+        "storyteller_title": "7. Hikaye Anlatıcı Araçları",
+        "storyteller_body": "**`/plot`** - Yaratıcılığı harekete geçirmek için rastgele bir olay örgüsü kancası veya durumsal bir fikir oluşturun.\n**`/oracle`** - 2d6 Oracle'a (Solo/GM yardımcısı) Evet/Hayır sorusu sorun.\n**`/reaction`** - 2d6 NPC reaksiyonu döndürün (Düşman -> Faydalı).\n**`/morale <hedef>`** - Hedef puana göre 2d6 moral kontrolü yapın.\n**`/loot`** - Bir NPC'nin cebinde rastgele bir lezzet öğesi/biblo bulun.",
+        "party_title": "8. Parti ve Gemi Takibi",
+        "party_body": "**`/parti bilgisi`** - Gemi Borcu, Krediler ve Hull Puanları.\n**`/gemi` | `!ship`** - Aktif yıldız gemisi istatistiklerini görüntüleyin.\n**`/party split <amount>`** - Eşit bir ödeme paylaşımı hesaplayın!",
+        "campaign_title": "9. Kampanya Takibi",
+        "campaign_body": "**`/kampanya başlangıcı`** | **`/kampanya katılımı`** | **`/kampanya bilgisi`**\nOtomatik savaş girişi ve takibi için oyuncuları birbirine bağlayın.",
+        "voice_title": "🎙️ Eller Serbest ve Sesle Kontrol",
+        "voice_body": "**`/ses` | `!ses`**\n**Voice Remote Portalı**'nı açar. Mesajınızı söyleyin veya zar atın, anında Discord'a gönderilsinler.\n\n**Ses Entegrasyonu (Web)**\nHarita ve Hikaye Anlatıcı'da **[Ses Modu]** geçişini arayın. Her düğmeye görünür **[Deyin: Tıklayın ...]** ipuçları ekleyerek bunların Windows Sesli Erişim ile tetiklenmesini kolaylaştırır.",
+        "channel_role_title": "10. Kanal Yönetimi",
+        "channel_role_body": "**`/kanal kurulumu <role> <emoji>`**\nTepki rolüyle anında bir katılma mesajı oluşturun.\n\n**`!rr [#kanal] @role <emoji>`**\nBir reaksiyon rolü için süper basit önek komutu.\n\n**`!role <emoji> <ID> ... [#kanal]`**\n**Toplu Kurulum!** Birden fazla kategoriye veya kanala kimliklerini ileterek erişim izni veren bir mesaj oluşturun! Örnek: `!rol 🚀 1111 💰 2222 #hoşgeldiniz`\n\n**`/kanal rol seti <role>`**\nİzleyicileri kontrol etmek için bu kanala 'GM' rolü atayın."
+    },
+    "errors": {
+        "no_gm_permission": "❌Bu kanalda GM izinleriniz yoktur. (Sunucu Yöneticisi, Kampanya GM'si veya belirlenmiş Kanal Rolü gerektirir)"
+    }
+}

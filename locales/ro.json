@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stele fără număr - Pornire rapidă",
+            "step1_title": "Pasul 1: Crearea Personajului",
+            "step1_desc": "Utilizați `/swn` pentru un caracter aleatoriu sau `/threshold_wizard` pentru a arunca statistici.\nImportați din **[characterswithoutnumber.app](https://characterswithoutnumber.app)** sau din sectoare fără număr folosind `/importsheet`.",
+            "step2_title": "Pasul 2: Mecanica de bază",
+            "step2_desc": "• **Verificări de îndemânare**: aruncați `2d6 + Skill + Atribute`. Mare este mai bine.\n• **Luptă**: Rolă `1d20 + Bonus de atac + Atribut`. Întâlnește sau învinge AC.\n• **Salvări**: aruncați `1d20`. Egal sau mai mare decât ținta Salvare.",
+            "step3_title": "Pasul 3: Comenzi bot",
+            "step3_desc": "• `/sheet`: Vizualizați statisticile dvs.\n• `/update`: sincronizați cu adresa URL sursă.\n• `/roll 2d6+1`: rolă de zaruri generică."
+        },
+        "wwn": {
+            "title": "⚔️ Lumi fără număr - Început rapid",
+            "step1_title": "Pasul 1: Crearea Personajului",
+            "step1_desc": "Utilizați `/wwn` pentru un caracter aleatoriu sau `/threshold_wizard` pentru statistici manuale.\nImportați foi de pe Google sau **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Pasul 2: Mecanica de bază",
+            "step2_desc": "• **Abilități**: `2d6 + Abilități + Atribut`. Ținta este de obicei 6-10.\n• **Luptă**: `1d20 + AB + Atribut`. Ținta este Enemy AC.\n• **Șoc**: armele corp la corp provoacă adesea daune chiar și la o ratare!",
+            "step3_title": "Pasul 3: Comenzi bot",
+            "step3_desc": "• `/skill [nume]`: aruncă o anumită abilitate.\n• `/update`: sincronizează statisticile caracterului tău.\n• `/atack [arma]`: logica de atac și daune."
+        },
+        "cwn": {
+            "title": "💾 Orașe fără număr - Început rapid",
+            "step1_title": "Pasul 1: Crearea Personajului",
+            "step1_desc": "Utilizați `/cwn` pentru un caracter aleatoriu sau `/threshold_wizard`.\nSincronizați-vă echipamentul de la **[characterswithoutnumber.app](https://characterswithoutnumber.app)** folosind `/importjson`.",
+            "step2_title": "Pasul 2: Mecanica de bază",
+            "step2_desc": "• **Verificări**: `2d6` pentru abilități, `1d20` pentru luptă. Baza OSR standard.\n• **Hacking**: utilizați programe specializate și cyberdeck-ul dvs.\n• **Traumă**: Atenție la tipurile de daune specializate!",
+            "step3_title": "Pasul 3: Comenzi bot",
+            "step3_desc": "• `/gen npc`: aromă rapidă de cyberpunk.\n• `/update`: sincronizați statisticile de la generatorul online.\n• `/tracker damage`: Inflige daune pe nume."
+        },
+        "footer": "Sfat: Toate comenzile funcționează și cu !prefix! Tastați /help pentru mai multe."
+    },
+    "commands": {
+        "starthere_desc": "Ghid de pornire rapidă pentru SWN, WWN sau CWN.",
+        "swnhelp_desc": "Ghid de pornire rapidă pentru Stele fără număr.",
+        "wwnhelp_desc": "Ghid de pornire rapidă pentru Lumi fără număr.",
+        "cwnhelp_desc": "Ghid de pornire rapidă pentru Orașe fără număr.",
+        "lang_set_success": "✅ Limba setată la **{lang}**.",
+        "lang_invalid": "⚠️ Limbă nevalidă! Alegeți dintre: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Fără Ajutor Bot Număr",
+        "description": "Bun venit! Acest bot vă ajută să aruncați zarurile, să verificați echipamentul și să vă gestionați foaia de caractere.\n🌐 **Informații despre bot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatibil cu:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n** Nou? Tastați `/swnhelp`, `/wwnhelp` sau `/cwnhelp` pentru un ghid rapid!**\n**Schimbați limba:** `/language language:[EN|FR|ES|DE|PT|SV]`\n**Toate comenzile funcționează atât cu `/` (Slash) cât și `!` (Prefix)!**",
+        "char_imports_title": "1a. Importurile de caractere",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nConectați-vă foaia Google (SWN, WWN sau CWN). Încarcă statistici și permite sincronizarea!\n\n**`/importjson` | `!importjson` <url>**\nImportați dintr-o adresă URL JSON brută (cel mai rapid mod de a sincroniza *characterswithoutnumber.app*).\n\n**`/actualizare` | `!actualizare`**\nReîmprospătați instantaneu statisticile de caractere active din adresa URL-ului sursă stocată.\n\n**`/link` | `!link` <url>**\nConectați personajul dvs. la o adresă URL persistentă (JSON sau Google Sheet) pentru o sincronizare ușoară.\n\n**Încărcare fișier JSON**\nPur și simplu trageți și plasați fișierul dvs. de export `.json` în chat. Botul se ocupă de asta automat!\n\n**`/foaia` | `!foaia` | `/sc` | `/sf`**\nVezi personajul tău. **`/sc`** pentru vizualizarea Combat, **`/sf`** pentru vizualizarea completă.",
+        "char_mgmt_title": "1b. Managementul caracterelor",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <nume>**\nSchimbați între caracterele dvs. importate.\n\n**`/portret` | `!portret` [url]**\nSetează o imagine pentru oricare dintre personajele tale. Atașați un fișier SAU lipiți o adresă URL. Afișează ca o miniatură pe `/sheet`!\n\n**`/bind` | `/unbind`**\n🎭 Asociați un personaj cu canalul curent. Botul își va aminti ce erou joci în fiecare joc!\n\n**`/awardxp` | `!awardxp` <sumă>**\nOferă XP personajului tău activ.\n\n**`/swn`, `/wwn`, `/cwn`**\nGenerați instantaneu un caracter aleatoriu de Nivel 1 pentru acel sistem.\n\n**`/prag` | `/threshold_wizard`**\nRolează 3d6 atribute în ordine sau folosește expertul interactiv!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nGhiduri de pornire rapidă pentru sistemul ales (SWN, WWN sau CWN)!",
+        "rolling_title": "2. Rolling & Combat",
+        "rolling_body": "**`/atac` | `!atac` [arma]**\nLansează un atac de 1d20. Adaugă modificatori automat din foaia ta!\n\n**`/gmroll` | `!gmroll`**\nRolă ascunsă (privată/efemeră) deci numai tu vezi rezultatul.\n\n**`/skill` | `!skill` [skill_name]**\nLansează o verificare de îndemânare 2d6. (de ex., `!notice`, `!dexteritatea notificării aptitudinilor`).\n\n**`/roll` | `!roll` <expresie> [comentar]**\nSuportă aruncări complicate: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Multiple:* Folosiți `3x 1d20+5` sau `3#2d6` pentru a repeta o aruncare!\n↳ *Emoji și combinații:* Folosiți virgulele pentru a rula mai multe lucruri simultan! (de exemplu, `!rulați ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <cantitate> <expresie>**\nRotiți aceeași expresie de mai multe ori cu linii detaliate separate.",
+        "tools_title": "3. Referințe și instrumente",
+        "tools_body": "**`/navă` | `!navă` | `/shiplist` | `!shiplist`**\nVizualizați sau enumerați navele dvs. importate din fișierele JSON Sectors Without Number.\n\n**`/weapon`, `/armour`, `/gear`, `/foci`**\nRăsfoiți articolele din compendiu! Funcționează pentru SWN, WWN și CWN.\n\n**`/regula` | `!rule` <cuvânt cheie>**\nCăutați în regulile de bază o anumită frază sau regulă.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheat-sheets pentru luptă, hacking și luptă în spațiu.",
+        "sandbox_title": "4. GM Sandbox Generation",
+        "sandbox_body": "**`/gen <planeta | npc | corp | extraterestru>`**\nGenerați instantaneu o carte de referință frumoasă cu trăsături aleatorii.\nNPC-urile și extratereștrii vin cu statistici de atac, AC și HP încorporate gata de rulare!",
+        "tracker_title": "5. GM Tracker și hartă tactică",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Adăugați inamici (Bulk accepted!).\n**`/tracker party`** - Adaugă automat toți jucătorii activi din campanie.\n**`/tracker map`** - Deschide **Harta tactică interactivă** cu meniuri derulante ale temelor!\n**`/tracker controller`** - Deschideți **Native Discord Controller** (Butoane!).\n**`/importmap <image>`** - Încărcați un fundal personalizat pentru hartă.\n**`/tracker next`** | **`/deteriorări tracker`** | **`/tracker clear`**\n↳ *Sfat:* Folosiți **`!sync`** dacă comenzile slash par învechite!",
+        "faction_title": "6. Faction Tracker",
+        "faction_body": "**`/faction create`, `/faction list`, `/faction edit`**\nGestionați facțiunile globale ale campaniei dvs. și statisticile acestora.\n**`/faction attack`** - Lansează un atac de facțiune opusă.",
+        "storyteller_title": "7. Instrumente de povestitor",
+        "storyteller_body": "**`/plot`** - Generați un cârlig de complot aleatoriu sau o idee situațională pentru a stârni creativitatea.\n**`/oracle`** - Pune o întrebare Da/Nu Oracolului 2d6 (ajutor Solo/GM).\n**`/reacție`** - Lansați o reacție NPC de 2d6 (Ostil -> Util).\n**`/moral <țintă>`** - Lansați o verificare a moralului de 2d6 față de un scor țintă.\n**`/loot`** - Găsiți un articol cu ​​aromă aleatorie/trichet în buzunarul unui NPC.",
+        "party_title": "8. Urmărirea petrecerilor și a navelor",
+        "party_body": "**`/party info`** - Datoria navei, creditele și punctele Hull.\n**`/navă` | `!ship`** - Vezi statisticile active ale navei stelare.\n**`/party split <amount>`** - Calculați o împărțire uniformă a plăților!",
+        "campaign_title": "9. Urmărirea campaniei",
+        "campaign_body": "**`/început campanie`** | **`/campaign join`** | **`/informații campanie`**\nConectați jucătorii împreună pentru intrarea și urmărirea automată a luptei.",
+        "voice_title": "🎙️ Mâini libere și control vocal",
+        "voice_body": "**`/voce` | `!voce`**\nDeschide **Portalul Voice Remote**. Rostiți mesajul sau aruncările de zaruri și acestea vor fi trimise instantaneu către Discord.\n\n**Integrare vocală (Web)**\nPe Hartă și Povestitor, căutați comutatorul **[Mod Voce]**. Adaugă indicii vizibile **[Spune: Faceți clic...]** pentru fiecare buton, făcându-le ușor de declanșat cu Windows Voice Access.",
+        "channel_role_title": "10. Managementul canalelor",
+        "channel_role_body": "**`/configurare canal <rol> <emoji>`**\nCreați instantaneu un mesaj de alăturare cu rol de reacție.\n\n**`!rr [#canal] @rol <emoji>`**\nComandă de prefix super simplă pentru un rol de reacție.\n\n**`!rol <emoji> <ID> ... [#canal]`**\n**Configurare în bloc!** Creați un mesaj care acordă acces la mai multe categorii sau canale prin transmiterea ID-urilor! Exemplu: `!rol 🚀 1111 💰 2222 #welcome`\n\n**`/canal set de roluri <rol>`**\nDesemnați un rol ca „GM” pentru acest canal pentru a controla trackerele."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Nu aveți permisiuni GM pe acest canal. (Necesită administrator de server, director general de campanie sau rol de canal desemnat)"
+    }
+}

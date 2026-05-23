@@ -1,0 +1,62 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stars Without Number - Snabbstart",
+            "step1_title": "Steg 1: Skapa karaktär",
+            "step1_desc": "Använd `/swn` för en slumpmässig karaktär eller `/threshold_wizard` för att slå fram grundegenskaper.\nImportera från **[characterswithoutnumber.app](https://characterswithoutnumber.app)** eller Sectors Without Number med `/importsheet`.",
+            "step2_title": "Steg 2: Grundläggande mekanik",
+            "step2_desc": "• **Färdighetsslag**: Slå `2d6 + Färdighet + Grundegenskap`. Högt är bäst.\n• **Strid**: Slå `1d20 + Attackbonus + Grundegenskap`. Möta eller slå AC.\n• **Räddningsslag**: Slå `1d20`. Lika med eller högre än ditt mål för räddningsslag.",
+            "step3_title": "Steg 3: Bot-kommandon",
+            "step3_desc": "• `/sheet`: Visa din karaktärsinfo.\n• `/update`: Synka med käll-URL.\n• `/roll 2d6+1`: Generell tärningsrullare."
+        },
+        "wwn": {
+            "title": "⚔️ Worlds Without Number - Snabbstart",
+            "step1_title": "Steg 1: Skapa karaktär",
+            "step1_desc": "Använd `/wwn` för en slumpmässig karaktär eller `/threshold_wizard` för manuella värden.\nImportera karaktärsblad från Google eller **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Steg 2: Grundläggande mekanik",
+            "step2_desc": "• **Färdigheter**: `2d6 + Färdighet + Grundegenskap`. Målet är vanligtvis 6-10.\n• **Strid**: `1d20 + AB + Grundegenskap`. Målet är fiendens AC.\n• **Shock**: Närstridsvapen gör ofta skada även vid en miss!",
+            "step3_title": "Steg 3: Bot-kommandon",
+            "step3_desc": "• `/skill [namn]`: Slå för en specifik färdighet.\n• `/update`: Synka din statistik.\n• `/attack [vapen]`: Slår attack och skada."
+        },
+        "cwn": {
+            "title": "💾 Cities Without Number - Snabbstart",
+            "step1_title": "Steg 1: Skapa karaktär",
+            "step1_desc": "Använd `/cwn` för en slumpmässig karaktär eller `/threshold_wizard`.\nSynka din utrustning från **[characterswithoutnumber.app](https://characterswithoutnumber.app)** med `/importjson`.",
+            "step2_title": "Steg 2: Grundläggande mekanik",
+            "step2_desc": "• **Slag**: `2d6` för färdigheter, `1d20` för strid. Standard OSR-bas.\n• **Hacking**: Använd specialiserade program och ditt cyberdeck.\n• **Trauma**: Se upp för specialiserade skadetyper!",
+            "step3_title": "Steg 3: Bot-kommandon",
+            "step3_desc": "• `/gen npc`: Snabb cyberpunk-karaktär.\n• `/update`: Synka från karaktärsbyggare.\n• `/tracker damage`: Dela ut skada med namn."
+        },
+        "footer": "Pro-tip: Alla kommandon fungerar med !prefix också! Skriv /help för mer info."
+    },
+    "commands": {
+        "starthere_desc": "Snabbstartsguide för SWN, WWN eller CWN.",
+        "swnhelp_desc": "Snabbstartsguide för Stars Without Number.",
+        "wwnhelp_desc": "Snabbstartsguide för Worlds Without Number.",
+        "cwnhelp_desc": "Snabbstartsguide för Cities Without Number.",
+        "lang_set_success": "✅ Språket har ställts in till **{lang}**.",
+        "lang_invalid": "⚠️ Ogiltigt språk! Välj mellan: EN, FR, ES, DE, PT, SV."
+    },
+    "help": {
+        "title": "🎲 Without Number Bot Hjälp",
+        "description": "Välkommen! Denna bot hjälper dig att slå tärning, kolla utrustning och hantera ditt karaktärsblad.\n🌐 **Bot-info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Kompatibel med:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Ny? Skriv `/swnhelp`, `/wwnhelp` eller `/cwnhelp` för en snabbguide!**\n**Alla kommandon fungerar både med `/` (Slash) och `!` (Prefix)!**",
+        "char_imports_title": "1a. Importera karaktärer",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nLänka ditt Google Sheet (SWN, WWN eller CWN). Det läser in stats och aktiverar synk!\n\n**`/importjson` | `!importjson` <url>**\nImportera från en rå JSON-URL (snabbaste sättet att synka *characterswithoutnumber.app*).\n\n**`/update` | `!update`**\nSynkronisera omedelbart din aktiva karaktärs statistik från dess käll-URL.\n\n**`/link` | `!link` <url>**\nKoppla din karaktär till en bestående URL (JSON eller Google Sheet) för enkel synkronisering.\n\n**JSON-filuppladdning**\nDra och släpp din `.json`-exportfil direkt i chatten. Boten hanterar det automatiskt!\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nVisa din karaktär. **`/sc`** för stridsvy, **`/sf`** för komplett vy.",
+        "char_mgmt_title": "1b. Hantera karaktär",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <namn>**\nByt mellan dina importerade karaktärer.\n\n**`/awardxp` | `!awardxp` <mängd>**\nGe XP till din aktiva karaktär.\n\n**`/swn`, `/wwn`, `/cwn`**\nSkapa en slumpmässig level 1-karaktär för systemet direkt.\n\n**`/threshold` | `/threshold_wizard`**\nSlå 3d6 för grundegenskaper i ordning, eller använd den interaktiva guiden!",
+        "rolling_title": "2. Slå tärning & Strid",
+        "rolling_body": "**`/attack` | `!attack` [vapen]**\nSlår 1d20 för attack. Lägger till bonusar automatiskt från ditt blad!\n\n**`/skill` | `!skill` [färdighetsnamn]**\nSlår 2d6 färdighetsslag. (t.ex. `!notice`, `!skill notice dexterity`).\n\n**`/roll` | `!roll` <uttryck> [kommentar]**\nSlå vanliga tärningar (t.ex. `!roll 1d20+2`, `!roll 6d20 2d20`). Stödjer flera uttryck!\n↳ *Diplomat Focus:* Använd `d` i slutet (t.ex. `!roll 2d6d`) för att slå om ettor!\n\n**`/3d6dr` | `!3d6dr`** / **`/4d6dr` | `!4d6dr`**\nSpecialslag som automatiskt tar bort den lägsta eller de två lägsta tärningarna.\n\n**`/multiroll` | `!multiroll` <antal> <uttryck>**\nSlå samma uttryck flera gånger (t.ex. `!multiroll 2 3d6`).",
+        "tools_title": "3. Referens & Verktyg",
+        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nVisa eller lista dina importerade rymdskepp från Sectors Without Number JSON-filer.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\nBläddra bland utrustning i kompendiet! Fungerar för SWN, WWN och CWN.\n\n**`/rule` | `!rule` <nyckelord>**\nSök i regelböckerna efter en specifik fras eller regel.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nFuskblad för strid, hacking och rymdstrid.",
+        "sandbox_title": "4. Spelledar-generatorer",
+        "sandbox_body": "**`/gen <planet | npc | corp | alien>`**\nSkapa omedelbart ett snyggt referenskort med slumpmässiga drag.\nNPCs och Aliens kommer med färdiga stats för Attack, AC och HP!",
+        "tracker_title": "5. Spelledar-tracker & Taktisk karta",
+        "tracker_body": "**`/tracker add <namn> <hp> <ac> [antal]`** - Lägg till fiender.\n**`/tracker party`** - Lägger till alla aktiva kampanjspelare automatiskt.\n**`/tracker map`** - Öppnar den **interaktiva taktiska kartan**!\n**`/tracker controller`** - Öppna den **inbyggda Discord-kontrollen** (Knappar!).\n**`/importmap <bild>`** - Ladda upp en egen bakgrund för kartan.\n**`/tracker next`** | **`/tracker damage`** | **`/tracker clear`**\n↳ *Tips:* Använd **`!sync`** om slash-kommandon verkar gamla!",
+        "faction_title": "6. Faktion-tracker",
+        "faction_body": "**`/faction create`, `/faction list`, `/faction edit`**\nHantera kampanjens globala faktioner och deras stats.\n**`/faction attack`** - Slå ett faktion-attack-slag mot en annan faktion.",
+        "party_title": "7. Grupp- & Skeppshantering",
+        "party_body": "**`/party info`** - Skeppsskuld, krediter och Hull Points.\n**`/ship` | `!ship`** - Visa aktiva rymdskepps-stats.\n**`/party split <mängd>`** - Dela upp krediter rättvist mellan spelarna!",
+        "campaign_title": "8. Kampanjhantering",
+        "campaign_body": "**`/campaign start`** | **`/campaign join`** | **`/campaign info`**\nLänka spelare för automatisk hantering i stridstracker."
+    }
+}

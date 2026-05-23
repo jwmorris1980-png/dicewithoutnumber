@@ -1,0 +1,46 @@
+[
+    {
+        "name": "Strike Fighter",
+        "type": "Fighter",
+        "hp": 8,
+        "ac": 16,
+        "armor": 5,
+        "speed": 5,
+        "crew": "1/1",
+        "weapons": "Fighter fittings only",
+        "description": "A standard one-person strike fighter. Fast, hard to hit, but lightly armored."
+    },
+    {
+        "name": "Free Merchant",
+        "type": "Frigate",
+        "hp": 20,
+        "ac": 14,
+        "armor": 2,
+        "speed": 3,
+        "crew": "1/6",
+        "weapons": "Frigate fittings",
+        "description": "The workhorse of independent traders. Plentiful cargo space and reasonably priced."
+    },
+    {
+        "name": "Patrol Cruiser",
+        "type": "Cruiser",
+        "hp": 50,
+        "ac": 14,
+        "armor": 10,
+        "speed": 2,
+        "crew": "50/200",
+        "weapons": "Cruiser fittings",
+        "description": "Standard deep-space patrol vessel. Heavy armor and capable of mounting serious weaponry."
+    },
+    {
+        "name": "Battleship",
+        "type": "Capital",
+        "hp": 100,
+        "ac": 15,
+        "armor": 20,
+        "speed": 0,
+        "crew": "1000/5000",
+        "weapons": "Capital fittings",
+        "description": "A city in space, bristling with guns. Unbelievably expensive and practically unstoppable."
+    }
+]

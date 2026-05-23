@@ -1,0 +1,62 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stars Without Number - Inicio Rápido",
+            "step1_title": "Paso 1: Creación de Personaje",
+            "step1_desc": "Usa `/swn` para un personaje aleatorio o `/threshold_wizard`.\nImporta desde **[characterswithoutnumber.app](https://characterswithoutnumber.app)** con `/importsheet`.",
+            "step2_title": "Paso 2: Mecánicas Básicas",
+            "step2_desc": "• **Pruebas de Habilidad**: Tira `2d6 + Habilidad + Atributo`. Más alto es mejor.\n• **Combate**: Tira `1d20 + Bono de Ataque + Atributo`. Igualar o superar la CA.\n• **Salvaciones**: Tira `1d20`. Igual o mayor que tu objetivo de Salvación.",
+            "step3_title": "Paso 3: Comandos del Bot",
+            "step3_desc": "• `/sheet`: Ver tus estadísticas.\n• `/update`: Sincronizar con la URL de origen.\n• `/roll 2d6+1`: Tirador de dados genérico."
+        },
+        "wwn": {
+            "title": "⚔️ Worlds Without Number - Inicio Rápido",
+            "step1_title": "Paso 1: Creación de Personaje",
+            "step1_desc": "Usa `/wwn` para un personaje aleatorio.\nImporta fichas desde Google o **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Paso 2: Mecánicas Básicas",
+            "step2_desc": "• **Habilidades**: `2d6 + Habilidad + Atributo`. El objetivo suele ser 6-10.\n• **Combate**: `1d20 + BA + Atributo`. El objetivo es la CA enemiga.\n• **Shock**: ¡Las armas cuerpo a cuerpo a menudo infligen daño incluso si fallan!",
+            "step3_title": "Paso 3: Comandos del Bot",
+            "step3_desc": "• `/skill [nombre]`: Tirar una habilidad específica.\n• `/update`: Sincronizar estadísticas.\n• `/attack [arma]`: Lógica de ataque y daño."
+        },
+        "cwn": {
+            "title": "💾 Cities Without Number - Inicio Rápido",
+            "step1_title": "Paso 1: Creación de Personaje",
+            "step1_desc": "Usa `/cwn` para un personaje aleatorio.\nSincroniza equipo desde **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Paso 2: Mecánicas Básicas",
+            "step2_desc": "• **Pruebas**: `2d6` para habilidades, `1d20` para combate. Base OSR estándar.\n• **Hacking**: Usa programas especializados y tu ciberdeck.\n• **Trauma**: ¡Cuidado con los tipos de daño especializados!",
+            "step3_title": "Paso 3: Comandos del Bot",
+            "step3_desc": "• `/gen npc`: Sabor cyberpunk rápido.\n• `/update`: Sincronizar desde el constructor.\n• `/tracker damage`: Infligir daño por nombre."
+        },
+        "footer": "Consejo: ¡Todos los comandos también funcionan con el prefijo ! Escribe /help para más información."
+    },
+    "commands": {
+        "starthere_desc": "Guía de inicio rápido para SWN, WWN o CWN.",
+        "swnhelp_desc": "Guía de inicio rápido para Stars Without Number.",
+        "wwnhelp_desc": "Guía de inicio rápido para Worlds Without Number.",
+        "cwnhelp_desc": "Guía de inicio rápido para Cities Without Number.",
+        "lang_set_success": "✅ Idioma configurado en **{lang}**.",
+        "lang_invalid": "⚠️ ¡Idioma inválido! Elige entre: EN, FR, ES, DE, PT."
+    },
+    "help": {
+        "title": "🎲 Ayuda del Bot Without Number",
+        "description": "¡Bienvenido! Este bot te ayuda a tirar dados, consultar tu equipo y gestionar tu hoja de personaje.\n🌐 **Info del Bot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatible con:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**¿Nuevo? ¡Escribe `/swnhelp`, `/wwnhelp` o `/cwnhelp` para una guía rápida!**\n**¡Todos los comandos funcionan tanto con `/` (Slash) como con `!` (Prefijo)!**",
+        "char_imports_title": "1a. Importaciones de Personaje",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nVincula tu Google Sheet (SWN, WWN o CWN). ¡Carga estadísticas y activa la sincronización!\n\n**`/importjson` | `!importjson` <url>**\nImporta desde una URL JSON (la forma más rápida de sincronizar *characterswithoutnumber.app*).\n\n**`/update` | `!update`**\nSincroniza instantáneamente las estadísticas de tu personaje activo desde su URL de origen.\n\n**`/link` | `!link` <url>**\nConecta tu personaje a una URL persistente (JSON o Google Sheet) para la sincronización.\n\n**Subida de Archivo JSON**\nSimplemente arrastra y suelta tu archivo `.json` en el chat. ¡El bot lo gestionará automáticamente!\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nVer tu personaje. **`/sc`** para vista de Combate, **`/sf`** para vista Completa.",
+        "char_mgmt_title": "1b. Gestión de Personaje",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <nombre>**\nCambia entre tus personajes importados.\n\n**`/awardxp` | `!awardxp` <cantidad>**\nOtorga PX a tu personaje activo.\n\n**`/swn`, `/wwn`, `/cwn`**\nGenera instantáneamente un personaje aleatorio de Nivel 1 para ese sistema.\n\n**`/threshold` | `/threshold_wizard`**\nTira atributos 3d6 en orden, ¡o usa el Asistente interactivo!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\n¡Guías de inicio rápido para el sistema elegido!",
+        "rolling_title": "2. Tiradas y Combate",
+        "rolling_body": "**`/attack` | `!attack` [arma]**\nTira 1d20 de ataque. ¡Añade modificadores automáticamente!\n\n**`/skill` | `!skill` [nombre_habilidad]**\nTira 2d6 de habilidad (ej: `!notice`).\n\n**`/roll` | `!roll` <expresión> [comentario]**\nTira dados estándar (ej: `!roll 1d20+2`). ¡Soporta múltiples expresiones!\n\n**`/3d6dr` | `!3d6dr`** / **`/4d6dr` | `!4d6dr`**\nTiradas especializadas que descartan los dados más bajos.",
+        "tools_title": "3. Referencias y Herramientas",
+        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nConsulta o lista tus naves importadas.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\n¡Explora objetos del compendio!\n\n**`/rule` | `!rule` <palabra_clave>**\nBusca una regla específica en los manuales básicos.",
+        "sandbox_title": "4. Generación Sandbox GM",
+        "sandbox_body": "**`/gen <planet | npc | corp | alien>`**\nGenera instantáneamente una ficha de referencia con rasgos aleatorios.",
+        "tracker_title": "5. Seguimiento GM y Mapa Táctico",
+        "tracker_body": "**`/tracker add <nombre> <pg> <ca>`** - Añade un enemigo.\n**`/tracker party`** - Añade a todos los jugadores de la campaña.\n**`/tracker map`** - Abre el **Mapa Táctico Interactivo**.\n**`/tracker next`** | **`/tracker damage`** | **`/tracker clear`**",
+        "faction_title": "6. Seguimiento de Facciones",
+        "faction_body": "**`/faction create`, `/faction list`, `/faction edit`**\nGestiona las facciones globales de tu campaña y sus estadísticas.",
+        "party_title": "7. Seguimiento de Grupo y Nave",
+        "party_body": "**`/party info`** - Deuda de la nave, Créditos y Puntos de Casco.\n**`/party split <cantidad>`** - ¡Calcula un reparto equitativo!",
+        "campaign_title": "8. Seguimiento de Campaña",
+        "campaign_body": "**`/campaign start`** | **`/campaign join`** | **`/campaign info`**\nVincula a los jugadores para entrada y seguimiento de combate automatizados."
+    }
+}

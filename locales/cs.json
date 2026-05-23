@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Hvězdy bez čísla - Rychlý start",
+            "step1_title": "Krok 1: Vytvoření postavy",
+            "step1_desc": "Použijte `/swn` pro náhodný znak nebo `/threshold_wizard` k rolování statistik.\nImportujte z **[characterswithoutnumber.app](https://characterswithoutnumber.app)** nebo sektorů bez čísla pomocí `/importsheet`.",
+            "step2_title": "Krok 2: Základní mechanika",
+            "step2_desc": "• **Kontrola dovedností**: Hoďte `2k6 + Dovednost + Atribut`. Vysoká je lepší.\n• **Boj**: Hoďte `1k20 + bonus k útoku + atribut`. Seznamte se nebo porazte AC.\n• **Uložení**: Hoďte `1k20`. Stejné nebo vyšší než váš cíl uložení.",
+            "step3_title": "Krok 3: Příkazy robota",
+            "step3_desc": "• `/list`: Zobrazení statistik.\n• `/update`: Synchronizace se zdrojovou URL.\n• `/roll 2k6+1`: Obecný hod kostkou."
+        },
+        "wwn": {
+            "title": "⚔️ Světy bez čísla - Rychlý start",
+            "step1_title": "Krok 1: Vytvoření postavy",
+            "step1_desc": "Použijte `/wwn` pro náhodný znak nebo `/threshold_wizard` pro ruční statistiky.\nImportujte tabulky z Googlu nebo **[znakybezčísla.app](https://postavybezčísla.app)**.",
+            "step2_title": "Krok 2: Základní mechanika",
+            "step2_desc": "• **Dovednosti**: `2k6 + Dovednost + Atribut`. Cíl je obvykle 6-10.\n• **Boj**: `1k20 + AB + Atribut`. Cílem je Enemy AC.\n• **Shock**: Zbraně pro boj na blízko často způsobí poškození i při neúspěchu!",
+            "step3_title": "Krok 3: Příkazy robota",
+            "step3_desc": "• `/dovednost [jméno]`: Hoďte konkrétní dovedností.\n• `/update`: Synchronizujte statistiky postavy.\n• `/útok [zbraň]`: Logika útoku a poškození."
+        },
+        "cwn": {
+            "title": "💾 Města bez čísla - Rychlý start",
+            "step1_title": "Krok 1: Vytvoření postavy",
+            "step1_desc": "Použijte `/cwn` pro náhodný znak nebo `/threshold_wizard`.\nSynchronizujte své vybavení z **[znakůbezčísla.app](https://znakůbezčísla.app)** pomocí `/importjson`.",
+            "step2_title": "Krok 2: Základní mechanika",
+            "step2_desc": "• **Šeky**: `2k6` pro dovednosti, `1k20` pro boj. Standardní základna OSR.\n• **Hacking**: Používejte specializované programy a svůj cyberdeck.\n• **Trauma**: Pozor na specializované typy poškození!",
+            "step3_title": "Krok 3: Příkazy robota",
+            "step3_desc": "• `/gen npc`: Rychlá kyberpunková příchuť.\n• `/update`: Synchronizace statistik z online builderu.\n• `/tracker damage`: Způsobte poškození jménem."
+        },
+        "footer": "Pro-tip: Všechny příkazy fungují také s !prefixem! Další informace získáte zadáním /help."
+    },
+    "commands": {
+        "starthere_desc": "Rychlý průvodce pro SWN, WWN nebo CWN.",
+        "swnhelp_desc": "Rychlý průvodce pro Hvězdy bez čísla.",
+        "wwnhelp_desc": "Rychlý průvodce pro světy bez čísla.",
+        "cwnhelp_desc": "Rychlý průvodce pro města bez čísla.",
+        "lang_set_success": "✅ Jazyk nastaven na **{lang}**.",
+        "lang_invalid": "⚠️ Neplatný jazyk! Vyberte si z: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Bez pomoci Number Bot",
+        "description": "Vítejte! Tento robot vám pomůže házet kostkami, kontrolovat vybavení a spravovat váš list postavy.\n🌐 **Informace o robotovi:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Kompatibilní s:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Nové? Pro rychlý průvodce zadejte `/swnhelp`, `/wwnhelp` nebo `/cwnhelp`!**\n**Změnit jazyk:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**Všechny příkazy fungují s `/` (lomítko) i `!` (Prefix)!**",
+        "char_imports_title": "1a. Import postav",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nPropojte svou tabulku Google (SWN, WWN nebo CWN). Načítá statistiky a umožňuje synchronizaci!\n\n**`/importjson` | `!importjson` <url>**\nImport z nezpracované adresy URL JSON (nejrychlejší způsob synchronizace *znakůbezčísla.app*).\n\n**`/aktualizace` | `!aktualizace`**\nOkamžitě obnovte statistiky své aktivní postavy z její uložené zdrojové adresy URL.\n\n**`/odkaz` | `!odkaz` <url>**\nPřipojte svou postavu k trvalé adrese URL (JSON nebo Google Sheet) pro snadnou synchronizaci.\n\n**Nahrání souboru JSON**\nJednoduše přetáhněte exportní soubor `.json` do chatu. Robot to zvládá automaticky!\n\n**`/list` | `!list` | `/sc` | `/sf`**\nPodívejte se na svou postavu. **`/sc`** pro bojové zobrazení, **`/sf`** pro úplné zobrazení.",
+        "char_mgmt_title": "1b. Správa postav",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <název>**\nPřepínejte mezi importovanými postavami.\n\n**`/portrét` | `!portrét` [url]**\nNastavte obrázek pro kteroukoli ze svých postav. Připojte soubor NEBO vložte adresu URL. Zobrazí se jako miniatura na `/listu`!\n\n**`/bind` | `/odpojit`**\n🎭 Přidružte postavu k aktuálnímu kanálu. Robot si bude pamatovat, kterého hrdinu hrajete v každé hře!\n\n**`/awardxp` | `!awardxp` <částka>**\nPřidělte XP své aktivní postavě.\n\n**`/swn`, `/wwn`, `/cwn`**\nOkamžitě vygenerujte náhodnou postavu 1. úrovně pro tento systém.\n\n**`/práh` | `/threshold_wizard`**\nHoďte atributy 3d6 v pořadí, nebo použijte interaktivního průvodce!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nPříručky pro rychlý start pro vámi zvolený systém (SWN, WWN nebo CWN)!",
+        "rolling_title": "2. Rolling & Combat",
+        "rolling_body": "**`/útok` | `!útok` [zbraň]**\nHodí útok 1k20. Automaticky přidá modifikátory z vašeho listu!\n\n**`/gmroll` | `!gmroll`**\nSkrytá role (soukromá/dočasná), takže výsledek vidíte jen vy.\n\n**`/dovednost` | `!skill` [název_dovednosti]**\nHodí 2k6 kontrolu dovedností. (např. `!všimněte si`, `!uvědomte si dovednost obratnost`).\n\n**`/roll` | `!roll` <výraz> [komentář]**\nPodporuje komplikované hody: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Násobky:* K opakování hodu použijte `3x 1k20+5` nebo `3#2k6`!\n↳ *Emojis a komba:* Pomocí čárek házejte více věcí najednou! (např. `!hodit ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <částka> <výraz>**\nHoďte stejný výraz vícekrát pomocí samostatných podrobných řádků.",
+        "tools_title": "3. Reference & Tools",
+        "tools_body": "**`/loď` | `!loď` | `/seznam lodí` | `!seznam lodí`**\nZobrazte nebo vypište své importované hvězdné lodě ze souborů JSON Sectors Without Number.\n\n**`/weapon`, `/brnění`, `/gear`, `/foci`**\nProcházejte položky z přehledu! Funguje pro SWN, WWN a CWN.\n\n**`/pravidlo` | `!pravidlo` <klíčové slovo>**\nVyhledejte v hlavních knihách pravidel konkrétní frázi nebo pravidlo.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheat-sheets pro boj, hackování a boj ve vesmíru.",
+        "sandbox_title": "4. Generace GM Sandbox",
+        "sandbox_body": "**`/gen <planeta | npc | společnost | mimozemšťan>`**\nOkamžitě vygenerujte krásnou referenční kartu s náhodnými vlastnostmi.\nNPC a mimozemšťané mají vestavěné statistiky útoku, AC a HP připravené ke spuštění!",
+        "tracker_title": "5. GM Tracker a taktická mapa",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Přidejte nepřátele (podporováno hromadně!).\n**`/tracker party`** – Automaticky přidá všechny aktivní hráče kampaně.\n**`/tracker map`** – otevře **interaktivní taktickou mapu** s rozevíracími nabídkami témat!\n**`/tracker controller`** – Otevřete **Native Discord Controller** (tlačítka!).\n**`/importmap <image>`** – Nahrajte vlastní pozadí pro mapu.\n**`/tracker další`** | **`/poškození trackeru`** | **`/tracker clear`**\n↳ *Tip pro profesionály:* Pokud se příkazy lomítka zdají zastaralé, použijte **`!sync`**!",
+        "faction_title": "6. Sledování frakcí",
+        "faction_body": "**`/faction create`, `/seznam frakcí`, `/faction edit`**\nSpravujte globální frakce své kampaně a jejich statistiky.\n**`/faction attack`** – Hoďte útokem nepřátelské frakce.",
+        "storyteller_title": "7. Nástroje vypravěče",
+        "storyteller_body": "**`/zápletka`** – Vygenerujte náhodný zápletkový háček nebo situační nápad, který podnítí kreativitu.\n**`/oracle`** - Položte otázku Ano/Ne Oracle 2d6 (pomocník Solo/GM).\n**`/reaction`** – Hoďte reakcí 2k6 NPC (Nepřátelská -> Užitečná).\n**`/morálka <cíl>`** - Hodit kontrolu morálky 2k6 proti cílovému skóre.\n**`/loot`** – Najděte v kapse NPC náhodný předmět/cetku s příchutí.",
+        "party_title": "8. Party & Ship Tracking",
+        "party_body": "**`/informace o straně`** – Dluh lodi, kredity a body trupu.\n**`/loď` | `!ship`** – Zobrazení aktivních statistik hvězdné lodi.\n**`/rozdělení strany <částka>`** – Vypočítejte rovnoměrné rozdělení výplat!",
+        "campaign_title": "9. Sledování kampaní",
+        "campaign_body": "**`/začátek kampaně`** | **`/připojení ke kampani`** | **`/informace o kampani`**\nPropojte hráče dohromady pro automatizovaný bojový vstup a sledování.",
+        "voice_title": "🎙️ Hands-free a hlasové ovládání",
+        "voice_body": "**`/hlas` | `!hlas`**\nOtevře **Voice Remote Portal**. Vyslovte svou zprávu nebo hody kostkou a budou okamžitě odeslány do Discordu.\n\n**Hlasová integrace (web)**\nNa mapě a vypravěči hledejte přepínač **[Hlasový režim]**. Ke každému tlačítku přidává viditelné **[Say: Click ...]** rady, takže je lze snadno spouštět pomocí Windows Voice Access.",
+        "channel_role_title": "10. Správa kanálů",
+        "channel_role_body": "**`/nastavení kanálu <role> <emoji>`**\nOkamžitě vytvořte zprávu spojení s rolí reakce.\n\n**`!rr [#kanál] @role <emoji>`**\nSuper jednoduchý prefixový příkaz pro jednu reakční roli.\n\n**`!role <emoji> <ID> ... [#kanál]`**\n**Hromadné nastavení!** Vytvořte jednu zprávu, která uděluje přístup k více kategoriím nebo kanálům předáním jejich ID! Příklad: `!role 🚀 1111 💰 2222 #welcome`\n\n**`/nastavena role kanálu <role>`**\nUrčete pro tento kanál roli „GM“ pro ovládání sledovačů."
+    },
+    "errors": {
+        "no_gm_permission": "❌ V tomto kanálu nemáte oprávnění GM. (Vyžaduje správce serveru, GM kampaně nebo určenou roli kanálu)"
+    }
+}

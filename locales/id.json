@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Bintang Tanpa Angka - Mulai Cepat",
+            "step1_title": "Langkah 1: Penciptaan Karakter",
+            "step1_desc": "Gunakan `/swn` untuk karakter acak atau `/threshold_wizard` untuk memutar statistik.\nImpor dari **[characterswithoutnumber.app](https://characterswithoutnumber.app)** atau Sektor Tanpa Nomor menggunakan `/importsheet`.",
+            "step2_title": "Langkah 2: Mekanika Inti",
+            "step2_desc": "• **Pemeriksaan Keterampilan**: Putar `2d6 + Keterampilan + Atribut`. Tinggi lebih baik.\n• **Pertempuran**: Putaran `1d20 + Bonus Serangan + Atribut`. Temui atau kalahkan AC.\n• **Hemat**: Gulung `1d20`. Sama atau lebih tinggi dari target Simpanan Anda.",
+            "step3_title": "Langkah 3: Perintah Bot",
+            "step3_desc": "• `/sheet`: Melihat statistik Anda.\n• `/update`: Sinkronisasi dengan URL sumber.\n• `/roll 2d6+1`: Pelempar dadu umum."
+        },
+        "wwn": {
+            "title": "⚔️ Dunia Tanpa Angka - Mulai Cepat",
+            "step1_title": "Langkah 1: Penciptaan Karakter",
+            "step1_desc": "Gunakan `/wwn` untuk karakter acak atau `/threshold_wizard` untuk statistik manual.\nImpor sheet dari Google atau **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Langkah 2: Mekanika Inti",
+            "step2_desc": "• **Keterampilan**: `2d6 + Keterampilan + Atribut`. Target biasanya 6-10.\n• **Pertempuran**: `1d20 + AB + Atribut`. Targetnya adalah Musuh AC.\n• **Shock**: Senjata jarak dekat sering kali menimbulkan kerusakan bahkan jika meleset!",
+            "step3_title": "Langkah 3: Perintah Bot",
+            "step3_desc": "• `/skill [nama]`: Meluncurkan skill tertentu.\n• `/update`: Menyinkronkan statistik karakter Anda.\n• `/serangan [senjata]`: Gulung logika serangan dan kerusakan."
+        },
+        "cwn": {
+            "title": "💾 Kota Tanpa Nomor - Mulai Cepat",
+            "step1_title": "Langkah 1: Penciptaan Karakter",
+            "step1_desc": "Gunakan `/cwn` untuk karakter acak atau `/threshold_wizard`.\nSinkronkan perlengkapan Anda dari **[characterswithoutnumber.app](https://characterswithoutnumber.app)** menggunakan `/importjson`.",
+            "step2_title": "Langkah 2: Mekanika Inti",
+            "step2_desc": "• **Cek**: `2d6` untuk keterampilan, `1d20` untuk pertarungan. Basis OSR standar.\n• **Peretasan**: Gunakan program khusus dan cyberdeck Anda.\n• **Trauma**: Hati-hati terhadap jenis kerusakan khusus!",
+            "step3_title": "Langkah 3: Perintah Bot",
+            "step3_desc": "• `/gen npc`: Rasa cyberpunk yang cepat.\n• `/ perbarui`: Menyinkronkan statistik dari pembuat online.\n• `/tracker damage`: Menangani kerusakan berdasarkan nama."
+        },
+        "footer": "Tip pro: Semua perintah juga berfungsi dengan !prefix! Ketik /bantuan untuk informasi lebih lanjut."
+    },
+    "commands": {
+        "starthere_desc": "Panduan memulai cepat untuk SWN, WWN, atau CWN.",
+        "swnhelp_desc": "Panduan memulai cepat untuk Bintang Tanpa Nomor.",
+        "wwnhelp_desc": "Panduan memulai cepat untuk Dunia Tanpa Angka.",
+        "cwnhelp_desc": "Panduan memulai cepat untuk Kota Tanpa Nomor.",
+        "lang_set_success": "✅ Bahasa disetel ke **{lang}**.",
+        "lang_invalid": "⚠️ Bahasa tidak valid! Pilih dari: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Tanpa Bantuan Bot Nomor",
+        "description": "Selamat datang! Bot ini membantu Anda melempar dadu, memeriksa peralatan, dan mengelola lembar karakter Anda.\n🌐 **Info Bot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Kompatibel dengan:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Baru? Ketik `/swnhelp`, `/wwnhelp`, atau `/cwnhelp` untuk panduan cepat!**\n**Ganti Bahasa:** `/bahasa lang:[EN|FR|ES|DE|PT|SV]`\n**Semua perintah berfungsi dengan `/` (Slash) dan `!` (Awalan)!**",
+        "char_imports_title": "1a. Impor Karakter",
+        "char_imports_body": "**`/lembar impor` | `!lembar impor` <url>**\nTautkan Google Sheet Anda (SWN, WWN, atau CWN). Ini memuat statistik dan mengaktifkan sinkronisasi!\n\n**`/importjson` | `!importjson` <url>**\nImpor dari URL JSON mentah (cara tercepat untuk menyinkronkan *karaktertanpanumber.app*).\n\n**`/perbarui` | `!perbarui`**\nSegarkan statistik karakter aktif Anda secara instan dari URL sumber yang disimpan.\n\n**`/tautan` | `!tautan` <url>**\nHubungkan karakter Anda ke URL persisten (JSON atau Google Sheet) untuk memudahkan sinkronisasi.\n\n**Unggah Berkas JSON**\nCukup seret dan lepas file ekspor `.json` Anda ke dalam obrolan. Bot menanganinya secara otomatis!\n\n**`/lembar` | `!lembar` | `/sc` | `/sf`**\nLihat karakter Anda. **`/sc`** untuk tampilan Pertempuran, **`/sf`** untuk tampilan Penuh.",
+        "char_mgmt_title": "1b. Manajemen Karakter",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <nama>**\nTukar antar karakter yang Anda impor.\n\n**`/potret` | `!potret` [url]**\nTetapkan gambar untuk salah satu karakter Anda. Lampirkan file ATAU tempel URL. Ditampilkan sebagai thumbnail di `/sheet`!\n\n**`/mengikat` | `/ lepaskan ikatan`**\n🎭 Kaitkan karakter dengan saluran saat ini. Bot akan mengingat hero mana yang Anda mainkan di setiap permainan!\n\n**`/penghargaanxp` | `!penghargaanxp` <jumlah>**\nBerikan XP kepada karakter aktif Anda.\n\n**`/swn`, `/wwn`, `/cwn`**\nBuat karakter Level 1 acak secara instan untuk sistem itu.\n\n**`/ambang batas` | `/ ambang batas_wizard`**\nGulung atribut 3d6 secara berurutan, atau gunakan Wizard interaktif!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nPanduan memulai cepat untuk sistem pilihan Anda (SWN, WWN, atau CWN)!",
+        "rolling_title": "2. Berguling & Bertempur",
+        "rolling_body": "**`/serangan` | `!menyerang` [senjata]**\nMeluncurkan serangan 1d20. Menambahkan pengubah secara otomatis dari lembar Anda!\n\n**`/gmroll` | `!gmroll`**\nGulungan tersembunyi (pribadi/sementara) sehingga hanya Anda yang melihat hasilnya.\n\n**`/keterampilan` | `!keterampilan` [nama_keterampilan]**\nMeluncurkan pemeriksaan keterampilan 2d6. (misalnya, `!notice`, `!skill notice dexterity`).\n\n**`/gulungan` | `!roll` <ekspresi> [komentar]**\nMendukung gulungan yang rumit: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Kelipatan:* Gunakan `3x 1d20+5` atau `3#2d6` untuk mengulang pelemparan!\n↳ *Emoji & Kombo:* Gunakan koma untuk menggulung beberapa hal sekaligus! (misalnya `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <jumlah> <ekspresi>**\nGulung ekspresi yang sama beberapa kali dengan garis detail terpisah.",
+        "tools_title": "3. Referensi & Alat",
+        "tools_body": "**`/kirim` | `!kirim` | `/daftar kapal` | `!daftar kapal`**\nLihat atau daftarkan kapal luar angkasa yang Anda impor dari file JSON Sektor Tanpa Nomor.\n\n**`/senjata`, `/armor`, `/gear`, `/fokus`**\nJelajahi item dari ringkasan! Bekerja untuk SWN, WWN, dan CWN.\n\n**`/aturan` | `!aturan` <kata kunci>**\nTelusuri buku peraturan inti untuk frasa atau aturan tertentu.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nLembar contekan untuk pertempuran, peretasan, dan pertempuran luar angkasa.",
+        "sandbox_title": "4. Generasi Kotak Pasir GM",
+        "sandbox_body": "**`/gen <planet | NPC | perusahaan | asing>`**\nSegera buat kartu referensi cantik dengan ciri-ciri acak.\nNPC dan Alien hadir dengan statistik Serangan, AC, dan HP bawaan yang siap diluncurkan!",
+        "tracker_title": "5. Pelacak GM & Peta Taktis",
+        "tracker_body": "**`/tracker tambahkan <nama> <hp> <ac> [jumlah]`** - Tambahkan musuh (didukung secara massal!).\n**`/tracker party`** - Menambahkan otomatis semua pemain kampanye yang aktif.\n**`/tracker map`** - Membuka **Peta Taktis Interaktif** dengan dropdown tema!\n**`/tracker controller`** - Buka **Native Discord Controller** (Tombol!).\n**`/importmap <image>`** - Unggah latar belakang khusus untuk peta.\n**`/pelacak berikutnya`** | **`/pelacak kerusakan`** | **`/pelacak jelas`**\n↳ *Tips profesional:* Gunakan **`!sync`** jika perintah garis miring sepertinya sudah ketinggalan zaman!",
+        "faction_title": "6. Pelacak Fraksi",
+        "faction_body": "**`/pembuatan fraksi`, `/daftar fraksi`, `/edit fraksi`**\nKelola faksi global kampanye Anda dan statistiknya.\n**`/serangan faksi`** - Meluncurkan serangan faksi lawan.",
+        "storyteller_title": "7. Alat Pendongeng",
+        "storyteller_body": "**`/plot`** - Menghasilkan alur cerita acak atau ide situasional untuk memicu kreativitas.\n**`/Oracle`** - Ajukan pertanyaan Ya/Tidak ke Oracle 2d6 (Solo/GM helper).\n**`/reaction`** - Melemparkan reaksi NPC 2d6 (Bermusuhan -> Bermanfaat).\n**`/morale <target>`** - Melakukan pemeriksaan moral 2d6 terhadap skor target.\n**`/loot`** - Temukan item/pernak-pernik rasa acak di saku NPC.",
+        "party_title": "8. Pelacakan Pesta & Kapal",
+        "party_body": "**`/info pihak`** - Hutang Kapal, Kredit, dan Poin Lambung Kapal.\n**`/kirim` | `!ship`** - Melihat statistik kapal luar angkasa yang aktif.\n**`/pemisahan pihak <jumlah>`** - Hitung pembagian pembayaran genap!",
+        "campaign_title": "9. Pelacakan Kampanye",
+        "campaign_body": "**`/mulai kampanye`** | **`/gabung kampanye`** | **`/info kampanye`**\nHubungkan pemain bersama-sama untuk masuk dan melacak pertempuran otomatis.",
+        "voice_title": "🎙️ Bebas Genggam & Kontrol Suara",
+        "voice_body": "**`/suara` | `!suara`**\nMembuka **Portal Jarak Jauh Suara**. Ucapkan pesan atau lemparan dadu Anda, dan itu akan langsung dikirim ke Discord.\n\n**Integrasi Suara (Web)**\nDi Peta dan Storyteller, cari tombol **[Mode Suara]**. Ia menambahkan petunjuk **[Katakan: Klik ...]** yang terlihat pada setiap tombol, sehingga mudah dipicu dengan Windows Voice Access.",
+        "channel_role_title": "10. Manajemen Saluran",
+        "channel_role_body": "**`/penyiapan saluran <peran> <emoji>`**\nBuat pesan gabungan secara instan dengan peran reaksi.\n\n**`!rr [#saluran] @peran <emoji>`**\nPerintah awalan super sederhana untuk satu peran reaksi.\n\n**`!peran <emoji> <ID> ... [#saluran]`**\n**Penyiapan Massal!** Buat satu pesan yang memberikan akses ke beberapa kategori atau saluran dengan meneruskan ID mereka! Contoh: `!role 🚀 1111 💰 2222 #welcome`\n\n**`/kumpulan peran saluran <peran>`**\nTetapkan peran sebagai 'GM' untuk saluran ini guna mengontrol pelacak."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Anda tidak memiliki izin GM di saluran ini. (Memerlukan Admin Server, GM Kampanye, atau Peran Saluran yang ditunjuk)"
+    }
+}

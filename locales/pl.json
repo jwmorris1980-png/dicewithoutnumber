@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Gwiazdy bez liczby - Szybki start",
+            "step1_title": "Krok 1: Tworzenie postaci",
+            "step1_desc": "Użyj `/swn` dla losowego znaku lub `/threshold_wizard`, aby rzucić statystyki.\nImportuj z **[characterswithoutnumber.app](https://characterswithoutnumber.app)** lub sektorów bez numeru za pomocą `/importsheet`.",
+            "step2_title": "Krok 2: Podstawowa mechanika",
+            "step2_desc": "• **Testy umiejętności**: Rzuć „2k6 + Umiejętność + Atrybut”. Wysokie jest lepsze.\n• **Walka**: Rzuć „1k20 + premia do ataku + atrybut”. Spotkaj lub pokonaj AC.\n• **Oszczędza**: Rzuć „1k20”. Równy lub wyższy niż docelowy zapis.",
+            "step3_title": "Krok 3: Polecenia bota",
+            "step3_desc": "• `/arkusz`: Wyświetl swoje statystyki.\n• `/update`: Synchronizacja ze źródłowym adresem URL.\n• `/roll 2k6+1`: Typowy rzut kostką."
+        },
+        "wwn": {
+            "title": "⚔️ Światy bez liczb – szybki start",
+            "step1_title": "Krok 1: Tworzenie postaci",
+            "step1_desc": "Użyj `/wwn` dla losowego znaku lub `/threshold_wizard` dla statystyk ręcznych.\nImportuj arkusze z Google lub **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Krok 2: Podstawowa mechanika",
+            "step2_desc": "• **Umiejętności**: `2k6 + Umiejętność + Atrybut`. Cel to zwykle 6-10.\n• **Walka**: `1k20 + AB + Atrybut`. Celem jest AC wroga.\n• **Szok**: Broń biała często zadaje obrażenia nawet w przypadku chybienia!",
+            "step3_title": "Krok 3: Polecenia bota",
+            "step3_desc": "• `/skill [nazwa]`: Rzuć określoną umiejętnością.\n• `/update`: Synchronizuj statystyki swojej postaci.\n• `/atak [broń]`: Rzuć logiką ataku i obrażeń."
+        },
+        "cwn": {
+            "title": "💾 Miasta bez numerów – szybki start",
+            "step1_title": "Krok 1: Tworzenie postaci",
+            "step1_desc": "Użyj `/cwn` dla losowego znaku lub `/threshold_wizard`.\nZsynchronizuj swój sprzęt z **[characterswithoutnumber.app](https://characterswithoutnumber.app)** za pomocą `/importjson`.",
+            "step2_title": "Krok 2: Podstawowa mechanika",
+            "step2_desc": "• **Kontrole**: „2k6” umiejętności, „1k20” walki. Standardowa podstawa OSR.\n• **Hakowanie**: Korzystaj ze specjalistycznych programów i swojego cyberdecku.\n• **Trauma**: Uważaj na wyspecjalizowane typy obrażeń!",
+            "step3_title": "Krok 3: Polecenia bota",
+            "step3_desc": "• `/gen npc`: Szybki smak cyberpunku.\n• `/update`: synchronizacja statystyk z kreatora online.\n• `/tracker Damage`: Zadaje obrażenia według nazwy."
+        },
+        "footer": "Wskazówka dla profesjonalistów: wszystkie polecenia działają również z prefiksem! Aby uzyskać więcej, wpisz /help."
+    },
+    "commands": {
+        "starthere_desc": "Skrócona instrukcja obsługi dla SWN, WWN lub CWN.",
+        "swnhelp_desc": "Skrócona instrukcja obsługi dla Gwiazd bez numeru.",
+        "wwnhelp_desc": "Skrócona instrukcja obsługi dla Światów bez Numerów.",
+        "cwnhelp_desc": "Skrócona instrukcja obsługi dla miast bez numerów.",
+        "lang_set_success": "✅ Język ustawiony na **{lang}**.",
+        "lang_invalid": "⚠️ Nieprawidłowy język! Wybierz spośród: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Bez pomocy bota numerycznego",
+        "description": "Powitanie! Ten bot pomaga ci rzucać kostkami, sprawdzać wyposażenie i zarządzać kartą postaci.\n🌐 **Informacje o bocie:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Kompatybilny z:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Nowy? Wpisz `/swnhelp`, `/wwnhelp` lub `/cwnhelp`, aby uzyskać szybki przewodnik!**\n**Zmień język:** `/język języka:[EN|FR|ES|DE|PT|SV]`\n**Wszystkie polecenia działają zarówno z `/` (ukośnik), jak i `!` (przedrostek)!**",
+        "char_imports_title": "1a. Import postaci",
+        "char_imports_body": "**`/arkusz importu` | `!arkusz importu` <url>**\nPołącz swój Arkusz Google (SWN, WWN lub CWN). Ładuje statystyki i umożliwia synchronizację!\n\n**`/importjson` | `!importjson` <url>**\nImportuj z surowego adresu URL JSON (najszybszy sposób synchronizacji *znaków bez numeru.aplikacji*).\n\n**`/aktualizacja` | `!aktualizacja`**\nNatychmiast odświeżaj statystyki aktywnej postaci na podstawie zapisanego źródłowego adresu URL.\n\n**`/link` | `!link` <url>**\nPołącz swoją postać ze stałym adresem URL (JSON lub Arkusz Google), aby ułatwić synchronizację.\n\n**Przesyłanie pliku JSON**\nPo prostu przeciągnij i upuść plik eksportu `.json` na czat. Bot obsługuje to automatycznie!\n\n**`/arkusz` | `!arkusz` | `/sc` | `/sf`**\nZobacz swoją postać. **`/sc`** dla widoku bojowego, **`/sf`** dla widoku pełnego.",
+        "char_mgmt_title": "1b. Zarządzanie postaciami",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <nazwa>**\nPrzełączaj się między zaimportowanymi postaciami.\n\n**`/portret` | `!portret` [url]**\nUstaw obraz dla dowolnej ze swoich postaci. Załącz plik LUB wklej adres URL. Pokazuje się jako miniatura w `/arkuszu`!\n\n**`/bind` | `/rozwiąż`**\n🎭 Powiąż postać z bieżącym kanałem. Bot będzie pamiętał, jakim bohaterem grasz w każdej grze!\n\n**`/nagrodaxp` | `!nagrodaxp` <kwota>**\nPrzyznaj XP swojej aktywnej postaci.\n\n**`/swn`, `/wwn`, `/cwn`**\nNatychmiast wygeneruj losową postać poziomu 1 dla tego systemu.\n\n**`/próg` | `/threshold_wizard`**\nRzuć atrybutami 3k6 w kolejności lub skorzystaj z interaktywnego kreatora!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nSkrócone przewodniki dla wybranego systemu (SWN, WWN lub CWN)!",
+        "rolling_title": "2. Toczenie i walka",
+        "rolling_body": "**`/atak` | `!atak` [broń]**\nRzuca atak 1k20. Automatycznie dodaje modyfikatory z Twojego arkusza!\n\n**`/gmroll` | `!gmroll`**\nUkryta rolka (prywatna/efemeryczna), więc tylko Ty widzisz wynik.\n\n**`/umiejętność` | `!umiejętność` [nazwa_umiejętności]**\nRzuca test umiejętności 2k6. (np. `!uwaga`, `!umiejętność zauważenia zręczności`).\n\n**`/rolka` | `!roll` <wyrażenie> [komentarz]**\nObsługuje skomplikowane rzuty: `1d20+1k4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Mnożniki:* Użyj `3x 1k20+5` lub `3#2k6`, aby powtórzyć rzut!\n↳ *Emotikony i kombinacje:* Użyj przecinków, aby rzucić wieloma rzeczami na raz! (np. `!roll ⚔️ 1k20+5, 💥 1k8+2`)\n\n**`/multiroll` | `!multiroll` <ilość> <wyrażenie>**\nRzuć to samo wyrażenie kilka razy, używając oddzielnych szczegółowych linii.",
+        "tools_title": "3. Odniesienia i narzędzia",
+        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nView or list your imported starships from Sectors Without Number JSON files.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\nBrowse items from the compendium! Works for SWN, WWN, and CWN.\n\n**`/rule` | `!rule` <keyword>**\nSearch the core rulebooks for a specific phrase or rule.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheat-sheets for combat, hacking, and space combat.",
+        "sandbox_title": "4. Generacja piaskownicy GM",
+        "sandbox_body": "**`/gen <planeta | npc | korporacja | obcy>`**\nNatychmiast wygeneruj piękną kartę referencyjną z losowymi cechami.\nNPC i Obcy mają wbudowane statystyki ataku, AC i HP, gotowe do użycia!",
+        "tracker_title": "5. Śledzenie GM i mapa taktyczna",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [ilość]`** - Dodaj wrogów (obsługa zbiorcza!).\n**`/tracker party`** - Automatycznie dodaje wszystkich aktywnych graczy kampanii.\n**`/tracker map`** - Otwiera **interaktywną mapę taktyczną** z listami motywów!\n**`/tracker kontroler`** - Otwórz **Natywny kontroler Discord** (przyciski!).\n**`/importmap <image>`** - Prześlij niestandardowe tło dla mapy.\n**`/tracker następny`** | **`/uszkodzenie trackera`** | **`/tracker wyczyszczony`**\n↳ *Wskazówka:* Użyj **`!sync`**, jeśli polecenia ukośnika wydają się nieaktualne!",
+        "faction_title": "6. Śledzenie frakcji",
+        "faction_body": "**`/tworzenie frakcji`, `/lista frakcji`, `/edycja frakcji`**\nZarządzaj globalnymi frakcjami swojej kampanii i ich statystykami.\n**`/atak frakcji`** - Rzuć atak przeciwnej frakcji.",
+        "storyteller_title": "7. Narzędzia narratora",
+        "storyteller_body": "**`/plot`** - Wygeneruj losowy wątek fabularny lub pomysł sytuacyjny, aby pobudzić kreatywność.\n**`/Oracle`** – Zadaj pytanie Tak/Nie Wyroczni 2k6 (pomocnikowi Solo/GM).\n**`/reakcja`** - Rzuć reakcją NPC 2k6 (Wrogi -> Pomocny).\n**`/morale <target>`** - Rzuć testem morale 2k6 na wynik docelowy.\n**`/loot`** - Znajdź losowy przedmiot/talizman w kieszeni NPC.",
+        "party_title": "8. Śledzenie imprez i statków",
+        "party_body": "**`/Informacje o drużynie`** - Zadłużenie statku, kredyty i punkty kadłuba.\n**`/statek` | `!ship`** - Wyświetl statystyki aktywnych statków kosmicznych.\n**`/party split <kwota>`** - Oblicz równy podział wypłat!",
+        "campaign_title": "9. Śledzenie kampanii",
+        "campaign_body": "**`/start kampanii`** | **`/dołączenie do kampanii`** | **`/informacje o kampanii`**\nPołącz graczy, aby automatycznie przystąpić do walki i śledzić ją.",
+        "voice_title": "🎙️ Sterowanie głosowe i głośnomówiące",
+        "voice_body": "**`/głos` | `!głos`**\nOtwiera **Portal Voice Remote**. Wypowiedz swoją wiadomość lub rzuć kośćmi, a zostaną one natychmiast wysłane do Discorda.\n\n**Integracja głosowa (internet)**\nNa mapie i w Narratorze poszukaj przełącznika **[Tryb głosowy]**. Dodaje widoczne wskazówki **[Powiedz: Kliknij...]** do każdego przycisku, dzięki czemu można je łatwo uruchomić za pomocą Windows Voice Access.",
+        "channel_role_title": "10. Zarządzanie kanałami",
+        "channel_role_body": "**`/konfiguracja kanału <rola> <emoji>`**\nNatychmiast utwórz wiadomość o dołączeniu z rolą reakcji.\n\n**`!rr [#kanał] @rola <emoji>`**\nSuper proste polecenie przedrostkowe dla jednej roli reakcji.\n\n**`!rola <emoji> <ID> ... [#kanał]`**\n**Konfiguracja zbiorcza!** Utwórz jedną wiadomość, która zapewni dostęp do wielu kategorii lub kanałów, przekazując ich identyfikatory! Przykład: `!rola 🚀 1111 💰 2222 #witaj`\n\n**`/kanał zestaw ról <rola>`**\nWyznacz rolę „GM” dla tego kanału, aby kontrolować moduły śledzące."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Nie masz uprawnień GM na tym kanale. (Wymaga administratora serwera, dyrektora generalnego kampanii lub wyznaczonej roli kanału)"
+    }
+}

@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stelle senza numero - Avvio rapido",
+            "step1_title": "Passaggio 1: creazione del personaggio",
+            "step1_desc": "Usa \"/swn\" per un personaggio casuale o \"/threshold_wizard\" per ottenere le statistiche.\nImporta da **[characterswithoutnumber.app](https://characterswithoutnumber.app)** o settori senza numero utilizzando `/importsheet`.",
+            "step2_title": "Passaggio 2: meccanica di base",
+            "step2_desc": "• **Controlli Abilità**: Tira `2d6 + Abilità + Attributo`. Alto è meglio.\n• **Combattimento**: Tira `1d20 + Bonus di Attacco + Attributo`. Incontra o batti AC.\n• **Tiri salvezza**: tira `1d20`. Uguale o superiore al tuo obiettivo di salvataggio.",
+            "step3_title": "Passaggio 3: comandi del bot",
+            "step3_desc": "• `/sheet`: visualizza le tue statistiche.\n• `/update`: sincronizzazione con l'URL di origine.\n• `/roll 2d6+1`: rullo di dadi generico."
+        },
+        "wwn": {
+            "title": "⚔️ Mondi senza numero - Avvio rapido",
+            "step1_title": "Passaggio 1: creazione del personaggio",
+            "step1_desc": "Utilizza `/wwn` per un carattere casuale o `/threshold_wizard` per le statistiche manuali.\nImporta fogli da Google o **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Passaggio 2: meccanica di base",
+            "step2_desc": "• **Abilità**: `2d6 + Abilità + Attributo`. L'obiettivo è solitamente 6-10.\n• **Combattimento**: `1d20 + AB + Attributo`. Il bersaglio è l'AC nemico.\n• **Shock**: le armi da mischia spesso infliggono danni anche se mancano!",
+            "step3_title": "Passaggio 3: comandi del bot",
+            "step3_desc": "• `/skill [nome]`: lancia un'abilità specifica.\n• `/update`: sincronizza le statistiche del tuo personaggio.\n• `/attack [arma]`: lancia la logica di attacco e danno."
+        },
+        "cwn": {
+            "title": "💾 Città senza numero - Avvio rapido",
+            "step1_title": "Passaggio 1: creazione del personaggio",
+            "step1_desc": "Utilizza `/cwn` per un carattere casuale o `/threshold_wizard`.\nSincronizza la tua attrezzatura da **[characterswithoutnumber.app](https://characterswithoutnumber.app)** utilizzando `/importjson`.",
+            "step2_title": "Passaggio 2: meccanica di base",
+            "step2_desc": "• **Prove**: \"2d6\" per le abilità, \"1d20\" per il combattimento. Base OSR standard.\n• **Hacking**: utilizza programmi specializzati e il tuo cyberdeck.\n• **Trauma**: fai attenzione ai tipi di danno specializzati!",
+            "step3_title": "Passaggio 3: comandi del bot",
+            "step3_desc": "• `/gen npc`: sapore cyberpunk veloce.\n• `/update`: sincronizza le statistiche dal builder online.\n• \"/tracker Damage\": infligge danni per nome."
+        },
+        "footer": "Suggerimento da professionista: tutti i comandi funzionano anche con il prefisso !! Digita /help per ulteriori informazioni."
+    },
+    "commands": {
+        "starthere_desc": "Guida rapida per SWN, WWN o CWN.",
+        "swnhelp_desc": "Guida rapida per Stars Without Number.",
+        "wwnhelp_desc": "Guida rapida per Mondi senza numero.",
+        "cwnhelp_desc": "Guida rapida per Città senza numero.",
+        "lang_set_success": "✅ Lingua impostata su **{lang}**.",
+        "lang_invalid": "⚠️ Lingua non valida! Scegli tra: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Senza aiuto del bot numerico",
+        "description": "Benvenuto! Questo bot ti aiuta a lanciare i dadi, controllare l'equipaggiamento e gestire la scheda del tuo personaggio.\n🌐 **Informazioni sul bot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatibile con:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Nuovo? Digita `/swnhelp`, `/wwnhelp` o `/cwnhelp` per una guida rapida!**\n**Cambia lingua:** `/lingua lang:[EN|FR|ES|DE|PT|SV]`\n**Tutti i comandi funzionano sia con `/` (barra) che con `!` (prefisso)!**",
+        "char_imports_title": "1a. Importazioni di personaggi",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nCollega il tuo foglio Google (SWN, WWN o CWN). Carica le statistiche e consente la sincronizzazione!\n\n**`/importjson` | `!importjson` <url>**\nImporta da un URL JSON non elaborato (il modo più veloce per sincronizzare *characterswithoutnumber.app*).\n\n**`/aggiorna` | `!aggiorna`**\nAggiorna istantaneamente le statistiche del tuo personaggio attivo dal suo URL di origine memorizzato.\n\n**`/link` | `!link` <url>**\nCollega il tuo personaggio a un URL persistente (JSON o Foglio Google) per una facile sincronizzazione.\n\n**Caricamento file JSON**\nBasta trascinare e rilasciare il file di esportazione `.json` nella chat. Il bot lo gestisce automaticamente!\n\n**`/foglio` | `!foglio` | `/sc` | `/sf`**\nVisualizza il tuo personaggio. **`/sc`** per la visualizzazione Combattimento, **`/sf`** per la visualizzazione completa.",
+        "char_mgmt_title": "1b. Gestione dei personaggi",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <nome>**\nScambia tra i tuoi personaggi importati.\n\n**`/ritratto` | `!ritratto` [url]**\nImposta un'immagine per uno qualsiasi dei tuoi personaggi. Allega un file O incolla un URL. Mostra come miniatura su `/sheet`!\n\n**`/bind` | `/separa`**\n🎭 Associa un personaggio al canale corrente. Il bot ricorderà con quale eroe stai giocando in ogni gioco!\n\n**`/premioxp` | `!awardxp` <importo>**\nAssegna XP al tuo personaggio attivo.\n\n**`/swn`, `/wwn`, `/cwn`**\nGenera istantaneamente un personaggio casuale di livello 1 per quel sistema.\n\n**`/soglia` | `/soglia_wizard`**\nLancia 3d6 attributi in ordine o usa la procedura guidata interattiva!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nGuide di avvio rapido per il sistema scelto (SWN, WWN o CWN)!",
+        "rolling_title": "2. Rotolamento e combattimento",
+        "rolling_body": "**`/attacco` | `!attacco` [arma]**\nLancia un attacco da 1d20. Aggiunge automaticamente i modificatori dal tuo foglio!\n\n**`/gmroll` | `!gmroll`**\nLancio nascosto (privato/effimero) in modo che solo tu possa vedere il risultato.\n\n**`/abilità` | `!abilità` [nome_abilità]**\nEsegue una prova di abilità di 2d6. (ad esempio, `!avviso`, `!abilità avviso destrezza`).\n\n**`/rotolo` | `!roll` <espressione> [commento]**\nSupporta tiri complicati: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Multipli:* Usa `3x 1d20+5` o `3#2d6` per ripetere un tiro!\n↳ *Emoji e combo:* Usa le virgole per lanciare più cose contemporaneamente! (es. `!tiro ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <importo> <espressione>**\nArrotola la stessa espressione più volte con linee dettagliate separate.",
+        "tools_title": "3. Riferimenti e strumenti",
+        "tools_body": "**`/nave` | `!nave` | `/lista spedizioni` | `!lista spedizioni`**\nVisualizza o elenca le tue astronavi importate dai file JSON Sectors Without Number.\n\n**`/arma`, `/armatura`, `/equipaggiamento`, `/foci`**\nSfoglia gli articoli dal compendio! Funziona con SWN, WWN e CWN.\n\n**`/regola` | `!regola` <parola chiave>**\nCerca nei regolamenti principali una frase o una regola specifica.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nTrucchi per combattimento, hacking e combattimento spaziale.",
+        "sandbox_title": "4. Generazione di sandbox GM",
+        "sandbox_body": "**`/gen <pianeta | npc | corporazione | alieno>`**\nGenera istantaneamente una bellissima carta di riferimento con tratti randomizzati.\nGli NPC e gli alieni sono dotati di statistiche di attacco, CA e HP integrate pronte per essere lanciate!",
+        "tracker_title": "5. Localizzatore GM e mappa tattica",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Aggiungi nemici (supportato in blocco!).\n**`/tracker party`** - Aggiunge automaticamente tutti i giocatori attivi della campagna.\n**`/tracker map`** - Apre la **Mappa tattica interattiva** con menu a discesa dei temi!\n**`/tracker controller`** - Apri il **Controller Discord nativo** (pulsanti!).\n**`/importmap <image>`** - Carica uno sfondo personalizzato per la mappa.\n**`/tracker successivo`** | **`/danno tracker`** | **`/cancella tracker`**\n↳ *Suggerimento da esperti:* Usa **`!sync`** se i comandi slash sembrano obsoleti!",
+        "faction_title": "6. Localizzatore di fazioni",
+        "faction_body": "**`/faction create`, `/faction list`, `/faction edit`**\nGestisci le fazioni globali della tua campagna e le loro statistiche.\n**`/faction attack`** - Lancia un attacco della fazione avversaria.",
+        "storyteller_title": "7. Strumenti del narratore",
+        "storyteller_body": "**`/plot`** - Genera una trama casuale o un'idea situazionale per stimolare la creatività.\n**`/oracle`** - Fai una domanda Sì/No all'Oracolo 2d6 (aiutante singolo/GM).\n**`/reaction`** - Lancia una reazione da 2d6 NPC (Ostile -> Utile).\n**`/morale <target>`** - Effettua una prova di morale di 2d6 contro un punteggio target.\n**`/loot`** - Trova un oggetto/ninnolo dal sapore casuale nella tasca di un NPC.",
+        "party_title": "8. Monitoraggio di feste e navi",
+        "party_body": "**`/party info`** - Debito della nave, crediti e punti scafo.\n**`/nave` | `!ship`** - Visualizza le statistiche dell'astronave attiva.\n**`/party split <importo>`** - Calcola una suddivisione uniforme del pagamento!",
+        "campaign_title": "9. Monitoraggio della campagna",
+        "campaign_body": "**`/inizio campagna`** | **`/campagna partecipa`** | **`/informazioni sulla campagna`**\nCollega i giocatori insieme per l'ingresso e il monitoraggio automatizzati del combattimento.",
+        "voice_title": "🎙️ Vivavoce e controllo vocale",
+        "voice_body": "**`/voce` | `!voce`**\nApre il **Portale remoto vocale**. Pronuncia il tuo messaggio o lancia i dadi e verranno inviati immediatamente a Discord.\n\n**Integrazione vocale (Web)**\nSulla Mappa e nel Narratore, cerca l'interruttore **[Modalità vocale]**. Aggiunge suggerimenti visibili **[Di': fai clic su...]** a ogni pulsante, facilitandone l'attivazione con Windows Voice Access.",
+        "channel_role_title": "10. Gestione dei canali",
+        "channel_role_body": "**`/impostazione canale <ruolo> <emoji>`**\nCrea istantaneamente un messaggio di partecipazione con un ruolo di reazione.\n\n**`!rr [#canale] @role <emoji>`**\nComando prefisso semplicissimo per un ruolo di reazione.\n\n**`!ruolo <emoji> <ID> ... [#canale]`**\n**Configurazione in blocco!** Crea un messaggio che garantisca l'accesso a più categorie o canali trasmettendo i loro ID! Esempio: `!ruolo 🚀 1111 💰 2222 #benvenuto`\n\n**`/set di ruoli del canale <ruolo>`**\nDesignare un ruolo come \"GM\" per questo canale per controllare i tracker."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Non disponi dei permessi GM in questo canale. (Richiede l'amministratore del server, il GM della campagna o il ruolo del canale designato)"
+    }
+}

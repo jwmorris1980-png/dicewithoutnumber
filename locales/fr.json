@@ -1,0 +1,62 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stars Without Number - Démarrage rapide",
+            "step1_title": "Étape 1 : Création de personnage",
+            "step1_desc": "Utilisez `/swn` pour un personnage aléatoire ou `/threshold_wizard` pour les stats.\nImportez depuis **[characterswithoutnumber.app](https://characterswithoutnumber.app)** via `/importsheet`.",
+            "step2_title": "Étape 2 : Mécaniques de base",
+            "step2_desc": "• **Tests de compétence** : Lancez `2d6 + Compétence + Attribut`. Plus c'est haut, mieux c'est.\n• **Combat** : Lancez `1d20 + Bonus d'attaque + Attribut`. Atteignez ou dépassez la CA.\n• **Sauvegardes** : Lancez `1d20`. Égal ou supérieur à votre cible de Sauvegarde.",
+            "step3_title": "Étape 3 : Commandes du bot",
+            "step3_desc": "• `/sheet` : Voir vos stats.\n• `/update` : Synchro avec l'URL source.\n• `/roll 2d6+1` : Lanceur de dés générique."
+        },
+        "wwn": {
+            "title": "⚔️ Worlds Without Number - Démarrage rapide",
+            "step1_title": "Étape 1 : Création de personnage",
+            "step1_desc": "Utilisez `/wwn` pour un personnage aléatoire.\nImportez des fiches depuis Google ou **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Étape 2 : Mécaniques de base",
+            "step2_desc": "• **Compétences** : `2d6 + Compétence + Attribut`. La cible est généralement 6-10.\n• **Combat** : `1d20 + BA + Attribut`. La cible est la CA ennemie.\n• **Choc** : Les armes de mêlée infligent souvent des dégâts même en cas d'échec !",
+            "step3_title": "Étape 3 : Commandes du bot",
+            "step3_desc": "• `/skill [nom]` : Lancer une compétence spécifique.\n• `/update` : Synchroniser les stats.\n• `/attack [arme]` : Logique d'attaque et de dégâts."
+        },
+        "cwn": {
+            "title": "💾 Cities Without Number - Démarrage rapide",
+            "step1_title": "Étape 1 : Création de personnage",
+            "step1_desc": "Utilisez `/cwn` pour un personnage aléatoire.\nSynchronisez via **[characterswithoutnumber.app](https://characterswithoutnumber.app)** avec `/importjson`.",
+            "step2_title": "Étape 2 : Mécaniques de base",
+            "step2_desc": "• **Tests** : `2d6` pour les compétences, `1d20` pour le combat. Base OSR standard.\n• **Hacking** : Utilisez des programmes spécialisés et votre cyberdeck.\n• **Traumatisme** : Attention aux types de dégâts spécialisés !",
+            "step3_title": "Étape 3 : Commandes du bot",
+            "step3_desc": "• `/gen npc` : Ambiance cyberpunk rapide.\n• `/update` : Synchro depuis le constructeur.\n• `/tracker damage` : Infliger des dégâts par nom."
+        },
+        "footer": "Astuce : Toutes les commandes fonctionnent aussi avec le préfixe ! Tapez /help pour en savoir plus."
+    },
+    "commands": {
+        "starthere_desc": "Guide de démarrage rapide pour SWN, WWN ou CWN.",
+        "swnhelp_desc": "Guide de démarrage rapide pour Stars Without Number.",
+        "wwnhelp_desc": "Guide de démarrage rapide pour Worlds Without Number.",
+        "cwnhelp_desc": "Guide de démarrage rapide pour Cities Without Number.",
+        "lang_set_success": "✅ Langue définie sur **{lang}**.",
+        "lang_invalid": "⚠️ Langue invalide ! Choisissez parmi : EN, FR, ES, DE, PT."
+    },
+    "help": {
+        "title": "🎲 Aide du Bot Without Number",
+        "description": "Bienvenue ! Ce bot vous aide à lancer des dés, vérifier votre équipement et gérer votre fiche de personnage.\n🌐 **Infos du Bot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatible avec :** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Nouveau ? Tapez `/swnhelp`, `/wwnhelp` ou `/cwnhelp` pour un guide rapide !**\n**Toutes les commandes fonctionnent avec `/` (Slash) et `!` (Préfixe) !**",
+        "char_imports_title": "1a. Imports de Personnage",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nLiez votre Google Sheet (SWN, WWN ou CWN). Cela charge les statistiques et active la synchro !\n\n**`/importjson` | `!importjson` <url>**\nImportez depuis une URL JSON brute (moyen le plus rapide de synchroniser *characterswithoutnumber.app*).\n\n**`/update` | `!update`**\nSynchronise instantanément les stats de votre personnage actif depuis son URL source.\n\n**`/link` | `!link` <url>**\nConnecte votre personnage à une URL persistante (JSON ou Google Sheet) pour la synchronisation.\n\n**Téléchargement de Fichier JSON**\nGlissez-déposez simplement votre fichier export `.json` dans le chat. Le bot s'en occupe automatiquement !\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nVoir votre personnage. **`/sc`** pour la vue Combat, **`/sf`** pour la vue Complète.",
+        "char_mgmt_title": "1b. Gestion de Personnage",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <nom>**\nBasculez entre vos personnages importés.\n\n**`/awardxp` | `!awardxp` <montant>**\nAttribuez de l'XP à votre personnage actif.\n\n**`/swn`, `/wwn`, `/cwn`**\nGénérez instantanément un personnage de niveau 1 pour ce système.\n\n**`/threshold` | `/threshold_wizard`**\nLancez les attributs 3d6 dans l'ordre, ou utilisez l'Assistant interactif !\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nGuides de démarrage rapide pour le système choisi !",
+        "rolling_title": "2. Lancers et Combat",
+        "rolling_body": "**`/attack` | `!attack` [arme]**\nLance une attaque 1d20. Ajoute les modificateurs automatiquement !\n\n**`/skill` | `!skill` [nom_compétence]**\nLance un test de compétence 2d6 (ex: `!notice`).\n\n**`/roll` | `!roll` <expression> [commentaire]**\nLancer des dés standards (ex: `!roll 1d20+2`). Supporte plusieurs expressions !\n\n**`/3d6dr` | `!3d6dr`** / **`/4d6dr` | `!4d6dr`**\nLancers spécialisés qui ignorent les dés les plus bas.",
+        "tools_title": "3. Références et Outils",
+        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nVoir ou lister vos vaisseaux importés.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\nParcourez les objets du compendium !\n\n**`/rule` | `!rule` <mot-clé>**\nRecherchez une règle spécifique dans les livres de base.",
+        "sandbox_title": "4. Génération Sandbox MJ",
+        "sandbox_body": "**`/gen <planet | npc | corp | alien>`**\nGénérez instantanément une fiche de référence avec des traits aléatoires.",
+        "tracker_title": "5. Suivi MJ et Carte Tactique",
+        "tracker_body": "**`/tracker add <nom> <pv> <ca>`** - Ajoute un ennemi.\n**`/tracker party`** - Ajoute tous les joueurs de la campagne.\n**`/tracker map`** - Ouvre la **Carte Tactique Interactive**.\n**`/tracker next`** | **`/tracker damage`** | **`/tracker clear`**",
+        "faction_title": "6. Suivi de Faction",
+        "faction_body": "**`/faction create`, `/faction list`, `/faction edit`**\nGérez les factions mondiales de votre campagne et leurs statistiques.",
+        "party_title": "7. Suivi du Groupe et du Vaisseau",
+        "party_body": "**`/party info`** - Dette du vaisseau, Crédits et Points de Coque.\n**`/party split <montant>`** - Calculez un partage équitable !",
+        "campaign_title": "8. Suivi de Campagne",
+        "campaign_body": "**`/campaign start`** | **`/campaign join`** | **`/campaign info`**\nLiez les joueurs ensemble pour l'entrée et le suivi automatisés du combat."
+    }
+}

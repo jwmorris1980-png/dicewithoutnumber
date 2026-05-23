@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Ngôi Sao Không Có Số - Bắt đầu nhanh",
+            "step1_title": "Bước 1: Tạo nhân vật",
+            "step1_desc": "Sử dụng `/swn` cho một ký tự ngẫu nhiên hoặc `/threshold_wizard` để cuộn số liệu thống kê.\nNhập từ **[characterswithoutnumber.app](https://characterswithoutnumber.app)** hoặc Các ngành không có số bằng cách sử dụng `/importsheet`.",
+            "step2_title": "Bước 2: Cơ học cốt lõi",
+            "step2_desc": "• **Kiểm tra kỹ năng**: Roll `2d6 + Kỹ năng + Thuộc tính`. Cao thì tốt hơn.\n• **Chiến đấu**: Cuộn `1d20 + Tiền thưởng tấn công + Thuộc tính`. Gặp hoặc đánh bại AC.\n• **Lưu**: Cuộn `1d20`. Bằng hoặc cao hơn mục tiêu Lưu của bạn.",
+            "step3_title": "Bước 3: Lệnh Bot",
+            "step3_desc": "• `/sheet`: Xem số liệu thống kê của bạn.\n• `/update`: Đồng bộ với URL nguồn.\n• `/roll 2d6+1`: Máy đổ xúc xắc thông thường."
+        },
+        "wwn": {
+            "title": "⚔️ Thế giới không số - Bắt đầu nhanh",
+            "step1_title": "Bước 1: Tạo nhân vật",
+            "step1_desc": "Sử dụng `/wwn` cho một ký tự ngẫu nhiên hoặc `/threshold_wizard` cho số liệu thống kê thủ công.\nNhập trang tính từ Google hoặc **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Bước 2: Cơ học cốt lõi",
+            "step2_desc": "• **Kỹ năng**: `2d6 + Kỹ năng + Thuộc tính`. Mục tiêu thường là 6-10.\n• **Chiến đấu**: `1d20 + AB + Thuộc tính`. Mục tiêu là Kẻ thù AC.\n• **Sốc**: Vũ khí cận chiến thường gây sát thương ngay cả khi bắn trượt!",
+            "step3_title": "Bước 3: Lệnh Bot",
+            "step3_desc": "• `/skill [name]`: Tung một kỹ năng cụ thể.\n• `/update`: Đồng bộ chỉ số nhân vật của bạn.\n• `/tấn công [vũ khí]`: Logic tấn công và sát thương."
+        },
+        "cwn": {
+            "title": "💾 Thành phố không có số - Bắt đầu nhanh",
+            "step1_title": "Bước 1: Tạo nhân vật",
+            "step1_desc": "Sử dụng `/cwn` cho một ký tự ngẫu nhiên hoặc `/threshold_wizard`.\nĐồng bộ hóa thiết bị của bạn từ **[characterswithoutnumber.app](https://characterswithoutnumber.app)** bằng cách sử dụng `/importjson`.",
+            "step2_title": "Bước 2: Cơ học cốt lõi",
+            "step2_desc": "• **Kiểm tra**: `2d6` cho kỹ năng, `1d20` cho chiến đấu. Cơ sở OSR tiêu chuẩn.\n• **Hacking**: Sử dụng các chương trình chuyên biệt và cyberdeck của bạn.\n• **Chấn thương**: Cẩn thận với các loại sát thương đặc biệt!",
+            "step3_title": "Bước 3: Lệnh Bot",
+            "step3_desc": "• `/gen npc`: Hương vị cyberpunk nhanh chóng.\n• `/update`: Đồng bộ số liệu thống kê từ trình tạo trực tuyến.\n• `/tracker Damage`: Gây sát thương theo tên."
+        },
+        "footer": "Mẹo chuyên nghiệp: Tất cả các lệnh cũng hoạt động với !prefix! Nhập /trợ giúp để biết thêm."
+    },
+    "commands": {
+        "starthere_desc": "Hướng dẫn bắt đầu nhanh cho SWN, WWN hoặc CWN.",
+        "swnhelp_desc": "Hướng dẫn bắt đầu nhanh về Ngôi sao không có số.",
+        "wwnhelp_desc": "Hướng dẫn bắt đầu nhanh về Thế giới không số.",
+        "cwnhelp_desc": "Hướng dẫn bắt đầu nhanh cho Thành phố không có số.",
+        "lang_set_success": "✅ Ngôn ngữ được đặt thành **{lang}**.",
+        "lang_invalid": "⚠️ Ngôn ngữ không hợp lệ! Chọn từ: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Không có sự trợ giúp của Bot số",
+        "description": "Chào mừng! Bot này giúp bạn tung xúc xắc, kiểm tra thiết bị và quản lý bảng ký tự của bạn.\n🌐 **Thông tin về Bot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Tương thích với:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Mới? Nhập `/swnhelp`, `/wwnhelp` hoặc `/cwnhelp` để xem hướng dẫn nhanh!**\n**Thay đổi ngôn ngữ:** `/ngôn ngữ lang:[EN|FR|ES|DE|PT|SV]`\n**Tất cả các lệnh đều hoạt động với cả `/` (Dấu gạch chéo) và `!` (Tiền tố)!**",
+        "char_imports_title": "1a. Nhập ký tự",
+        "char_imports_body": "**`/bảng nhập khẩu` | `!bảng nhập khẩu` <url>**\nLiên kết Trang tính Google của bạn (SWN, WWN hoặc CWN). Nó tải số liệu thống kê và cho phép đồng bộ hóa!\n\n**`/importjson` | `!importjson` <url>**\nNhập từ URL JSON thô (cách nhanh nhất để đồng bộ hóa *characterswithoutnumber.app*).\n\n**`/cập nhật` | `!cập nhật`**\nLàm mới ngay lập tức số liệu thống kê nhân vật đang hoạt động của bạn từ URL nguồn được lưu trữ.\n\n**`/liên kết` | `!liên kết` <url>**\nKết nối nhân vật của bạn với một URL cố định (JSON hoặc Google Sheet) để dễ dàng đồng bộ hóa.\n\n**Tải lên tệp JSON**\nChỉ cần kéo và thả tệp xuất `.json` của bạn vào cuộc trò chuyện. Bot sẽ tự động xử lý nó!\n\n**`/tờ` | `!tờ` | `/sc` | `/sf`**\nXem nhân vật của bạn. **`/sc`** cho chế độ xem Chiến đấu, **`/sf`** cho chế độ xem Toàn bộ.",
+        "char_mgmt_title": "1b. Quản lý nhân vật",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <tên>**\nHoán đổi giữa các ký tự đã nhập của bạn.\n\n**`/chân dung` | `!portrait` [url]**\nĐặt hình ảnh cho bất kỳ nhân vật nào của bạn. Đính kèm tệp HOẶC dán URL. Hiển thị dưới dạng hình thu nhỏ trên `/sheet`!\n\n**`/ràng buộc` | `/hủy liên kết`**\n🎭 Liên kết một nhân vật với kênh hiện tại. Bot sẽ nhớ bạn đang chơi anh hùng nào trong mỗi trò chơi!\n\n**`/giải thưởngxp` | `!awardxp` <số tiền>**\nTrao thưởng XP cho nhân vật tích cực của bạn.\n\n**`/swn`, `/wwn`, `/cwn`**\nTạo ngay một ký tự Cấp 1 ngẫu nhiên cho hệ thống đó.\n\n**`/ngưỡng` | `/threshold_wizard`**\nCuộn các thuộc tính 3d6 theo thứ tự hoặc sử dụng Trình hướng dẫn tương tác!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nHướng dẫn bắt đầu nhanh cho hệ thống bạn đã chọn (SWN, WWN hoặc CWN)!",
+        "rolling_title": "2. Lăn lộn và chiến đấu",
+        "rolling_body": "**`/tấn công` | `!tấn công` [vũ khí]**\nThực hiện đòn tấn công 1d20. Tự động thêm công cụ sửa đổi từ trang tính của bạn!\n\n**`/gmroll` | `!gmroll`**\nCuộn ẩn (riêng tư/phù du) để chỉ bạn mới thấy kết quả.\n\n**`/kỹ năng` | `!skill` [skill_name]**\nThực hiện kiểm tra kỹ năng 2d6. (ví dụ: `!thông báo`, `!sự khéo léo thông báo kỹ năng`).\n\n**`/cuộn` | `!roll` <biểu thức> [bình luận]**\nHỗ trợ các cuộn phức tạp: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Bội số:* Sử dụng `3x 1d20+5` hoặc `3#2d6` để lặp lại một lần lăn!\n↳ *Biểu tượng cảm xúc & Combo:* Sử dụng dấu phẩy để cuộn nhiều thứ cùng một lúc! (ví dụ: `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <số tiền> <biểu thức>**\nCuộn cùng một biểu thức nhiều lần với các đường chi tiết riêng biệt.",
+        "tools_title": "3. Tài liệu tham khảo & Công cụ",
+        "tools_body": "**`/tàu` | `!tàu` | `/shiplist` | `!danh sách tàu`**\nXem hoặc liệt kê các phi thuyền đã nhập của bạn từ các tệp JSON Khu vực không có số.\n\n**`/vũ khí`, `/áo giáp`, `/trang bị`, `/tiêu điểm`**\nDuyệt các mục từ bản tóm tắt! Hoạt động cho SWN, WWN và CWN.\n\n**`/quy tắc` | `!quy tắc` <từ khóa>**\nTìm kiếm các sách quy tắc cốt lõi để tìm một cụm từ hoặc quy tắc cụ thể.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nBảng cheat để chiến đấu, hack và chiến đấu ngoài không gian.",
+        "sandbox_title": "4. Thế hệ hộp cát GM",
+        "sandbox_body": "**`/gen <hành tinh | npc | tập đoàn | người ngoài hành tinh>`**\nTạo ngay một thẻ tham chiếu đẹp mắt với các đặc điểm ngẫu nhiên.\nNPC và Người ngoài hành tinh có các chỉ số Tấn công, AC và HP tích hợp sẵn sẵn sàng để tung ra!",
+        "tracker_title": "5. Bản đồ chiến thuật & theo dõi GM",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Thêm kẻ thù (Hỗ trợ số lượng lớn!).\n**`/nhóm theo dõi`** - Tự động thêm tất cả người chơi chiến dịch đang hoạt động.\n**`/bản đồ theo dõi`** - Mở **Bản đồ chiến thuật tương tác** với danh sách chủ đề thả xuống!\n**`/bộ điều khiển theo dõi`** - Mở **Bộ điều khiển bất hòa gốc** (Các nút!).\n**`/importmap <image>`** - Tải lên nền tùy chỉnh cho bản đồ.\n**`/tracker next`** | **`/thiệt hại theo dõi`** | **`/xóa trình theo dõi`**\n↳ *Mẹo chuyên nghiệp:* Sử dụng **`!sync`** nếu các lệnh gạch chéo có vẻ đã lỗi thời!",
+        "faction_title": "6. Theo dõi phe phái",
+        "faction_body": "**`/tạo phe`, `/danh sách phe`, `/chỉnh sửa phe`**\nQuản lý các phe phái toàn cầu trong chiến dịch của bạn và số liệu thống kê của họ.\n**`/phe tấn công`** - Thực hiện một cuộc tấn công của phe đối lập.",
+        "storyteller_title": "7. Công cụ kể chuyện",
+        "storyteller_body": "**`/plot`** - Tạo một cốt truyện ngẫu nhiên hoặc ý tưởng tình huống để khơi dậy sự sáng tạo.\n**`/oracle`** - Đặt câu hỏi Có/Không cho Oracle 2d6 (Người trợ giúp Solo/GM).\n**`/reaction`** - Tạo phản ứng NPC 2d6 (Thù địch -> Hữu ích).\n**`/tinh thần <target>`** - Thực hiện kiểm tra tinh thần 2d6 so với điểm mục tiêu.\n**`/loot`** - Tìm một vật phẩm/đồ trang sức có hương vị ngẫu nhiên trong túi của NPC.",
+        "party_title": "8. Theo dõi bữa tiệc và tàu",
+        "party_body": "**`/thông tin bên`** - Nợ gửi hàng, Tín dụng và Điểm thân tàu.\n**`/tàu` | `!ship`** - Xem số liệu thống kê về phi thuyền đang hoạt động.\n**`/chia đôi <amount>`** - Tính tỷ lệ chia đều!",
+        "campaign_title": "9. Theo dõi chiến dịch",
+        "campaign_body": "**`/bắt đầu chiến dịch`** | **`/tham gia chiến dịch`** | **`/thông tin chiến dịch`**\nLiên kết người chơi với nhau để vào và theo dõi trận chiến tự động.",
+        "voice_title": "🎙️ Rảnh tay & Điều khiển bằng giọng nói",
+        "voice_body": "**`/giọng nói` | `!giọng nói`**\nMở **Cổng điều khiển từ xa bằng giọng nói**. Nói tin nhắn hoặc tung xúc xắc của bạn và chúng sẽ được gửi ngay lập tức tới Discord.\n\n**Tích hợp giọng nói (Web)**\nTrên Bản đồ và Người kể chuyện, hãy tìm nút chuyển đổi **[Chế độ giọng nói]**. Nó thêm các gợi ý **[Say: Click ...]** hiển thị vào mọi nút, giúp chúng dễ dàng kích hoạt bằng Windows Voice Access.",
+        "channel_role_title": "10. Quản lý kênh",
+        "channel_role_body": "**`/thiết lập kênh <role> <emoji>`**\nTạo ngay tin nhắn tham gia với vai trò phản ứng.\n\n**`!rr [#channel] @role <emoji>`**\nLệnh tiền tố siêu đơn giản cho một vai trò phản ứng.\n\n**`!vai trò <emoji> <ID> ... [#channel]`**\n**Thiết lập hàng loạt!** Tạo một thông báo cấp quyền truy cập vào nhiều danh mục hoặc kênh bằng cách chuyển ID của họ! Ví dụ: `!role 🚀 1111 💰 2222 #welcome`\n\n**`/bộ vai trò kênh <role>`**\nChỉ định vai trò là 'GM' cho kênh này để kiểm soát trình theo dõi."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Bạn không có quyền GM trong kênh này. (Yêu cầu Quản trị viên máy chủ, GM chiến dịch hoặc Vai trò kênh được chỉ định)"
+    }
+}

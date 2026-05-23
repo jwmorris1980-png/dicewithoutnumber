@@ -1,0 +1,343 @@
+[
+    {
+        "name": "Mag Rifle",
+        "type": "Weapon",
+        "damage": "2d8",
+        "range": "300/600",
+        "magazine": "10",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "Fires magnetically propelled slugs at hypersonic speeds."
+    },
+    {
+        "name": "Mag Pistol",
+        "type": "Weapon",
+        "damage": "2d6+2",
+        "range": "100/300",
+        "magazine": "6",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "A heavy pistol variation of the mag rifle."
+    },
+    {
+        "name": "Laser Pistol",
+        "type": "Weapon",
+        "damage": "1d6",
+        "range": "100/300",
+        "magazine": "10",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "Standard personal sidearm. Recoilless and silent."
+    },
+    {
+        "name": "Laser Rifle",
+        "type": "Weapon",
+        "damage": "1d10",
+        "range": "300/600",
+        "magazine": "20",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "Standard military laser rifle. High capacity but lower damage than projectile weapons."
+    },
+    {
+        "name": "Combat Rifle",
+        "type": "Weapon",
+        "damage": "1d12",
+        "range": "100/300",
+        "magazine": "30",
+        "attribute": "Dex",
+        "tech_level": 3,
+        "description": "Typical TL3 assault rifle firing cased ammunition."
+    },
+    {
+        "name": "Combat Shotgun",
+        "type": "Weapon",
+        "damage": "3d4",
+        "range": "10/30",
+        "magazine": "12",
+        "attribute": "Dex",
+        "tech_level": 3,
+        "description": "Devastating at close range but severely limited at a distance."
+    },
+    {
+        "name": "Submachine Gun",
+        "type": "Weapon",
+        "damage": "1d8",
+        "range": "30/100",
+        "magazine": "30",
+        "attribute": "Dex",
+        "tech_level": 3,
+        "description": "Compact fully-automatic weapon."
+    },
+    {
+        "name": "Sniper Rifle",
+        "type": "Weapon",
+        "damage": "2d8",
+        "range": "1000/2000",
+        "magazine": "5",
+        "attribute": "Dex",
+        "tech_level": 3,
+        "description": "High-powered, long-range ballistic rifle."
+    },
+    {
+        "name": "Revolver",
+        "type": "Weapon",
+        "damage": "1d8",
+        "range": "30/100",
+        "magazine": "6",
+        "attribute": "Dex",
+        "tech_level": 3,
+        "description": "Old-fashioned but reliable hand cannon."
+    },
+    {
+        "name": "Semi-Auto Pistol",
+        "type": "Weapon",
+        "damage": "1d6+1",
+        "range": "30/100",
+        "magazine": "12",
+        "attribute": "Dex",
+        "tech_level": 3,
+        "description": "Standard modern handgun."
+    },
+    {
+        "name": "Plasma Projector",
+        "type": "Weapon",
+        "damage": "2d8",
+        "range": "50/100",
+        "magazine": "6",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "Fires bolts of superheated plasma that can melt through armor."
+    },
+    {
+        "name": "Thermal Pistol",
+        "type": "Weapon",
+        "damage": "2d6",
+        "range": "25/50",
+        "magazine": "5",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "Short ranged anti-armor pistol."
+    },
+    {
+        "name": "Spike Thrower",
+        "type": "Weapon",
+        "damage": "3d8",
+        "range": "20/40",
+        "magazine": "15",
+        "attribute": "Dex",
+        "tech_level": 4,
+        "description": "Fires a flurry of armor-piercing darts. Incredibly lethal."
+    },
+    {
+        "name": "Small Primitive Weapon",
+        "type": "Weapon",
+        "damage": "1d4",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str/Dex",
+        "tech_level": 1,
+        "description": "Knives, daggers, or clubs."
+    },
+    {
+        "name": "Medium Primitive Weapon",
+        "type": "Weapon",
+        "damage": "1d6",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str/Dex",
+        "tech_level": 1,
+        "description": "Swords, spears, maces."
+    },
+    {
+        "name": "Large Primitive Weapon",
+        "type": "Weapon",
+        "damage": "1d8",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str",
+        "tech_level": 1,
+        "description": "Two-handed swords, halberds, great axes."
+    },
+    {
+        "name": "Medium Advanced Weapon",
+        "type": "Weapon",
+        "damage": "1d8+1",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str/Dex",
+        "tech_level": 4,
+        "description": "Stun batons, power swords, monoblades."
+    },
+    {
+        "name": "Large Advanced Weapon",
+        "type": "Weapon",
+        "damage": "1d10+1",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str",
+        "tech_level": 4,
+        "description": "Chainswords, gravity hammers."
+    },
+    {
+        "name": "Monoblade",
+        "type": "Weapon",
+        "damage": "1d8+1",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str/Dex",
+        "tech_level": 4,
+        "description": "A close-combat weapon fashioned from advanced materials, keeping an edge only a molecule thick."
+    },
+    {
+        "name": "Unarmed Attack",
+        "type": "Weapon",
+        "damage": "1d2",
+        "range": "Melee",
+        "magazine": "N/A",
+        "attribute": "Str/Dex",
+        "tech_level": 0,
+        "description": "Punches and kicks."
+    },
+    {
+        "name": "Armored Undersuit",
+        "type": "Armor",
+        "ac": 13,
+        "encumbrance": 0,
+        "tech_level": 4,
+        "description": "A skin-tight bodysuit of shear-thickening smart materials. Worn under normal clothing without being obvious."
+    },
+    {
+        "name": "Combat Field Uniform",
+        "type": "Armor",
+        "ac": 16,
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "Standard military infantry armor. Rigid plates interwoven with ballistic mesh."
+    },
+    {
+        "name": "Assault Suit",
+        "type": "Armor",
+        "ac": 18,
+        "encumbrance": 2,
+        "tech_level": 4,
+        "description": "Heavy, powered armor that supports its own weight but feels bulky. Excellent physical protection."
+    },
+    {
+        "name": "Woven Body Armor",
+        "type": "Armor",
+        "ac": 15,
+        "encumbrance": 1,
+        "tech_level": 3,
+        "description": "Kevlar-equivalent modern body armor."
+    },
+    {
+        "name": "Powered Armor",
+        "type": "Armor",
+        "ac": 19,
+        "encumbrance": 2,
+        "tech_level": 4,
+        "description": "Expensive, fully powered combat suits."
+    },
+    {
+        "name": "Field Emitter",
+        "type": "Armor",
+        "ac": 15,
+        "encumbrance": 0,
+        "tech_level": 5,
+        "description": "A pretech forcefield generator that provides protection without any actual armor layers."
+    },
+    {
+        "name": "Leather Armor",
+        "type": "Armor",
+        "ac": 13,
+        "encumbrance": 1,
+        "tech_level": 1,
+        "description": "Hardened leather or thick hides."
+    },
+    {
+        "name": "Security Suit",
+        "type": "Armor",
+        "ac": 14,
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "Light, civilian-grade protective clothing offering some protection against small arms."
+    },
+    {
+        "name": "Lazarus Patch",
+        "type": "Gear",
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "If applied to a mortally wounded character within 6 rounds of them going down, they are revived with 1 HP."
+    },
+    {
+        "name": "Compad",
+        "type": "Gear",
+        "encumbrance": 0,
+        "tech_level": 4,
+        "description": "A standard computing pad and communication device. Basically a futuristic smartphone."
+    },
+    {
+        "name": "Metatool",
+        "type": "Gear",
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "A heavy wand containing various power tools, cutters, welders, and diagnostic probes."
+    },
+    {
+        "name": "Comm Server",
+        "type": "Gear",
+        "encumbrance": 3,
+        "tech_level": 4,
+        "description": "High-powered planetary comms and signal interception device."
+    },
+    {
+        "name": "Multicorder",
+        "type": "Gear",
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "A portable sensor suite for recording video, audio, and atmospheric data."
+    },
+    {
+        "name": "Vacc Suit",
+        "type": "Gear",
+        "encumbrance": 2,
+        "tech_level": 4,
+        "description": "Standard vacuum suit for zero-G operations. Provides 12 hours of air."
+    },
+    {
+        "name": "Glowbug",
+        "type": "Gear",
+        "encumbrance": 0,
+        "tech_level": 4,
+        "description": "A small stick-on light source that functions indefinitely."
+    },
+    {
+        "name": "Atmofilter",
+        "type": "Gear",
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "A respirator that filters out toxic gases and pathogens."
+    },
+    {
+        "name": "Dataslab",
+        "type": "Gear",
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "A ruggedized tablet computer used for serious data processing."
+    },
+    {
+        "name": "Survival Kit",
+        "type": "Gear",
+        "encumbrance": 1,
+        "tech_level": 4,
+        "description": "Contains basic water filters, thermal blankets, and rations for harsh environments."
+    },
+    {
+        "name": "Lift",
+        "type": "Gear",
+        "encumbrance": 0,
+        "tech_level": 4,
+        "description": "A powerful stimulant that instantly removes 1 System Strain and heals 1d8 HP."
+    }
+]

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="app-title">AI Storyteller | DICEwithoutNumber</title>
+    <style>
+        .tool-hint, .mic-hint { display: none !important; }
+        body.voice-mode .tool-hint, body.voice-mode .mic-hint { display: block !important; }
+    </style>
+    <script>
+        // --- CUSTOMIZATION ---
+        function getGuildId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('guild_id');
+        }
+
+        async function loadSettings() {
+            try {
+                const guildId = getGuildId();
+                const url = guildId ? `/api/settings?guild_id=${guildId}` : '/api/settings';
+                const res = await fetch(url);
+                const settings = await res.json();
+                
+                const personalName = localStorage.getItem('personal_app_name');
+                const activeName = personalName || settings.app_name || "DICEwithoutNumber";
+                
+                document.title = "AI Storyteller | " + activeName;
+                document.querySelectorAll('.dynamic-app-name').forEach(el => el.textContent = activeName);
+            } catch(e) { console.error("Failed to load settings", e); }
+        }
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5865f2;
+            --primary-light: #7289da;
+            --bg-deep: #121417;
+            --bg-card: #1e1f22;
+            --text-main: #dbdee1;
+            --text-muted: #8e9297;
+            --glass-bg: rgba(30, 31, 34, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        #app {
+            width: 100%; max-width: 900px;
+            height: 90vh;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+            display: flex; flex-direction: row;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #app::before {
+            content: ''; position: absolute; top: -100px; right: -100px;
+            width: 400px; height: 400px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(88, 101, 242, 0.15) 0%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .header {
+            padding: 30px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
+        }
+
+        .header h1 {
+            margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.8rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600;
+            color: #2ecc71; background: rgba(46, 204, 113, 0.1);
+            padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .voice-toggle-btn {
+            background: rgba(88, 101, 242, 0.1); color: var(--primary-light);
+            border: 1px solid var(--glass-border); padding: 6px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s;
+        }
+        .voice-toggle-btn.active { background: var(--primary); color: white; border: none; }
+
+        #chat-history {
+            flex: 1; overflow-y: auto; padding: 40px;
+            display: flex; flex-direction: column; gap: 24px;
+            scroll-behavior: smooth; z-index: 5;
+        }
+
+        .msg {
+            max-width: 85%; align-self: flex-start;
+            animation: fadeIn 0.4s ease;
+        }
+        .msg.user { align-self: flex-end; }
+
+        .msg-author {
+            display: block; font-size: 0.75rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 8px; color: var(--text-muted);
+        }
+        .user .msg-author { text-align: right; color: var(--primary-light); }
+
+        .msg-bubble {
+            padding: 16px 20px; border-radius: 20px;
+            line-height: 1.6; font-size: 1.05rem;
+            position: relative;
+            background: var(--bg-deep);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .user .msg-bubble {
+            background: var(--primary); color: white; border: none;
+            border-bottom-right-radius: 4px;
+        }
+        .ai .msg-bubble {
+            border-bottom-left-radius: 4px; border-left: 4px solid var(--primary);
+        }
+
+        .footer {
+            padding: 30px 40px; background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+
+        .input-group {
+            display: flex; gap: 15px; background: var(--bg-deep);
+            padding: 8px; border-radius: 16px; border: 1px solid var(--glass-border);
+            transition: all 0.3s;
+        }
+        .input-group:focus-within { border-color: var(--primary); box-shadow: 0 0 20px rgba(88, 101, 242, 0.2); }
+
+        #prompt-input {
+            flex: 1; background: transparent; border: none; color: white;
+            padding: 12px; font-size: 1rem; font-family: inherit; outline: none;
+        }
+
+        #send-btn {
+            background: var(--primary); color: white; border: none;
+            width: 50px; height: 50px; border-radius: 12px;
+            cursor: pointer; transition: 0.2s; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #send-btn:hover { background: var(--primary-light); transform: scale(1.05); }
+        #send-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        #mic-btn {
+            background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--glass-border);
+            width: 50px; height: 50px; border-radius: 12px;
+            cursor: pointer; transition: 0.2s; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #mic-btn.active {
+            background: rgba(237, 66, 69, 0.1); color: #ed4245; border-color: #ed4245;
+            animation: pulse-red 1.5s infinite;
+        }
+        #mic-btn:hover { background: rgba(255,255,255,0.1); }
+        
+        #mic-btn .hint {
+            position: absolute; bottom: -20px; font-size: 0.6rem; 
+            color: var(--primary-light); font-weight: 800; white-space: nowrap;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(237, 66, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(237, 66, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(237, 66, 69, 0); }
+        }
+
+        .typing-indicator {
+            font-size: 0.85rem; color: var(--text-muted); font-style: italic;
+            margin-top: 10px; display: none;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar */
+        #chat-history::-webkit-scrollbar { width: 6px; }
+        #chat-history::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+
+        /* GM Toolbox Sidebar */
+        .toolbox {
+            width: 280px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            gap: 20px;
+        }
+
+        .toolbox h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            margin: 0 0 10px 0;
+            color: var(--primary-light);
+        }
+
+        .tool-btn {
+            background: var(--bg-deep);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tool-btn:hover {
+            border-color: var(--primary);
+            background: rgba(88, 101, 242, 0.1);
+        }
+
+        .tool-btn i {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .tool-hint {
+            font-size: 0.65rem; color: var(--text-muted); font-weight: 700;
+            display: block; margin-top: 2px;
+        }
+
+        #tool-result {
+            margin-top: auto;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            border: 1px dashed var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-height: 80px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div class="main-chat">
+            <div class="header">
+                <h1>AI Storyteller</h1>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button id="btn-voice-toggle" class="voice-toggle-btn" aria-label="Toggle Voice Accessibility Hints">
+                    <i class="fas fa-comment-dots"></i> Voice Integration
+                </button>
+                <div class="status-badge" id="ai-status">
+                    <i class="fas fa-circle"></i> Local AI Active
+                </div>
+                <div id="google_translate_element"></div>
+            </div>
+            <script type="text/javascript">
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
+            }
+            </script>
+            <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+            <div id="chat-history">
+                <div class="msg ai">
+                    <span class="msg-author">Narrator</span>
+                    <div class="msg-bubble">I am your automated narrator, running locally and privately on your server. How can I help with your campaign today?</div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="input-group">
+                    <input type="text" id="prompt-input" placeholder="Enter a scene, a name, or a plot twist..." autofocus>
+                    <button id="mic-btn" aria-label="Microphone Toggle">
+                        <i class="fas fa-microphone"></i>
+                        <span class="mic-hint" style="position: absolute; bottom: -20px; font-size: 0.6rem; color: var(--primary-light); font-weight: 800; white-space: nowrap;">[Say: Click Microphone]</span>
+                    </button>
+                    <button id="send-btn" title="Send message"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <div class="typing-indicator" id="typing">The AI is weaving your story...</div>
+            </div>
+        </div>
+
+        <div class="toolbox">
+            <h2>GM Toolbox</h2>
+            <button class="tool-btn" id="btn-plot" onclick="useTool('plot')" aria-label="Generate Plot Hook">
+                <i class="fas fa-lightbulb"></i> Plot Hook
+            </button>
+            <span class="tool-hint">[Say: Click Plot Hook]</span>
+
+            <button class="tool-btn" id="btn-reaction" onclick="useTool('reaction')" aria-label="Roll Reaction">
+                <i class="fas fa-face-smile"></i> Reaction
+            </button>
+            <span class="tool-hint">[Say: Click Reaction]</span>
+
+            <button class="tool-btn" id="btn-morale" onclick="useTool('morale')" aria-label="Roll Morale">
+                <i class="fas fa-heart-pulse"></i> Morale
+            </button>
+            <span class="tool-hint">[Say: Click Morale]</span>
+
+            <button class="tool-btn" id="btn-loot" onclick="useTool('loot')" aria-label="Roll Loot">
+                <i class="fas fa-box-open"></i> Loot
+            </button>
+            <span class="tool-hint">[Say: Click Loot]</span>
+
+            <button class="tool-btn" id="btn-weather" onclick="useTool('weather')" aria-label="Roll Weather">
+                <i class="fas fa-cloud-sun"></i> Weather
+            </button>
+            <span class="tool-hint">[Say: Click Weather]</span>
+
+            <button class="tool-btn" id="btn-oracle" onclick="useTool('oracle')" aria-label="Check Oracle">
+                <i class="fas fa-crystal-ball"></i> Oracle
+            </button>
+            <span class="tool-hint">[Say: Click Oracle]</span>
+            <button class="tool-btn" id="btn-encounter" onclick="useTool('encounter')" aria-label="Check Encounter">
+                <i class="fas fa-exclamation-triangle"></i> Encounter
+            </button>
+            <span class="tool-hint">[Say: Click Encounter]</span>
+
+            <button class="tool-btn" id="btn-hazard" onclick="useTool('hazard')" aria-label="Check Hazard">
+                <i class="fas fa-biohazard"></i> Hazard
+            </button>
+            <span class="tool-hint">[Say: Click Hazard]</span>
+
+            <div id="tool-result">
+                Click a tool above to generate an immediate result for your game session. 
+            </div>
+            
+            <a href="/" style="color: var(--text-muted); text-decoration: none; font-size: 0.8rem; text-align: center; margin-top: 10px;">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const chatHistory = document.getElementById('chat-history');
+        const promptInput = document.getElementById('prompt-input');
+        const sendBtn = document.getElementById('send-btn');
+        const typing = document.getElementById('typing');
+
+        // Note: Talking to standalone AI Service on port 5001
+        const AI_API = '//' + window.location.hostname + ':5001/api/ai/storytell';
+
+        async function sendPrompt() {
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+
+            addMessage('user', prompt);
+            promptInput.value = '';
+            
+            sendBtn.disabled = true;
+            typing.style.display = 'block';
+
+            try {
+                const response = await fetch(AI_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                
+                const data = await response.json();
+                if (data.response) {
+                    addMessage('ai', data.response);
+                } else {
+                    addMessage('ai', "I encountered an error while dreaming up your story: " + (data.error || "Unknown error"));
+                }
+            } catch (err) {
+                addMessage('ai', "I cannot reach the AI service. Please ensure the backend is running.");
+            } finally {
+                sendBtn.disabled = false;
+                typing.style.display = 'none';
+            }
+        }
+
+        // Improved Voice Logic for Storyteller
+        function processVoiceTranscript(transcript) {
+            let cleanText = transcript.toLowerCase()
+                .replace(/to d/g, '2d').replace(/too d/g, '2d')
+                .replace(/for d/g, '4d').replace(/four d/g, '4d')
+                .replace(/three d/g, '3d').replace(/ten d/g, '10d')
+                .replace(/roll /g, '').trim();
+            
+            promptInput.value = cleanText;
+            
+            // Check for direct tool triggers
+            if (cleanText.includes("reaction")) useTool('reaction');
+            else if (cleanText.includes("morale")) useTool('morale');
+            else if (cleanText.includes("loot")) useTool('loot');
+            else if (cleanText.includes("plot")) useTool('plot');
+            else if (cleanText.includes("weather")) useTool('weather');
+            else if (cleanText.includes("oracle")) useTool('oracle');
+            else if (cleanText.includes("encounter")) useTool('encounter');
+            else if (cleanText.includes("hazard")) useTool('hazard');
+            else {
+                sendPrompt(); // Auto-send story prompt
+            }
+        }
+
+        function addMessage(type, text) {
+            const msg = document.createElement('div');
+            msg.className = `msg ${type}`;
+            msg.innerHTML = `
+                <span class="msg-author">${type === 'user' ? 'You' : 'Narrator'}</span>
+                <div class="msg-bubble">${text}</div>
+            `;
+            chatHistory.appendChild(msg);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', sendPrompt);
+        promptInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendPrompt();
+        });
+
+        // --- Voice Logic (Web Speech API) ---
+        const micBtn = document.getElementById('mic-btn');
+        let isListening = false;
+        let recognition = null;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isListening = true;
+                micBtn.classList.add('active');
+                promptInput.placeholder = "Listening...";
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                micBtn.classList.remove('active');
+                promptInput.placeholder = "Narrate your story or type a prompt...";
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                processVoiceTranscript(transcript);
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Recognition Error:", event.error);
+                micBtn.classList.remove('active');
+            };
+        } else {
+            micBtn.style.display = 'none'; // Not supported
+        }
+
+        micBtn.addEventListener('click', () => {
+            if (isListening) recognition.stop();
+            else recognition.start();
+        });
+
+        // Voice Toggle Logic
+        const voiceToggle = document.getElementById('btn-voice-toggle');
+        voiceToggle.onclick = () => {
+            document.body.classList.toggle('voice-mode');
+            voiceToggle.classList.toggle('active');
+            localStorage.setItem('voice_hints_enabled', document.body.classList.contains('voice-mode'));
+        };
+
+        // restore preference
+        if (localStorage.getItem('voice_hints_enabled') === 'true') {
+            document.body.classList.add('voice-mode');
+            voiceToggle.classList.add('active');
+        }
+        
+        // Check health of AI service
+        async function checkHealth() {
+             const statusBadge = document.getElementById('ai-status');
+             try {
+                const res = await fetch(AI_API.replace('storytell', 'health'), { timeout: 2000 });
+                // We'll just assume it's okay if it responds or if the preflight OPTIONS works
+             } catch(e) {}
+        }
+
+        // --- GM Tools Logic ---
+        const TOOL_DATA = {
+            plot: [
+                "A sudden mechanical failure threatens the immediate environment.",
+                "An unexpected ally (or old acquaintance) appears with vital information.",
+                "A secret or betrayal is accidentally revealed through a slipped data pad.",
+                "Local authorities or a rival group arrives at the worst possible moment.",
+                "A mysterious signal is received that only one PC can understand.",
+                "The environment becomes hazardous (gas leak, radiation spike).",
+                "A powerful entity offers a 'deal you can't refuse'."
+            ],
+            loot: [
+                "A dented locket with a picture of a dead world.",
+                "A pouch of crystalline dust that glows softly.",
+                "A data-chip containing encrypted recordings of illegal opera.",
+                "A lucky coin from a dead empire.",
+                "A hand-drawn map with one building circled in red.",
+                "A miniature holographic projector."
+            ],
+            oracle: [
+                "NO, AND... (Worst outcome)",
+                "NO",
+                "NO, BUT... (Small consolation)",
+                "YES, BUT... (Small complication)",
+                "YES",
+                "YES, AND... (Best outcome)"
+            ],
+            reaction: [
+                "Hostile - Actively antagonistic.",
+                "Unfriendly - Wary and cold.",
+                "Neutral - Indifferent or professional.",
+                "Friendly - Open and helpful.",
+                "Helpful - Actively supportive."
+            ]
+        };
+
+        function useTool(type) {
+            const resultBox = document.getElementById('tool-result');
+            let result = "";
+
+            if (type === 'plot') {
+                result = "<strong>Plot Hook:</strong> " + TOOL_DATA.plot[Math.floor(Math.random() * TOOL_DATA.plot.length)];
+            } else if (type === 'loot') {
+                result = "<strong>Loot:</strong> " + TOOL_DATA.loot[Math.floor(Math.random() * TOOL_DATA.loot.length)];
+            } else if (type === 'oracle') {
+                const roll = Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 2;
+                let idx = 0;
+                if (roll <= 3) idx = 0;
+                else if (roll <= 5) idx = 1;
+                else if (roll <= 6) idx = 2;
+                else if (roll <= 8) idx = 3;
+                else if (roll <= 10) idx = 4;
+                else idx = 5;
+                result = `<strong>Oracle (${roll}):</strong> ` + TOOL_DATA.oracle[idx];
+            } else if (type === 'reaction') {
+                const roll = Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 2;
+                let idx = 0;
+                if (roll <= 2) idx = 0;
+                else if (roll <= 5) idx = 1;
+                else if (roll <= 8) idx = 2;
+                else if (roll <= 11) idx = 3;
+                else idx = 4;
+                result = `<strong>Reaction (${roll}):</strong> ` + TOOL_DATA.reaction[idx];
+            } else if (type === 'morale') {
+                const roll = Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 2;
+                result = `<strong>Morale Roll:</strong> ${roll}<br><span style='font-size: 0.75rem'>(Compare vs NPC Morale score. High is failure.)</span>`;
+            } else if (type === 'weather') {
+                const roll = Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 2;
+                const weatherTable = {
+                    2: "Severe Storm / Natural Disaster", 3: "Heavy Precipitation / Sandstorm", 
+                    4: "Light Precipitation / Fog", 5: "Overcast / Cloudy", 6: "Overcast / Cloudy", 
+                    7: "Clear / Perfect Conditions", 8: "Clear / Perfect Conditions", 
+                    9: "Extremely Hot / Humidity spike", 10: "High Winds / Minor dust", 
+                    11: "Unnatural Psychic Phenomenon", 12: "Perfect / Beautiful"
+                };
+                result = `<strong>Weather (${roll}):</strong> ` + (weatherTable[roll] || "Clear");
+            } else if (type === 'encounter') {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                result = roll === 1 ? "⚠️ <strong>ENCOUNTER!</strong>" : "✅ <strong>All Clear</strong> (Roll: " + roll + ")";
+            } else if (type === 'hazard') {
+                const hazards = [
+                    "Radiation Spike (1d6 DMG)", "Structural Instability", "Toxic Leak (-2 rolls)", 
+                    "Gravity Flux", "Sensor Deadzone", "Electrical Surge", "Psychic Echo", "Local Fauna Attacks"
+                ];
+                result = "<strong>Hazard:</strong> " + hazards[Math.floor(Math.random() * hazards.length)];
+            }
+
+            resultBox.innerHTML = result;
+            resultBox.style.color = "white";
+            resultBox.style.borderColor = "var(--primary)";
+        }
+    </script>
+</body>
+</html>

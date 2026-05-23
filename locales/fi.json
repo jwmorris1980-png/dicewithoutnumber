@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Tähdet ilman numeroa - Pikaopas",
+            "step1_title": "Vaihe 1: Hahmon luominen",
+            "step1_desc": "Käytä `/swn` satunnaiselle merkille tai `/threshold_wizard`, jos haluat rullata tilastoja.\nTuo osoitteesta **[characterswithoutnumber.app](https://characterswithoutnumber.app)** tai sektoreista ilman numeroa käyttämällä `/importsheet'.",
+            "step2_title": "Vaihe 2: Ydinmekaniikka",
+            "step2_desc": "• **Taitotarkastukset**: Roll \"2d6 + taito + ominaisuus\". Korkea on parempi.\n• **Taistelu**: heitto `1d20 + hyökkäysbonus + ominaisuus`. Tapaa tai voita AC.\n• **Tallenna**: Roll `1d20`. Sama tai suurempi kuin tallennustavoitteesi.",
+            "step3_title": "Vaihe 3: Bottikomennot",
+            "step3_desc": "• `/sheet`: Tarkastele tilastojasi.\n• `/päivitys`: Synkronoi lähde-URL-osoitteen kanssa.\n• `/roll 2d6+1`: yleinen nopparulla."
+        },
+        "wwn": {
+            "title": "⚔️ Maailmat ilman numeroita - Pika-aloitus",
+            "step1_title": "Vaihe 1: Hahmon luominen",
+            "step1_desc": "Käytä `/wwn` satunnaisille merkeille tai `/threshold_wizard` manuaalisille tilastoille.\nTuo taulukot Googlesta tai **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Vaihe 2: Ydinmekaniikka",
+            "step2_desc": "• **Taidot**: \"2d6 + taito + ominaisuus\". Tavoite on yleensä 6-10.\n• **Taistelu**: \"1d20 + AB + ominaisuus\". Kohteena on Enemy AC.\n• **Shock**: Lähitaisteluaseet aiheuttavat usein vahinkoa jopa poissaolon yhteydessä!",
+            "step3_title": "Vaihe 3: Bottikomennot",
+            "step3_desc": "• `/taito [nimi]`: Rullaa tietty taito.\n• `/päivitys`: Synkronoi hahmotilastot.\n• `/hyökkäys [ase]: Hyökkäys- ja vahinkologiikka."
+        },
+        "cwn": {
+            "title": "💾 Kaupungit ilman numeroita - Pikaopas",
+            "step1_title": "Vaihe 1: Hahmon luominen",
+            "step1_desc": "Käytä `/cwn` satunnaiselle merkille tai `/threshold_wizard`.\nSynkronoi varusteesi osoitteesta **[characterswithoutnumber.app](https://characterswithoutnumber.app)** käyttämällä `/importjson'.",
+            "step2_title": "Vaihe 2: Ydinmekaniikka",
+            "step2_desc": "• **Shekit**: `2d6` taidoista, `1d20` taisteluista. Tavallinen OSR-pohja.\n• **Hakkerointi**: Käytä erikoisohjelmia ja kyberdekkiäsi.\n• **Trauma**: Varo erikoisvauriotyyppejä!",
+            "step3_title": "Vaihe 3: Bottikomennot",
+            "step3_desc": "• `/gen npc`: Nopea kyberpunk-maku.\n• `/päivitys`: synkronoi tilastot online-rakennustyökalusta.\n• `/tracker vahinko`: Tee vahinko nimen mukaan."
+        },
+        "footer": "Pro-vinkki: Kaikki komennot toimivat myös !etuliitteellä! Kirjoita /help saadaksesi lisää."
+    },
+    "commands": {
+        "starthere_desc": "Pika-aloitusopas SWN:lle, WWN:lle tai CWN:lle.",
+        "swnhelp_desc": "Pika-aloitusopas Tähteä ilman numeroa.",
+        "wwnhelp_desc": "Pika-aloitusopas maailmoihin ilman numeroita.",
+        "cwnhelp_desc": "Pika-aloitusopas kaupungeille ilman numeroa.",
+        "lang_set_success": "✅ Kieleksi on asetettu **{lang}**.",
+        "lang_invalid": "⚠️ Virheellinen kieli! Valitse seuraavista: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Ilman numerobotin apua",
+        "description": "Tervetuloa! Tämä botti auttaa sinua heittämään noppaa, tarkistamaan varusteet ja hallitsemaan hahmosivuasi.\n🌐 **Bottitiedot:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Yhteensopiva:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Uutta? Kirjoita `/swnhelp`, `/wwnhelp` tai `/cwnhelp` saadaksesi pikaopas!**\n**Vaihda kieli:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**Kaikki komennot toimivat sekä `/` (vinoviiva) että `!` (etuliite) kanssa!**",
+        "char_imports_title": "1a. Merkkien tuonti",
+        "char_imports_body": "**`/importsheet` | `!importsheet` <url>**\nLinkitä Google-taulukkosi (SWN, WWN tai CWN). Se lataa tilastot ja mahdollistaa synkronoinnin!\n\n**`/importjson` | `!importjson` <url>**\nTuo raaka JSON-URL-osoitteesta (nopein tapa synkronoida *characterswithoutnumber.app*).\n\n**`/päivitys` | `!päivitys`**\nPäivitä aktiiviset merkkitilastot välittömästi sen tallennetusta lähde-URL-osoitteesta.\n\n**`/linkki` | `!link` <url>**\nYhdistä hahmosi pysyvään URL-osoitteeseen (JSON tai Google Sheet) synkronoinnin helpottamiseksi.\n\n**JSON-tiedoston lataus**\nVedä ja pudota .json-vientitiedostosi keskusteluun. Botti hoitaa sen automaattisesti!\n\n**\"/arkki\" | `!arkki` | \"/sc\" | `/sf`**\nKatso hahmosi. **`/sc`** taistelunäkymälle, **`/sf`** koko näkymälle.",
+        "char_mgmt_title": "1b. Hahmonhallinta",
+        "char_mgmt_body": "**`/kytkin\" | `!switchchar` <nimi>**\nVaihda tuotujen merkkien välillä.\n\n**\"/muotokuva\" | `!muotokuva` [url]**\nAseta kuva mille tahansa hahmollesi. Liitä tiedosto TAI liitä URL-osoite. Näkyy pikkukuvana `/arkissa`!\n\n**\"/sido\" | `/vapauta sidos`**\n🎭 Yhdistä hahmo nykyiseen kanavaan. Botti muistaa, mitä sankaria pelaat kussakin pelissä!\n\n**`/awardxp` | `!awardxp` <summa>**\nMyönnä XP aktiiviselle hahmollesi.\n\n**`/swn`, `/wwn`, `/cwn`**\nLuo välittömästi satunnainen tason 1 merkki kyseiselle järjestelmälle.\n\n**\"/kynnys\" | `/threshold_wizard`**\nRullaa 3d6-attribuutteja järjestyksessä tai käytä interaktiivista ohjattua toimintoa!\n\n**`/swnhelp` | `/wwnhelp' | `/cwnhelp`**\nPika-aloitusoppaat valitsemallesi järjestelmälle (SWN, WWN tai CWN)!",
+        "rolling_title": "2. Rolling & Combat",
+        "rolling_body": "**`/hyökkäys` | `!hyökkäys` [ase]**\nTekee 1d20-hyökkäyksen. Lisää muokkaajia automaattisesti taulukosta!\n\n**`/gmroll` | `!gmroll`**\nPiilotettu rulla (yksityinen/lyhytaikainen), joten vain sinä näet tuloksen.\n\n**\"/taito\" | `!taito` [taidon_nimi]**\nTekee 2d6 taitotestin. (esim. `!huomautus`, `!taito huomaa kätevyyttä`).\n\n**`/rulla` | `!rulla` <lauseke> [kommentti]**\nTukee monimutkaisia rullia: \"1d20+1d4+5\", \"2d6-1d4\", \"4d6kh3\"!\n↳ *Multiples:* Käytä 3x 1d20+5 tai 3#2d6 toistaaksesi heiton!\n↳ *Hemojit ja yhdistelmät:* Heitä useita asioita kerralla pilkuilla! (esim. `!rulla ⚔️ 1d20+5, 💥 1d8+2`)\n\n**\"/monirulla\" | `!multiroll` <summa> <lauseke>**\nRullaa samaa lauseketta useita kertoja erillisillä yksityiskohtaisilla riveillä.",
+        "tools_title": "3. Viite ja työkalut",
+        "tools_body": "**\"/laiva\" | `!laiva` | \"/laivaluettelo\" | `!laivalista`**\nTarkastele tai luettele tuodut tähtialukset Sectors Without Number JSON-tiedostoista.\n\n**`/ase`, `/panssari`, `/varusteet`, `/foci`**\nSelaa kohteita kokoelmasta! Toimii SWN:lle, WWN:lle ja CWN:lle.\n\n**\"/sääntö\" | `!sääntö` <avainsana>**\nHae tiettyä lausetta tai sääntöä perussääntökirjoista.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nHuijausarkkeja taisteluun, hakkerointiin ja avaruustaisteluihin.",
+        "sandbox_title": "4. GM Sandbox Generation",
+        "sandbox_body": "**`/gen <planeetta | npc | yhtiö | alien>`**\nLuo välittömästi kaunis viitekortti satunnaistetuilla piirteillä.\nNPC:t ja Alienit sisältävät sisäänrakennetut Attack-, AC- ja HP-tilastot, jotka ovat valmiina rullaamaan!",
+        "tracker_title": "5. GM Tracker & Tactical Map",
+        "tracker_body": "**`/tracker add <nimi> <hp> <ac> [määrä]`** - Lisää vihollisia (joukkotuki!).\n**`/tracker party`** - Lisää automaattisesti kaikki aktiiviset kampanjan pelaajat.\n**`/tracker-kartta`** - Avaa **Interaktiivisen taktisen kartan** teemavalikoilla!\n**`/tracker controller`** - Avaa **Native Discord Controller** (painikkeet!).\n**`/importmap <image>`** - Lataa mukautettu tausta kartalle.\n**`/tracker next`** | **`/tracker-vauriot`** | **`/tracker clear`**\n↳ *Pro-tip:* Käytä **`!sync`**, jos vinoviivakomennot näyttävät vanhentuneilta!",
+        "faction_title": "6. Faction Tracker",
+        "faction_body": "**`/fraktioiden luonti`, `/fraktioluettelo`, `/fraktioiden muokkaus`**\nHallinnoi kampanjasi maailmanlaajuisia ryhmiä ja niiden tilastoja.\n**`/fraktiohyökkäys`** - Tee vastustavan ryhmittymän hyökkäys.",
+        "storyteller_title": "7. Tarinankertojan työkalut",
+        "storyteller_body": "**`/juoni`** - Luo satunnainen juonikoukku tai tilanneidea luovuuden herättämiseksi.\n**`/oracle`** - Kysy kyllä/ei-kysymys 2d6 Oraclelle (yksi-/GM-apulainen).\n**`/reaktio`** - Rullaa 2d6 NPC-reaktio (Hostile -> Helpful).\n**`/morale <target>`** - Heitä 2d6 moraalitesti tavoitepisteitä vastaan.\n**`/loot`** - Löydä satunnainen makutuote/koriste NPC:n taskusta.",
+        "party_title": "8. Juhlien ja laivojen seuranta",
+        "party_body": "**`/party info`** - lähetysvelka, krediitit ja runkopisteet.\n**\"/laiva\" | `!ship`** - Näytä aktiiviset tähtialustilastot.\n**`/party split <amount>`** - Laske tasainen voittojako!",
+        "campaign_title": "9. Kampanjan seuranta",
+        "campaign_body": "**`/kampanjan aloitus`** | **`/kampanjaan liittyminen`** | **`/kampanjan tiedot`**\nYhdistä pelaajat yhteen automaattista taisteluun pääsyä ja seurantaa varten.",
+        "voice_title": "🎙️ Hands-free ja ääniohjaus",
+        "voice_body": "**\"/ääni\" | `!ääni`**\nAvaa **Voice Remote Portalin**. Puhu viestisi tai heittää noppaa, niin ne lähetetään välittömästi Discordiin.\n\n**Puheintegrointi (Web)**\nEtsi Map and Storyteller -sovelluksesta **[Voice Mode]** -kytkin. Se lisää näkyviä **[Sano: Napsauta ...]** vihjeitä jokaiseen painikkeeseen, jolloin ne on helppo käynnistää Windows Voice Accessin avulla.",
+        "channel_role_title": "10. Kanavien hallinta",
+        "channel_role_body": "**`/kanavan asetukset <rooli> <emoji>`**\nLuo välittömästi liittymisviesti, jossa on reagointirooli.\n\n**`!rr [#kanava] @role <emoji>`**\nErittäin yksinkertainen etuliitekomento yhdelle reaktioroolille.\n\n**`!role <emoji> <ID> ... [#channel]`**\n**Joukkoasennus!** Luo yksi viesti, joka antaa pääsyn useisiin luokkiin tai kanaviin välittämällä niiden tunnukset! Esimerkki: `!rooli 🚀 1111 💰 2222 #tervetuloa`\n\n**`/kanavan rooli asetettu <rooli>`**\nMääritä tälle kanavalle rooli \"GM\" seurataksesi seurantaa."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Sinulla ei ole GM-oikeuksia tälle kanavalle. (Edellyttää palvelimen järjestelmänvalvojan, kampanjan GM:n tai nimetyn kanavaroolin)"
+    }
+}

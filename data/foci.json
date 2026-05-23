@@ -1,0 +1,1336 @@
+[
+    {
+        "name": "Alert",
+        "level": 1,
+        "description": "You are keenly aware of your surroundings and virtually impossible to take unaware. You have an instinctive alacrity of response that helps you act before less wary persons can think to move. Level 1: Gain Notice as a bonus skill. You cannot be surprised, nor can others use the Execution Attack option on you. When you roll initiative, roll twice and take the best result. Level 2: You always act first in a combat round unless someone else involved is also this Alert.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Armsman",
+        "level": 1,
+        "description": "You have an unusual competence with thrown weapons and melee attacks. This focus benefits do not apply to unarmed attacks or projectile weapons. For thrown weapons, you cant use the benefits of the Armsman focus at the same time as Gunslinger. Level 1: Gain Stab as a bonus skill. You can draw or sheath a Stowed melee or thrown weapon as an Instant action. You may add your Stab skill level to a melee or thrown weapons damage roll or Shock damage, assuming it has any to begin with. Level 2: Your primitive melee and thrown weapons count as TL4 weapons for the purpose of overcoming advanced armors. Even on a miss with a melee weapon, you do an unmodified 1d4 damage to the target, plus any Shock damage. This bonus damage doesnt apply to thrown weapons or attacks that use the Punch skill.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Assassin",
+        "level": 1,
+        "description": "You are practiced at sudden murder, and have certain advantages in carrying out an Execution Attack as described in the rules on page 52. Level 1: Gain Sneak as a bonus skill. You can conceal an object no larger than a knife or pistol from anything less invasive than a strip search, including normal TL4 weapon detection devices. You can draw or produce this object as an On Turn action, and your point-blank ranged attacks made from surprise with it cannot miss the target. Level 2: You can take a Move action on the same round as you make an Execution Attack, closing rapidly with a target before you attack. You may split this Move action when making an Execution Attack, taking part of it before you murder your target and part of it afterwards. This movement happens too quickly to alert a victim or to be hindered by bodyguards, barring an actual physical wall of meat between you and your prey.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Authority",
+        "level": 1,
+        "description": "You have an uncanny kind of charisma about you, one that makes others instinctively follow your instructions and further your causes. At level 1, this is a knack of charm and personal magnetism, while level 2 might suggest latent telepathic influence or transhuman memetic hacking augmentations. Where this focus refers to followers, it means NPCs who have voluntarily chosen to be in your service. PCs never count as followers. Level 1: Gain Lead as a bonus skill. Once per day, you can make a request from an NPC who is not openly hostile to you, rolling a Cha/Lead skill check at a difficulty of the NPCs Morale score. If you succeed, they will comply with the request, provided it is not harmful or extremely uncharacteristic. Level 2: Those who follow you are fired with confidence. Any NPC being directly led by you gains a Morale and hit roll bonus equal to your Lead skill and a +1 bonus on all skill checks. Your followers will not act against your interests unless under extreme pressure.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Close Combatant",
+        "level": 1,
+        "description": "Youve had all too much practice at close-in fighting and desperate struggles with pistol or blade. Youre extremely skilled at avoiding injury in melee combat, and at level 2 you can dodge through a melee scrum without fear of being knifed in passing. Level 1: Gain any combat skill as a bonus skill. You can use pistol-sized ranged weapons in melee without suffering penalties for the proximity of melee attackers. You ignore Shock damage from melee assailants, even if youre unarmored at the time. Level 2: The Shock damage from your melee attacks treats all targets as if they were AC 10. The Fighting Withdrawal combat action is treated as an On Turn action for you and can be performed freely.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Connected",
+        "level": 1,
+        "description": "Youre remarkably gifted at making friends and forging ties with the people around you. Wherever you go, you always seem to know somebody useful to your ends. Level 1: Gain Connect as a bonus skill. If youve spent at least a week in a not-entirely-hostile location, youll have built a web of contacts willing to do favors for you that are no more than mildly illegal. You can call on one favor per game day and the GM decides how far theyll go for you. Level 2: Once per game session, if its not entirely implausible, you meet someone you know who is willing to do modest favors for you. You can decide when and where you want to meet this person, but the GM decides who they are and what they can do for you.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Die Hard",
+        "level": 1,
+        "description": "You are surprisingly hard to kill. You can survive injuries or bear up under stresses that would incapacitate a less determined hero. Level 1: You gain an extra 2 maximum hit points per level. This bonus applies retroactively if you take this focus after first level. You automatically stabilize if mortally wounded by anything smaller than a Heavy weapon. Level 2: The first time each day that you are reduced to zero hit points by an injury, you instead survive with one hit point remaining. This ability cant save you from Heavy weapons or similar trauma.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Diplomat",
+        "level": 1,
+        "description": "You know how to get your way in personal negotiations, and can manipulate the attitudes of those around you. Even so, while smooth words are versatile, theyll only work if your interlocutor is actually willing to listen to you. Level 1: Gain Talk as a bonus skill. You speak all the languages common to the sector and can learn new ones to a workable level in a week, becoming fluent in a month. Reroll 1s on any skill check dice related to negotiation or diplomacy. Level 2: Once per game session, shift an intelligent NPCs reaction roll one step closer to friendly if you can talk to them for at least thirty seconds.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Gunslinger",
+        "level": 1,
+        "description": "You have a gift with a gun. While this talent most commonly applies to slugthrowers or energy weapons, it is also applicable to thrown weapons, bows, or other ranged weapons that can be used with the Shoot skill. For thrown weapons, you cant use the benefits of the Armsman focus at the same time as Gunslinger. Level 1: Gain Shoot as a bonus skill. You can draw or holster a Stowed ranged weapon as an On Turn action. You may add your Shoot skill level to a ranged weapons damage roll. Level 2: Once per round, you can reload a ranged weapon as an On Turn action if it takes no more than one round to reload. Even on a miss with a Shoot attack, you do an unmodified 1d4 damage.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Hacker",
+        "level": 1,
+        "description": "You have a considerable fluency with digital security measures and standard encryption methods. You know how to make computerized systems obey you until their automatic failsafes come down on your control. Level 1: Gain Program as a bonus skill. When attempting to hack a database or computerized system, roll 3d6 on the skill check and drop the lowest die. Level 2: Your hack duration increases to 1d4+Program skill x 10 minutes. You have an instinctive understanding of the tech; you never need to learn the data protocols for a strange system and are always treated as familiar with it.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Healer",
+        "level": 1,
+        "description": "Healing comes naturally to you, and youre particularly gifted at preventing the quick bleed-out of wounded allies and comrades. Level 1: Gain Heal as a bonus skill. You may attempt to stabilize one mortally-wounded adjacent person per round as an On Turn action. When rolling Heal skill checks, roll 3d6 and drop the lowest die. Level 2: Stims or other technological healing devices applied by you heal twice as many hit points as normal. Using only basic medical supplies, you can heal 1d6+Heal skill hit points of damage to every injured or wounded person in your group with ten minutes of first aid spread among them. Such healing can be applied to a given target only once per day.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Henchkeeper",
+        "level": 1,
+        "description": "You have an distinct knack for picking up lost souls who willingly do your bidding. You might induce them with promises of money, power, excitement, sex, or some other prize that you may or may not eventually grant. A henchman obtained with this focus will serve in loyal fashion until clearly betrayed or placed in unacceptable danger. Henchmen are not important people in their society, and are usually marginal sorts, outcasts, the desperate, or other persons with few options. You can use more conventional pay or inducements to acquire additional henchmen, but these extra hirelings are no more loyal or competent than your pay and treatment can purchase. Level 1: Gain Lead as a bonus skill. You can acquire henchmen within 24 hours of arriving in a community, assuming anyone is suitable hench material. These henchmen will not fight except to save their own lives, but will escort you on adventures and risk great danger to help you. Most henchmen will be treated as Peaceful Humans from the Xenobestiary section of the book. You can have one henchmen at a time for every three character levels you have, rounded up. You can release henchmen with no hard feelings at any plausible time and pick them back up later should you be without a current henchman. Level 2: Your henchmen are remarkably loyal and determined, and will fight for you against anything but clearly overwhelming odds. Whether through natural competence or their devotion to you, theyre treated as Martial Humans from the Xenobestiary section. You can make faithful henchmen out of skilled and highly-capable NPCs, but this requires that you actually have done them some favor or help that would reasonably earn such fierce loyalty.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Ironhide",
+        "level": 1,
+        "description": "Whether through uncanny reflexes, remarkable luck, gengineered skin fibers, or subtle telekinetic shielding, you have natural defenses equivalent to high-quality combat armor. The benefits of this focus dont stack with armor, though Dexterity or shield modifiers apply. Level 1: You have an innate Armor Class of 15 plus half your character level, rounded up. Level 2: Your abilities are so effective that they render you immune to unarmed attacks or primitive weaponry as if you wore powered armor.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Psychic Training",
+        "level": 1,
+        "description": "Youve had special training in a particular psychic discipline. You must be a Psychic or have taken the Partial Psychic class option as an Adventurer to pick this focus. In the latter case, you can only take training in the discipline you initially chose as a Partial Psychic. As with most foci, this focus can be taken only once. Level 1: Gain any psychic skill as a bonus. If this improves it to level-1 proficiency, choose a free level-1 technique from that discipline. Your maximum Effort increases by one. Level 2: When you advance a level, the bonus psychic skill you chose for the first level of the focus automatically gets one skill point put toward increasing it or purchasing a technique from it. You may save these points for later, if more are required to raise the skill or buy a particular technique. These points are awarded retroactively if you take this focus level later in the game.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Savage Fray",
+        "level": 1,
+        "description": "You are a whirlwind of bloody havoc in melee combat, and can survive being surrounded far better than most combatants. Level 1: Gain Stab as a bonus skill. All enemies adjacent to you at the end of your turn whom you have not attacked suffer the Shock damage of your weapon if their Armor Class is not too high to be affected. Level 2: After suffering your first melee hit in a round, any further melee attacks from other assailants automatically miss you. If the attacker who hits you has multiple attacks, they may attempt all of them, but other foes around you simply miss.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Shocking Assault",
+        "level": 1,
+        "description": "Youre extremely dangerous to enemies around you. The ferocity of your melee attacks stresses and distracts enemies even when your blows dont draw blood. Level 1: Gain Punch or Stab as a bonus skill. The Shock damage of your weapon treats all targets as if they were AC 10, assuming your weapon is capable of harming the target in the first place. Level 2: In addition, you gain a +2 bonus to the Shock damage rating of all melee weapons and unarmed attacks. Regular hits never do less damage than this Shock would do on a miss.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Sniper",
+        "level": 1,
+        "description": "You are an expert at placing a bullet or beam on an unsuspecting target. These special benefits only apply when making an Execution Attack with a firearm or bow, as described on page 52. Level 1: Gain Shoot as a bonus skill. When making a skill check for an Execution Attack or target shooting, roll 3d6 and drop the lowest die. Level 2: A target hit by your Execution Attack takes a -4 penalty on the Physical saving throw to avoid immediate mortal injury. Even if the save is successful, the target takes double the normal damage inflicted by the attack.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Specialist",
+        "level": 1,
+        "description": "You are remarkably talented at a particular skill. Whether a marvelous cat burglar, a world-famous athlete, a brilliant engineer, or some other savant, your expertise is extremely reliable. You may take this focus more than once for different skills. Level 1: Gain a non-combat, non-psychic skill as a bonus. Roll 3d6 and drop the lowest die for all skill checks in this skill. Level 2: Roll 4d6 and drop the two lowest dice for all skill checks in this skill.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Star Captain",
+        "level": 1,
+        "description": "You have a tremendous natural talent for ship combat, and can make any starship you captain a significantly more fearsome opponent. You must take the captains role during a fight as described on page 117 of the Ship Combat rules in order to benefit from this focus. Level 1: Gain Lead as a bonus skill. Your ship gains 2 extra Command Points at the start of each turn. Level 2: A ship you captain gains bonus hit points equal to 20% of its maximum at the start of each combat. Damage is taken from these bonus points first, and they vanish at the end of the fight and do not require repairs to replenish before the next. In addition, once per engagement, you may resolve a Crisis as an Instant action by explaining how your leadership resolves the problem.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Starfarer",
+        "level": 1,
+        "description": "You are an expert in the plotting and execution of interstellar spike drills. While most experienced pilots can manage conventional drills along well-charted spike routes, you have the knack for forging new drill paths and cutting courses too dangerous for lesser navigators. Level 1: Gain Pilot as a bonus skill. You automatically succeed at all spike drill-related skill checks of difficulty 10 or less. Level 2: Double your Pilot skill for all spike drill-related skill checks. Spike drives of ships you navigate are treated as one level higher; thus, a drive-1 is treated as a drive-2, up to a maximum of drive-7. Spike drills you personally oversee take only half the time they would otherwise require.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Tinker",
+        "level": 1,
+        "description": "You have a natural knack for modifying and improving equipment, as given in the rules on page 90. Level 1: Gain Fix as a bonus skill. Your Maintenance score is doubled, allowing you to maintain twice as many mods. Both ship and gear mods cost only half their usual price in credits, though pretech salvage requirements remain the same. Level 2: Your Fix skill is treated as one level higher for purposes of building and maintaining mods and calculating your Maintenance score. Advanced mods require one fewer pretech salvage part to make, down to a minimum of zero.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Unarmed Combatant",
+        "level": 1,
+        "description": "Your empty hands are more dangerous than knives and guns in the grip of the less gifted. Your unarmed attacks are counted as melee weapons when it comes to binding up opponents wielding rifles and similar long arms, though you need at least one hand free to do so. Level 1: Gain Punch as a bonus skill. Your unarmed attacks become more dangerous as your Punch skill increases. At level-0, they do 1d6 damage. At level-1, they do 1d8 damage. At level-2 they do 1d10, level-3 does 1d12, and level-4 does 1d12+1. At Punch-1 or better, they have the Shock quality equal to your Punch skill against AC 15 or less. While you normally add your Punch skill level to any unarmed damage, dont add it twice to this Shock damage. Level 2: You know locks and twists that use powered servos against their wearer. Your unarmed attacks count as TL4 weapons for the purpose of overcoming advanced armors. Even on a miss with a Punch attack, you do an unmodified 1d6 damage.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Unique Gift",
+        "level": 1,
+        "description": "Whether due to exotic technological augmentation, a unique transhuman background, or a remarkable human talent, you have the ability to do something thats simply impossible for a normal human. This is a special focus which serves as a catch-all for some novel power or background perk that doesnt have a convenient fit in the existing rules. A transhuman who can function normally in lethal environments, a nanotech-laden experimental subject with a head full of exotic sensors, or a brilliant gravitic scientist who can fly thanks to their personal tech might all take this focus to cover their special abilities. Its up to the GM to decide whats reasonable and fair to be covered under this gift. If an ability is particularly powerful, it might require the user to take System Strain to use it, as described on page 32. As a general rule this ability should be better than a piece of gear the PC could buy for credits. The player is spending a very limited resource when they make this focus pick, so what they get should be good enough that they cant just duplicate it with a fat bank account.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Wanderer",
+        "level": 1,
+        "description": "Your hero gets around. As part of a life on the road, theyve mastered a number of tricks for ensuring their mobility and surviving the inevitable difficulties of a vagabond existence. Level 1: Gain Survive as a bonus skill. You can convey basic ideas in all the common languages of the sector. You can always find free transport to a desired destination for yourself and a small group of your friends provided any traffic goes to the place. Finding this transport takes no more than an hour, but it may not be a strictly legitimate means of travel and may require working passage. Level 2: You can forge, scrounge, or snag travel papers and identification for the party with 1d6 hours of work. These papers and permits will stand up to ordinary scrutiny, but require an opposed Int/ Administer versus Wis/Notice check if examined by an official while the PC is actually wanted by the state for some crime. When finding transport for the party, the transportation always makes the trip at least as fast as a dedicated charter would.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Wild Psychic Talent",
+        "level": 1,
+        "description": "Some men and women are born with a very limited form of MES, the mental condition that allows for the use of psychic powers. While these people are not true psychics, these wild talents can create one limited psychic effect. Training is not always required to develop this ability, and their MES is so mild that they dont suffer the risk of madness or brain damage that more developed psychics risk should they use their powers without proper training. Wild talents are not treated as psychics for general purposes and cannot torch their powers. When relevant, they are treated as having one point of Effort. Psychics and Partial Psychics cannot take this focus. Level 1: Pick a psychic discipline. You gain an ability equivalent to the level-0 core power of that discipline. Optionally, you may instead pick a level-1 technique from that discipline, but that technique must stand alone; you cant pick one that augments another technique or core ability. For example, you could pick the Telekinetic Armory technique from Telekinesis, because that ability does not require the use of any other Telekinesis power. You could not pick the Mastered Succor ability from Biopsionics, because that technique is meant to augment another power you dont have. Level 2: You now have a maximum Effort of two points. You may pick a second ability according to the guidelines above. This second does not need to be a stand-alone technique if it augments the power you chose for level 1 of this focus. Thus, if your first pick was gaining the level-0 power of Psychic Succor, your second could be Mastered Succor. You still could not get the level-1 core power of Psychic Succor, however, as youre still restricted to level-0.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Armored Technique",
+        "level": 1,
+        "description": "Applicable only to Arcanists and Magisters, this focus reflects a heros determined practice at channeling arcane energy flows around the encumbrance of heavy armor and unnatural high-tech materials. Level 1: You may cast Arcanist or Magister spells while wearing street or combat armor with an Encumbrance value no higher than one, or in powered armor with a zero Encumbrance value. Level 2: You may cast Arcanist or Magister spells regardless of the bulk of your armor.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Cross-Disciplinary Study",
+        "level": 1,
+        "description": "Applicable only to Magisters, this allows a hero to learn a spell from the Arcanist list or from a Magister school other than their own. They must find a source willing and able to teach them the spell, and it must be of a level they can cast, though if taken at first level, its assumed that a tutor or grimoire was found for the spell. Level 1: You may pick one spell of any level you can cast. This spell is now known to you. You can change this spell once per experience level, assuming you can find a source for the new spell. Level 2: You may pick one spell for each spell level you are capable of casting, and may change each of them once per experience level as noted above.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Imprinted Spell",
+        "level": 1,
+        "description": "Applicable only to Arcanists, this focus is for a hero who has so perfectly readied a spell that they no longer need to prepare it before casting it. They may cast it in place of any other spell of equal or higher level, losing the spell in that slot in order to fuel the sudden casting. Level 1: You may imprint one spell of any level you can cast. You can change this spell once per experience level to another spell you know. Level 2: You may change your imprinted spell once per day, when you prepare your other spells.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Initiate of Healing",
+        "level": 1,
+        "description": "This focus can only be taken by Arcanists or Magisters with access to healing spells in their regular spell lists, not including those who add them via other foci or means. With it, a magic-user can translate the potential energies of their available spells into enchantments of physical mending and revitalization. These simple magics cannot cure diseases or poisons and cannot replace lost limbs, but they can heal any victim not too far gone to be saved by a lazarus patch. Level 1: The user may expend a spell slot to heal a visible ally within 30 meters for 1d6 points of damage per spell level expended, plus the casters Magic skill. Invoking this healing takes a Main Action, but it is an invocation and cannot be interrupted. Level 2: The user is so efficient at triggering natural healing in a subject that they can call upon the subjects natural physical reserves rather than their own magical energies. As a Main Action, they can touch a willing subject and heal up to 1d6 points of damage for every three character levels the user possesses, rounded up. This healing adds one System Strain to the target, and cannot be performed if the target is unable to take the strain.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Limited Study",
+        "level": 1,
+        "description": "This arcane focus is special in that it can be taken by anyone, even those without an arcane class, assuming the GM allows it in her campaign. It reflects a limited or partial study of the arcane arts, just enough to master the casting of a handful of spells. An Arcanist or Magister may also take it, to reflect an outside research topic, but they cannot cast these learned spells with their usual spell slots. Level 1: You may learn a single Arcanist or Magister spell of a level no greater than half your own, rounded up. You can change this spell once per level if you can find a tutor for the spell you want to study. You do not need to prepare this spell, and can cast it once per day. Your familiarity with it is such that you can even cast it while wearing armor, without needing Armored Technique. The spell is cast using your full character level for any level-dependent effects. Level 2: Your limited study has expanded. You may learn a second spell of a level no greater than half your character level, rounded up. You may cast this spell once per day with the same limits as above.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Petty Sorceries",
+        "level": 1,
+        "description": "The character is capable of producing minor effects in line with their general style of magic phantom sounds, small and obvious illusions, non-damaging puffs of energy or light, minor physical transformations, or any other trifling magical effect that fits with their tradition and isnt so powerful as to cause damage or directly affect an unwilling target. This focus has only one level. Level 1: The caster can invoke these abilities freely for flavor and role-playing style, but they can only be concretely useful in play once per game session. The GM decides whether or not the concrete use proposed for an effect is appropriate in scale.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Psychic Synergy",
+        "level": 1,
+        "description": "Some magic-using heroes have both arcane and psychic powers. This focus allows them to blur the lines between their abilities, fueling different spheres of effect with their separate pools of energy. Level 1: Once per day as an Instant action, Commit Psychic Effort for the day to cast any spell you have prepared, if an Arcanist, or known, if a Magister, or fuel an Adept power that requires Effort to be Committed. Conversely, you may instead trade one available spell slot of your highest level to refresh half its level in Committed Effort, rounded up, or Commit a point of Adept Effort for the day to restore a point of Committed Psychic Effort. Level 2: You may convert your power twice per day.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Savage Sorcery",
+        "level": 1,
+        "description": "The spellcasters powers are keenly attuned to violence and destruction. Even when bereft of other magical resources, they can still call upon a blast of magical power appropriate to their tradition or character traits. Some casters might hurl bolts of crackling lightning, while others could employ lasers, pillars of flame, or lances of concussive telekinetic force. This focus is usually taken by Arcanists or Magisters, but some Adepts might benefit from the first level. Level 1: As a Main Action invocation, the spellcaster can blast a visible target within 100 meters with a bolt that does 1d8 damage plus their character level if it successfully hits, with the hit roll modified by their Magic skill. They may use this bolt as often as they wish. Any spell they cast that does hit point damage does an additional +1 damage per die. Level 2: The spellcaster can convert their magical energy into raw damaging force. The user casts a spell normally, but at the moment of release, they transform it into a blast of violent energies that inflicts 1d6+1 damage per level of the converted spell to any single target within 100 meters. This damage includes the bonus level 1 grants to harmful spells.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Vast Erudition",
+        "level": 1,
+        "description": "Applicable only to Arcanists, the hero is extremely wellversed in magical theory and practical spell deployment. They automatically know all the usual Arcanist spells of certain levels. This does not include any esoteric enchantments that may have been devised by individual practitioners. Level 1: You automatically know all standard first level Arcanist spells. When you advance a level, you learn four new spells instead of two. Level 2: You automatically know all standard Arcanist spells of levels less than the maximum spell level you can cast. Thus, if you can cast fourth level spells, you know all standard Arcanist spells of levels one through three.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "War Caster",
+        "level": 1,
+        "description": "Your hero is accustomed to casting in combat, and can keep focus when less hardened minds would be hopelessly distracted by pain. Level 1: When injured while casting a spell, you may make a Physical saving throw to avoid losing it. Even if your spell is interrupted, you do not lose the spell slot; only your action is wasted. Level 2: Whenever you would lose a spell to an interruption, accept damage equal to twice the spells level to continue casting it. If this damage would reduce you to zero hit points, you complete the casting before passing out, stable but at zero HP.",
+        "source_book": "Stars WN",
+        "source_pages": [
+            276,
+            277
+        ],
+        "category": "Arcane"
+    },
+    {
+        "name": "Alert",
+        "level": 1,
+        "description": "You are keenly aware of your surroundings and virtually impossible to take unaware. Level 1: Gain Notice as a bonus skill. You cannot be surprised, nor can others use the Execution Attack option on you. If the GM rolls initiative by sides, you can add a +1 bonus to your sides initiative roll, though multiple Alert PCs dont stack this bonus. If you roll initiative individually, you can roll it twice and take the better result. Level 2: You always act first in a combat round unless someone else involved is also this Alert.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Armored Magic",
+        "level": 1,
+        "description": "Usable only by Mage heroes who would otherwise be prevented from casting spells or using arts while armored, this Focus reflects special training in channeling magic through the hindering materials of conventional armor. Level 1: You can cast spells or use arts while wearing armor that has an Encumbrance value of no more than two. You can use a shield while casting, provided your other hand is empty for gesturing. Level 2: You can cast spells while wearing armor of any Encumbrance. Youve also learned to cast spells while both your hands are full, though not bound.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Armsmaster",
+        "level": 1,
+        "description": "You have an unusual competence with thrown weapons and melee attacks. This Focus benefits do not apply to unarmed attacks or non-thrown projectile weapons. This Focus bonuses also dont stack with Deadeye or other Foci that add a skills level to your damage or Shock. Level 1: Gain Stab as a bonus skill. You can Ready a Stowed melee or thrown weapon as an Instant action. You may add your Stab skill level to a melee or thrown weapons damage roll or Shock damage, assuming it has any to begin with. Level 2: The Shock from your melee attacks always treats the target as if they have AC 10. Gain a +1 bonus to hit with all thrown or melee attacks.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Artisan",
+        "level": 1,
+        "description": "You have remarkable gifts as a crafter and can often improvise techniques even in fields unrelated to your usual background. You are able to create mods for equipment even if you are not an Expert, as per the rules on page 56. Level 1: Gain Craft as a bonus skill. Your Craft skill is treated as one level higher, up to a maximum of 5, for purposes of crafting and maintaining mods. Mods you build require one fewer unit of arcane salvage, down to a minimum of one. Your Craft skill is applicable to any normal crafting professions work, allowing you to fashion their wares without penalty. Level 2: The first mod you add to an item requires no Maintenance and only half the silver piece cost usually required. This benefit is in addition to the benefits of installing a mod in masterwork gear you build. You automatically succeed at any attempt to build masterwork gear, and once per month you can reduce a created mods salvage cost by one further unit, down to a minimum of zero.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Assassin",
+        "level": 1,
+        "description": "You are practiced at sudden murder, and have certain advantages in carrying out an Execution Attack as described in the rules on page 44. Level 1: Gain Sneak as a bonus skill. You can conceal an object no larger than a knife from anything less invasive than a strip search. You can draw or produce this object as an On Turn action, and your point-blank thrown or melee attacks made during a surprise round with it cannot miss the target. Level 2: You can take a Move action on the same round as you make an Execution Attack, closing rapidly with a target before you attack. You may split this Move action when making an Execution Attack, taking part of it before you murder your target and part of it afterwards. This movement happens too quickly to alert a victim or to be hindered by bodyguards.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Authority",
+        "level": 1,
+        "description": "You have an uncanny kind of charisma about you, one that makes others instinctively follow your instructions and further your causes. At level 1, this is a knack of charm and personal magnetism, while level 2 might suggest latent magical powers or an ancient bloodline of sorcerous rule. Where this Focus refers to followers, it means NPCs who have voluntarily chosen to be in your service. PCs never count as followers. Level 1: Gain Lead as a bonus skill. Once per day, you can make a request from an NPC who is not openly hostile to you, rolling a Cha/Lead skill check at a difficulty of the NPCs Morale score. If you succeed, they will comply with the request, provided it is not significantly harmful or extremely uncharacteristic. Level 2: Those who follow you are fired with confidence. Any NPC being directly led by you gains a Morale and hit roll bonus equal to your Lead skill and a +1 bonus on all skill checks. Your followers and henchmen will not act against your interests unless under extreme pressure.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Close Combatant",
+        "level": 1,
+        "description": "Youve had all too much practice at close-in fighting and desperate struggles with drawn blades. Youre extremely skilled at avoiding injury in melee combat, and at level 2 you can dodge through a melee scrum without fear of being knifed in passing. Level 1: Gain any combat skill as a bonus skill. You can use knife-sized thrown weapons in melee without suffering penalties for the proximity of melee attackers. You ignore Shock damage from melee assailants, even if youre unarmored at the time, but invoking this benefit disrupts any spellcasting you might do that round due to the need for violently active evasion. Level 2: The Shock damage from your melee attacks treats all targets as if they were AC 10. The Fighting Withdrawal combat action is treated as an On Turn action for you and can be performed freely.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Connected",
+        "level": 1,
+        "description": "Youre remarkably gifted at making friends and forging ties with the people around you. Wherever you go, you always seem to know somebody useful to your ends. Level 1: Gain Connect as a bonus skill. If youve spent at least a week in a not-entirely-hostile location, youll have built a web of contacts willing to do favors for you that are no more than mildly illegal. You can call on one favor per game day and the GM decides how far theyll go for you. Level 2: Once per game session, if its not entirely implausible, you meet someone you know who is willing to do modest favors for you. You can decide when and where you want to meet this person, but the GM decides who they are and what they can do for you.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Cultured",
+        "level": 1,
+        "description": "Through wide travel, careful observation, or extensive study, youve obtained a wide experience of the cultures of your region and an ability to navigate their customs, laws, and languages. You know what to do and say to impress others with the reasonableness of your wishes. Level 1: Gain Connect as a bonus skill. You can fluently speak all the common languages of your native region and convey at least basic information in the uncommon or esoteric ones. You can learn a new language with only a weeks practice with a native speaker. Once per game day, your polished ways automatically gain a minor favor from an NPC that would not put them to significant expense or risk, assuming the NPC isnt hostile to you. Level 2: Once per game session, reroll a failed social skill check as you use your cultural knowledge to push your interlocutor toward the desired result.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Die Hard",
+        "level": 1,
+        "description": "You are surprisingly hard to kill. You can survive injuries or bear up under stresses that would incapacitate a less determined hero. Level 1: You gain an extra 2 maximum hit points per level. This bonus applies retroactively if you take this Focus after first level. You automatically stabilize if Mortally Wounded, provided you have not been incinerated, dismembered, or otherwise torn apart. Level 2: The first time each day that you are reduced to zero hit points by an injury, you instead survive with one hit point remaining. This ability cant save you from large-scale, instantly-lethal trauma.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Deadeye",
+        "level": 1,
+        "description": "You have a gift with ranged weapons. While this talent most commonly applies to bows, it is also applicable to thrown weapons or other ranged weapons that can be used with the Shoot skill. For thrown weapons, you cant use the benefits of the Armsmaster Focus at the same time as Deadeye. Level 1: Gain Shoot as a bonus skill. You can Ready a Stowed ranged weapon as an Instant action. You may use a bow or two-handed ranged weapon even when an enemy is within melee range, albeit at a -4 hit penalty. You may add your Shoot skill level to a ranged weapons damage roll. Level 2: You can reload crossbows or other slow-loading weapons as an On Turn action, provided they dont take more than a round to reload. You can use ranged weapons of any size in melee without penalty. Once per scene, as an On Turn action when target shooting at an inanimate, non-creature target, you automatically hit unless you roll a 2 on your Shoot skill check or the shot is physically impossible.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Dealmaker",
+        "level": 1,
+        "description": "You have an uncanny ability to sniff out traders and find good deals, licit or otherwise. Even those who might not normally be disposed to bargain with you can sometimes be persuaded to pause and negotiate, if you have something they want. Level 1: Gain Trade as a bonus skill. With a half hour of effort you can find a buyer or seller for any good or service that can be traded in the community, legal or otherwise. Finding a marginally possible service, like an assassin willing and able to target a king, or some specific precious ancient artifact, may require an adventure if the GM allows it at all. Level 2: Once per session, target a sentient who is not just then trying to kill you or your allies and make a request of it that it can comprehend. If its at all plausible for it to make such terms, it will do so for a price or favor it thinks you can grant, though the price for significant favors might be dear.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Developed Attribute",
+        "level": 1,
+        "description": "Your hero has a remarkable degree of development to one or more of their attributes. This may be derived from an eldritch bloodline, native brilliance, or sheer, stubborn determination. This Focus cannot be taken by heroes with the Mage or Partial Mage classes. Level 1: Choose an attribute; its modifier is increased by +1, up to a maximum of +3. The actual score does not change, but the modifier increases, and may increase again if later advancement improves the attribute enough. You can choose this Focus more than once to improve different attributes.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Diplomatic Grace",
+        "level": 1,
+        "description": "Your skill at personal negotiations is enormous and uncanny. Some might even think it supernatural in nature. Level 1: Gain Convince as a bonus skill. You speak all the languages common to your region of the world and can learn new ones to a workable level in a week, becoming fluent in a month. Reroll 1s on any skill check dice related to negotiation or diplomacy. Level 2: Once per day, silently consecrate a bargain; the target must make a Mental save to break the deal unless their life or something they love as much is imperiled by it. Most NPCs wont even try to break it. The deal must be for something specific and time-limited, and not an open-ended bargain.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Gifted Chirurgeon",
+        "level": 1,
+        "description": "You have an unusual gift for saving Mortally Wounded allies and quickening the natural recovery of the wounded in your care. Level 1: Gain Heal as a bonus skill. You may attempt to stabilize one Mortally Wounded adjacent person per round as an On Turn action. When rolling Heal skill checks, roll 3d6 and drop the lowest die. You heal twice as many hit points as usual when applying first aid after a battle, as described on page 48. Level 2: Your curative gifts count as magical healing. You can heal 1d6+Heal skill in damage to an adjacent wounded ally as a Main Action, potentially reviving them without any lingering Frailty. Each such application of healing adds 1 System Strain to the target, and the gift cannot be used on targets already at their maximum System Strain.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Henchkeeper",
+        "level": 1,
+        "description": "You have a distinct knack for picking up lost souls who willingly do your bidding. You might induce them with promises of money, power, excitement, sex, or some other prize that you may or may not eventually grant. A henchman obtained with this Focus will serve in loyal fashion until clearly betrayed or placed in unacceptable danger. Henchmen are not important people in their society, and are usually marginal sorts, outcasts, the desperate, or other persons with few options. You can use more conventional pay or inducements to acquire additional henchmen, but these extra hirelings are no more loyal or competent than your pay and treatment can purchase. Level 1: Gain Lead as a bonus skill. You can acquire henchmen within 24 hours of arriving in a community, assuming anyone is suitable hench material. These henchmen will not fight except to save their own lives, but will escort you on adventures and risk great danger to help you. Most henchmen from a civilized society will be treated as Peaceful Humans from the bestiary section of the book. You can have one henchmen at a time for every three character levels you have, rounded up. You can release henchmen with no hard feelings at any plausible time and pick them back up later should you be without a current henchman. Level 2: Your henchmen are remarkably loyal and determined, and will fight for you against anything but clearly overwhelming odds. Whether through natural competence or their devotion to you, theyre treated as Veteran Soldier from the bestiary section. You can make faithful henchmen out of skilled and highly-capable NPCs, but this requires that you actually have done them some favor or help that would reasonably earn such fierce loyalty.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Impervious Defense",
+        "level": 1,
+        "description": "Whether through uncanny reflexes, remarkable luck, supernatural heritage, or magical talent, you have natural defenses equivalent to high-quality armor. The benefits of this Focus dont stack with armor, though Dexterity or shield modifiers apply. Level 1: You have an innate Armor Class of 15 plus half your character level, rounded up. Level 2: Once per day, as an Instant action, you can shrug off any single weapon attack or physical trauma inflicted by a foe. Environmental damage, falling damage, or other harm that couldnt be forfended by strong armor cannot be resisted this way.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Impostor",
+        "level": 1,
+        "description": "You are exceedingly skilled at presenting yourself as something you are not, including disguises, voice mimicry, and lightning-fast wardrobe changes. Some impostors rely on the acting skills of Perform, while others lean more to the nefarious tricks of Sneak. Level 1: Gain Perform or Sneak as a bonus skill. Once per scene, reroll any failed skill check or saving throw related to maintaining an imposture or disguise. Create one false identity of no great social importance; you can flawlessly pretend to be that person, such that only extremely persuasive proof can connect you with it. You can change this identity with a weeks worth of effort in building a new one. Level 2: You can alter your clothing and armor such that a single Main Action lets you swap between any of three chosen appearances. In addition to your original false identity, you can establish a new false identity in each city or significant community you spend at least a day in.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Lucky",
+        "level": 1,
+        "description": "Some fund of remarkable luck has preserved your life at least once in the past, and continues to give you an edge in otherwise hopeless situations. This luck does not favor the already-blessed; this Focus can only be taken by a PC with at least one attribute modifier of -1 or less. Level 1: Once per week, a blow or effect that would otherwise have left you killed, mortally wounded, or rendered helpless somehow fails to connect or affect you. You make any rolls related to games of chance twice, taking the better roll. Level 2: Once per session, in a situation of need or peril, you can trust to your luck and roll 1d6. On a 2 or more, something fortunate will happen to further your goal, provide an escape from immediate peril, or otherwise give you an advantage you need, if not immediate victory. On a 1, the situation will immediately grow much worse, as the GM sees fit.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Nullifier",
+        "level": 1,
+        "description": "Something about your hero interferes with easy use of magic on them. It may be a strangely powerful birth blessing, a particular supernatural bloodline, or simple occult incompatibility. This Focus cannot be taken by Mages or Partial Mages. Level 1: You and all allies within twenty feet gain a +2 bonus to all saving throws against magical effects. As an On Turn action, you can feel the presence or use of magic within twenty feet of you, though you cant discern details about it or the specific source. The first failed saving throw against a magical effect you suffer in a day is turned into a success. Level 2: Once per day, as an Instant action, you are simply not affected by an unwanted magical effect or supernatural monstrous ability, even if it wouldnt normally allow a saving throw. Immunity to a persistent effect lasts for the rest of the scene.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Poisoner",
+        "level": 1,
+        "description": "You are a skilled poisoner, capable of compounding toxins out of readily-available flora and minerals. It takes an hour to brew a poison, and you can keep as many doses fresh as you have levels. Blade venoms take a Main Action to apply and last for ten minutes or until a hit or Shock is inflicted, whichever comes first. Detecting poisoned food is a Wis/Notice skill check against 10, or 12 if the diners not a noble or otherwise normally wary of poison. One dose can poison up to a half-dozen diners. Level 1: Gain Heal as a bonus skill. Gain a reroll on any failed saving throw versus poison. Your toxins inflict 2d6 damage plus your level on a hit or Shock, with a Physical save for half. Your incapacitating or hallucinogenic toxins do the same, but those reduced to zero hit points are simply incapacitated for an hour. Level 2: You are immune to poison and can apply a universal antidote to any poisoned ally as a Main Action. Any attempt to detect or save against your poisons takes a penalty equal to your Heal skill. Your ingested poisons count as an Execution Attack against unsuspecting targets, as per page 44, with Heal used for the Physical saving throw penalty and 1d6 damage per level done on a success. Such poisons can be non-lethal at your discretion.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Polymath",
+        "level": 1,
+        "description": "You have a passing acquaintance with a vast variety of practical skills and pastimes, and can make a modest attempt at almost any exercise of skill or artisanry. Note that the phantom skill levels granted by this Focus dont stack with normal skill levels or give a skill purchase discount. Only Experts or Partial Experts can take this Focus. Level 1: Gain any one bonus skill. You treat all non-combat skills as if they were at least level-0 for purposes of skill checks, even if you lack them entirely. Level 2: You treat all non-combat skills as if they were at least level-1 for purposes of skill checks.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Rider",
+        "level": 1,
+        "description": "Anyone with any level of Ride skill can fight competently on horseback or keep their mount healthy. You have an almost supernatural bond with your steeds, however, and can push them beyond normal limits. Level 1: Gain Ride as a bonus skill. Your steeds all count as Morale 12 in battle, use your AC if its higher than theirs, and can travel 50% further in a day than normal for their kind. You can intuitively communicate with riding beasts, gaining as much information from it as its intellect can convey. Level 2: Once per scene, negate a successful attack against your steed as an Instant action. Once per scene, reroll any failed Ride skill check. You can telepathically send and receive simple warnings, thoughts, and commands to and from your steed so long as its within two hundred feet. You can so bond with one steed at a time, taking an hour to do so.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Shocking Assault",
+        "level": 1,
+        "description": "Youre extremely dangerous to enemies around you. The ferocity of your melee attacks stresses and distracts enemies even when your blows dont draw blood. Level 1: Gain Punch or Stab as a bonus skill. The Shock damage of your weapon treats all targets as if they were AC 10, assuming your weapon is capable of harming the target in the first place and the target is not immune to Shock. Level 2: In addition, you gain a +2 bonus to the Shock damage rating of all melee weapons and unarmed attacks that do Shock. As usual, regular hits never do less damage than this Shock would do on a miss.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Sniper's Eye",
+        "level": 1,
+        "description": "You are an expert at placing a thrown knife or arrow on an unsuspecting target. These special benefits only apply when making an Execution Attack with a bow, hurlant, or thrown weapon, as described on page 44. Level 1: Gain Shoot as a bonus skill. When making a skill check for a ranged Execution Attack or target shooting, roll 3d6 and drop the lowest die. Level 2: You dont miss ranged Execution Attacks. A target hit by one takes a -4 penalty on the Physical saving throw to avoid immediate mortal injury. Even if the save is successful, the target takes double the normal damage inflicted by the attack. Special Origin Heroes in Worlds Without Number are assumed to be human, or close enough as to make no real difference. PCs who want to belong to some more exotic species or demihuman kind can pick the origin Focus appropriate to their chosen species, such as those given in the bestiary chapter for different types of creatures. The availability of these special origins will depend on the campaign and the GMs permission. Even if elves and dwarves do exist in the campaign world, the GM is not obliged to let players use them as PCs if that choice doesnt fit the tone or location being used. Note also that a PC who just wants to be different without asking for any special mechanical benefits does not need to buy any special Focus. If their particular demihuman or alien has no real advantages over a human, then they can just proclaim their nature as such, assuming the GM allows such beings in their campaign.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Specialist",
+        "level": 1,
+        "description": "You are remarkably talented at a particular skill. Whether a marvelous cat burglar, a famed athlete, a brilliant scholar, or some other savant, your expertise is extremely reliable. You may take this Focus more than once for different skills. Level 1: Gain any skill as a bonus, except for Magic, Stab, Shoot, or Punch. Roll 3d6 and drop the lowest die for all skill checks in this skill. Level 2: Roll 4d6 and drop the two lowest dice for all skill checks in this skill.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Spirit Familiar",
+        "level": 1,
+        "description": "You have a minor spirit, devil, construct, magical beast, or other creature as a devoted companion. While its abilities are limited, it is absolutely loyal to you. Level 1: Choose a form for your familiar no smaller than a cat nor larger than a human. It has the traits and abilities of an entity created by Calculation of the Evoked Servitor on page 68, but may be summoned or dismissed as a Main Action, appearing within melee range of its owner. It cannot carry objects with it during its vanishment aside from the clothing natural to its shape. It has no need for food, water, or sleep. If killed, it vanishes and cannot be re-summoned for 24 hours. Once per day, it can refresh one point of Committed Effort for you. Level 2: Pick two benefits from the list below for your familiar. This level may be taken more than once, adding two additional options each time. It has hit points equal to three times your level It gains the ability to attack with a hit bonus equal to half your level, rounded up, doing 1d8 damage on a hit with no Shock It gains a +1 skill check bonus and can apply it to a range of situations equivalent to one normal human background It gains another shape of your choice which it can adopt or discard as an On Turn action It can hover or fly at its usual movement rate It can communicate freely with others in any language you know",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Trapmaster",
+        "level": 1,
+        "description": "You have uncommon expertise in handling traps and snares, both mundane ones and the magical perils sometimes found in Deeps or the lairs of sorcerers. You know how to improvise traps with materials you easily carry. Level 1: Gain Notice as a bonus skill. Once per scene, reroll any failed saving throw or skill check related to traps or snares. Given five minutes of work you can trap a portal, container, passageway, or other relatively narrow space with foot snares, caltrops, toxic needles, or other hazards. Non-lethal traps cause the first victim to trigger it to lose a round of actions while dangerous ones inflict 1d6 damage plus twice the characters level, with an appropriate saving throw for half. Only one such improvised trap can be maintained at a time. More fearsome traps may be laid with congenial circumstances and the GMs permission. Level 2: You know secrets for unraveling even magical traps or arcane hazards that would normally require a wizard to dispel them. Once per scene, your efforts count as an Extirpate Arcana spell against the trap or hazard, cast as if a Mage of twice your level, with any relevant skill check being Int/Notice or Dex/Notice. This ability can be used against any stationary magical effect thats susceptible to being dispelled by Extirpate Arcana.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Unarmed Combatant",
+        "level": 1,
+        "description": "Your empty hands are more dangerous than swords in the grip of the less gifted. Your unarmed attacks are counted as melee weapons when it comes to binding up opponents wielding bows and similar ranged long arms, though you need at least one hand free to do so. Level 1: Gain Punch as a bonus skill. Your unarmed attacks become more dangerous as your Punch skill increases. At level-0, they do 1d6 damage. At level-1, they do 1d8 damage. At level-2 they do 1d10, level-3 does 1d12, and level-4 does 1d12+1. At Punch-1 or better, they have the Shock quality equal to your Punch skill against AC 15 or less. While you normally add your Punch skill level to any unarmed damage, dont add it twice to this Shock damage. Level 2: Even on a miss with a Punch attack, you do an unmodified 1d6 damage, plus any Shock that the blow might inflict on the target.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Unique Gift",
+        "level": 1,
+        "description": "Your hero has some unusual ability or magical knack that cant be adequately described by an existing Focus. This choice is a catch-all meant to represent a special power thats in some way worth a Focus pick. The exact effect of the ability should be defined by the player and the GM together, working out some result that seems fair and reasonable. This will vary from table to table and from campaign to campaign; an innate ability to breathe water is little more than a novelty in a desert setting, while a campaign based on piracy in an endless archipelago might make it far more significant. As with any power, the group should be willing to reconsider the gift if it turns out to be exceptionally weak in play or a stronger power than was anticipated.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Valiant Defender",
+        "level": 1,
+        "description": "You are a bodyguard, shieldbearer, or other gifted defender of others, accustomed to the roil of bloody battle and desperate struggle. You have an exceptional ability to shield your allies from the attacks of those who would slay them. Level 1: Gain Stab or Punch as a bonus skill. Gain a +2 on all skill checks for the Screen Ally combat action. You can screen against one more attacker per round than your skill would normally allow. Once per round, you can Screen Ally against even intangible spells or magical attacks or bodily shield them from an area-effect explosion or magic. Such attempts require the usual successful opposing skill check, with the assailant using their Magic skill. Level 2: The first Screen Ally skill check you make in a round is always successful. Gain +2 AC while screening someone. You can screen against foes as large as ogres or oxen.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Well Met",
+        "level": 1,
+        "description": "You have a striking ability to charm and pacify people and creatures youve just met. Once they get to know you, however, their opinions are more likely to be based on experience; this Focus works only once on a target. Level 1: Reaction rolls made by those the party meets are given a +1 bonus so long as you are present, whether or not you do the talking. Even hostile encountered beings will usually give the party a round to parley before attacking unless theyre in ambush or have a clear reason for immediate violence. Level 2: Once per game session, when a reaction roll is made, cause the subject to be as friendly and helpful to you and your party as its plausibly possible for them to be. Its up to the GM to decide why the creature becomes so; it might be mistaken about your nature, or find you hilarious, or perhaps want a favor from you and your allies.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Whirlwind Assault",
+        "level": 1,
+        "description": "You are a frenzy of bloody havoc in melee combat, and can hack down numerous lesser foes in close combat assuming you survive being surrounded. Level 1: Gain Stab as a bonus skill. Once per scene, as an On Turn action, apply your Shock damage to all foes within melee range, assuming theyre susceptible to your Shock. Level 2: The first time you kill someone in a round with a normal attack, either with its rolled damage on a hit or with the Shock damage it inflicts, instantly gain a second attack on any target within range using any Ready weapon you have.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Xenoblooded",
+        "level": 1,
+        "description": "You have been both blessed and cursed by the Outsiders, gaining the ability to survive in alien environments that humans were never meant to tolerate. This may be from ancient modifications made to your lineage in order to make them better servants, or it could be that youre some sort of alien-human hybrid yourself. Those cursed with such a hated heritage usually have considerable physical variations from human normality, and usually try to pass themselves off as merely an unusual kind of demihuman or unfortunate human mutant. Level 1: Choose one set of benefits from the list below to reflect your alien heritage. Other gifts may exist. You are immune to heat damage and can breathe and see through smoke without hindrance. You are water-adapted and can breathe water and see through it up to 120 regardless of light. You swim at double your normal Move rate. You were built to heavier or lighter gravity conditions; gain a +1 to either your Strength or Dexterity modifiers, to a maximum of +3, and a -1 penalty to the modifier of the other attribute. You are nourished by invisible radiations and need neither eat, sleep, nor breathe. You can see clearly even in the absence of any light.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "name": "Dwarves",
+        "level": 1,
+        "description": "This origin serves for the classical dwarf; short, sturdy, and given to craftsmanship and drinking. Level 1: Gain Craft as a bonus skill. Your Constitution modifier increases by +1 and either your Dexterity or Charisma modifier decreases by -1. You can see in the dark up to sixty feet.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Elves, Civilized",
+        "level": 1,
+        "description": "This style of elf represents the city-dwelling, magic-loving, sophisticated interpretation of elvishness favored in some worlds. Level 1: Gain Know and Magic as bonus skills. Your Dexterity or Intelligence modifier increases by +1 and your Constitution modifier decreases by -1. You can see clearly in any light level above complete darkness.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Elves, Half-Elves",
+        "level": 1,
+        "description": "Where there are both elves and humans, half-elves tend to be inevitable additions to a campaign world. This Focus follows the between two worlds flavor of most half-elf interpretations. Level 1: Gain Connect and any one skill as bonus skills. You can see out to thirty feet in any light condition short of perfect darkness. At your discretion, if you take after your elven parent, you may increase your Dexterity modifier by +1 but then also take a -1 to your Constitution modifier.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Elves, Forest",
+        "level": 1,
+        "description": "This interpretation of elvishness is for those kinds given to nature-reverence, archery, and nimbleness. Level 1: Gain Shoot and Survive as bonus skills. Your Dexterity modifier increases by +1 and your Constitution modifier decreases by -1. You can see clearly in any light level above complete darkness.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Halflings",
+        "level": 1,
+        "description": "This origin serves for a breed of bucolic and diminutive demihumans with exceptional reserves of toughness. Level 1: Gain Sneak as a bonus skill. Your Constitution or Dexterity modifier increases by +1. You are too small to effectively use two-handed melee weapons or large bows.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Gnomes",
+        "level": 1,
+        "description": "Gnomish interpretations vary significantly, from mad tinkers to forest sprites. The origin below suits a subterranean forest-dweller; for tinkers, replace Sneak as a bonus skill with Craft. Level 1: Gain Sneak as a bonus skill. Your Dexterity modifier increases by +1 and your Strength or Wisdom modifier decreases by -1. You can see clearly in the dark out to sixty feet.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Goblins, Tinker",
+        "level": 1,
+        "description": "This variety of goblin is for those campaign settings where they are inveterate builders. Level 1: Gain Craft as a bonus skill. Your Dexterity or Intelligence modifier increases by +1, and your Wisdom modifier decreases by -1. You have the weapon restrictions of halflings. You can see clearly in the dark out to sixty feet.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Goblins, Savage",
+        "level": 1,
+        "description": "Feral tribe-dwelling marauders of swamp, forest, and wasteland, this style of goblin can also fill in for other small, vicious humanoids. Level 1: Gain Sneak and Survive as bonus skills. Your Dexterity modifier increases by +1, but your Intelligence modifier decreases by -1. You have the weapon restrictions of halflings. You can see clearly in the dark out to sixty feet.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Lizardmen",
+        "level": 1,
+        "description": "Whether dressed up as dragon-folk or left as common crocodilian swamp lizardmen, this Focus can fill in the details. Level 1: Gain Stab and Survive as bonus skills. Your Strength or Charisma modifier increases by +1, but your Dexterity or Charisma modifier decreases by -1. Your unarmored Armor Class is 13, and if you wear better armor you get a +1 bonus to its AC. Level 2: Youre some sort of dragon-man and can breathe fire, frost, or some other noxious substance. The breath can be done once per scene and affects a cone up to 15 feet long and wide at its end. All within must make an appropriate save or take 2d6 damage plus your character level. You gain immunity to the substance you exhale.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Orcs",
+        "level": 1,
+        "description": "Large, strong, brutish, and comparatively stupid; such is the standard orc of fantasy campaigns. Players who want to play such a PC can use this Focus. Level 1: Gain Survive and Stab or Punch as bonus skills. Your Strength or Constitution modifier increases by +1, but your Intelligence modifier decreases by -1. You can see clearly in the dark out to sixty feet.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            314
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Origin Focus: Dwarf",
+        "level": 1,
+        "description": "Your PC is a dwarf, a demihuman weapon-race devised during the ancient rule of the Outsiders. You are probably a recusant from some dwarven polity, though it could be you are a loyal believer in your homelands ideals who simply wants to see more of the world before returning home and helping in their Great Plan. Level 1: Gain Craft as a bonus skill. You have the dwarven surrounding-sense out to twenty feet, able to distinguish solid objects as if you were using your sense of sight. You have a natural resistance to magic, gaining a +2 bonus on all saves against hostile magical effects. You need only half the usual amount of food, water, and air and gain a +1 bonus to your hit point die at each level. Level 2: You have such a deep connection with your dwarven nature that once per day, as an Instant action, you can simply negate an unwanted magical effect that would otherwise affect you. If you accept one System Strain point, you can use this ability to negate a magical effect you can see or otherwise sense, provided its within one hundred feet. This ability applies only to spellcasting, relatively minor standing enchantments, and creature-generated magic; it cannot negate Workings, suppress magic items, or nullify effects created by magic items or exceptionally potent rituals. Note that NPC dwarves of more than 2 hit dice will also have this ability.",
+        "source_book": "Worlds WN",
+        "source_pages": [
+            315
+        ],
+        "category": "Origin"
+    },
+    {
+        "name": "Ace Driver",
+        "level": 1,
+        "description": "If its got wheels or wings, you can drive it. Your background may lend itself to a particular type of transport, but your natural talent lets you operate any vehicle with an almost instinctive aptitude. These Focus benefits do not apply to drone piloting, however. Level 1: Gain Drive as a bonus skill. You have acquired vehicles worth no more than the budget given on page 18, and can replace lost or destroyed gear at a rate of $10,000 per week. Once per scene, as an Instant action, reroll a failed skill check related to driving or vehicle maintenance and repair. Level 2: Gain Fix as a bonus skill. The Speed of a vehicle you drive is increased by 1 point. Once per vehicle, you can add a mod to it for free, ignoring money and experimental component costs. Only you can effectively operate this mod, but it requires no Maintenance. You can change this free mod with a week of downtime.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Alert",
+        "level": 1,
+        "description": "You are keenly aware of your surroundings and virtually impossible to take unaware. You have an instinctive alacrity of response that helps you act before less wary persons can think to move. Level 1: Gain Notice as a bonus skill. You cannot be surprised, nor can others use the Execution Attack option on you. When your group rolls initiative, your vigilance allows them to roll twice and take the higher roll. Level 2: In addition to the benefits of level 1, you always act first in a combat round unless someone else involved is also this Alert.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "All Natural",
+        "level": 1,
+        "description": "Your mind and body are superbly gifted, but this very excellence leaves you profoundly incompatible with most cyber. You cannot accept implants except for minor cosmetic ones with an unmodified System Strain cost of zero. If a GM is mixing rules from multiple Without Number games, this Focus should not be allowed unless cyberware is expected equipment for all PCs. If youre using the deluxe version rules for magic, PCs with magical or psychic Edges such as Spellcaster, Summoner, or Graced cannot take this Focus. Level 1: Gain any skill as a bonus skill. Pick an attribute; its modifier increases by +1, up to a maximum of +3. You can make another such attribute pick at levels 3, 5, 7, and 10, choosing the same attribute or a different one. While you can still suffer Traumatic Hits, you never suffer major injuries as described on page 41.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Armsmaster",
+        "level": 1,
+        "description": "You have an unusual competence with thrown weapons and melee attacks. This Focus benefits do not apply to unarmed attacks or non-thrown projectile weapons. This Focus bonuses also dont stack with Deadeye or other Foci that add a skills level to your damage or Shock. Level 1: Gain Stab as a bonus skill. You can Ready a Stowed melee or thrown weapon as an Instant action. You may add your Stab skill level to a melee or thrown weapons damage roll or Shock damage, assuming it has any to begin with. Level 2: The Shock from your melee attacks always treats the target as if they have AC 10. Gain a +1 bonus to hit with all thrown or melee attacks.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Assassin",
+        "level": 1,
+        "description": "You are practiced at sudden murder, and have certain advantages in carrying out an Execution Attack as described in the rules on page 37. Level 1: Gain Sneak as a bonus skill. You can conceal an object no larger than a knife or pistol from anything less invasive than a strip search, including normal weapon detection devices. You can draw or produce this object as an On Turn action, and your point-blank ranged attacks made from surprise with it cannot miss the target. Level 2: You can take a Move action on the same round as you make an Execution Attack, closing rapidly with a target before you attack. You may split this Move action when making an Execution Attack, taking part of it before you murder your target and part of it afterwards. This movement happens too quickly to alert a victim or to be hindered by bodyguards not directly in your path.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Authority",
+        "level": 1,
+        "description": "You have an uncanny kind of charisma about you, one that makes others instinctively follow your instructions and further your causes. Where this Focus refers to followers, it means NPCs who have voluntarily chosen to be in your service. PCs never count as followers. Level 1: Gain Lead as a bonus skill. Once per day, you can make a request from an NPC who is not openly hostile to you, rolling a Cha/Lead skill check at a difficulty of the NPCs Morale score. If you succeed, they will comply with the request, provided it is not harmful or very uncharacteristic. Level 2: Those who follow you are fired with confidence. Any NPC being directly led by you gains a Morale and hit roll bonus equal to your Lead skill and a +1 bonus on all skill checks. Your followers will not act against your interests unless under extreme pressure.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Close Combatant",
+        "level": 1,
+        "description": "Youve had all too much practice at close-in fighting and desperate struggles with pistol or blade. Youre extremely skilled at avoiding injury in melee combat, and at level 2 you can dodge through a melee scrum without fear of being knifed in passing. Level 1: Gain any combat skill as a bonus skill. You can use pistol-sized ranged weapons in melee without suffering penalties for the proximity of melee attackers. You ignore Shock damage from melee assailants, even if youre unarmored at the time. Level 2: The Shock damage from your melee attacks treats all targets as if they were AC 10. The Fighting Withdrawal combat action is treated as an On Turn action for you and can be performed freely.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Cyberdoc",
+        "level": 1,
+        "description": "Any skilled medic can implant and maintain cyber systems, but you have a special aptitude for the work. Level 1: Gain Fix and Heal as bonus skills. You start play with a cyberdoc kit, and you can implant cyberware even if your Heal skill is level-0. You gain a +2 bonus on all cyber implant surgery skill checks. If you perform cyber maintenance for a person, the delicacy of your adjustments decreases the total System Strain cost of their implants by one point until their next maintenance interval. Level 2: The quality of your cyber maintenance improves; the System Strain decrease is equal to two points now instead of one. You never fail to install cyberware correctly. Once per patient, you can build and install a cyber modification to a system as described on page 74 without any cost in money or experimental components, assuming you have the requisite skill levels to build it.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Deadeye",
+        "level": 1,
+        "description": "You have a gift with ranged weapons. While this talent most commonly applies to guns, it is also applicable to thrown weapons or other ranged weapons that can be used with the Shoot skill. For thrown weapons, you cant use the benefits of the Armsmaster Focus at the same time as Deadeye. Level 1: Gain Shoot as a bonus skill. You can Ready a Stowed ranged weapon as an Instant action. You may use a rifle or two-handed ranged weapon even when an enemy is within melee range, albeit at a -4 hit penalty. You may add your Shoot skill level to a ranged weapons damage roll. Level 2: You can reload guns, crossbows, or other slow-loading weapons as an On Turn action, provided they dont take more than a round to reload. You can use ranged weapons of any size in melee without penalty. Once per scene, as an On Turn action when target shooting at an inanimate, non-creature target, you automatically hit unless you roll a 2 on your Shoot skill check or the shot is physically impossible.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Diplomat",
+        "level": 1,
+        "description": "You know how to get your way in personal negotiations, and can manipulate the attitudes of those around you. Even so, while smooth words are versatile, theyll only work if your interlocutor is actually willing to listen to you. Level 1: Gain Talk as a bonus skill. You speak all the languages common to the city and can learn new ones to a workable level in a week, becoming fluent in a month. Reroll 1s on any skill check dice related to negotiation or diplomacy. Level 2: Once per game session, shift an intelligent NPCs reaction roll one step closer to friendly if you can talk to them for at least thirty seconds.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Drone Pilot",
+        "level": 1,
+        "description": "While anyone can drive a drone under casual circumstances, your knack for it is something unusual. Level 1: Gain Drive and Fix as bonus skills. You acquire or start play with a Remote Control Unit cybersystem and its installation. Through connections, scavenging, and parts repurpose, you have free drones and their weapons and fittings worth no more than the budget given on page 18. You can repair these drones without needing spare parts, and destroyed drones can be replaced with a weeks work. You always have the equivalent of a drone repair kit on you at no Encumbrance cost. Level 2: You can use the Assume Command drone action once per round as an On Turn action. Once per scene, gain a bonus Main Action to command a drone. Any drones you control gain a +2 bonus to their hit rolls, whether or not youre personally firing their weaponry.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Expert Programmer",
+        "level": 1,
+        "description": "A skilled hacker can program their own utilities, but you take this expertise far beyond the norm. Level 1: Gain Program as a bonus skill. You can create and maintain an additional number of program elements equal to your character level+2, split among Verbs and Subjects as you see fit as explained on page 96. You can change your choices with a weeks work. Once per day, as an On Turn action, you can make an on-the-fly edit to a Subject program element to turn it into any other Subject program element you need. The element remains altered until you change it again. Level 2: Your programs are exceedingly efficient. Any program elements you write take up only half the usual Memory. A cyberdeck you use gains a CPU bonus equal to your Program skill level.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Healer",
+        "level": 1,
+        "description": "Healing comes naturally to you, and youre particularly gifted at preventing the quick bleed-out of wounded allies and comrades. Level 1: Gain Heal as a bonus skill. You may attempt to stabilize one mortally-wounded adjacent person per round as an On Turn action. When rolling Heal skill checks, roll 3d6 and drop the lowest die. Level 2: Pharmaceuticals or other technological healing devices applied by you heal twice as many hit points as normal. Using only basic medical supplies, you can heal 1d6+Heal skill hit points of damage to every injured or wounded person in your group with ten minutes of first aid spread among them. Such healing adds no System Strain, but can be applied to a given target only once per day.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Henchkeeper",
+        "level": 1,
+        "description": "You have a distinct knack for picking up lost souls who willingly do your bidding. You might induce them with promises of money, power, excitement, sex, or some other prize that you may or may not eventually grant. A henchman obtained with this Focus will serve in loyal fashion until clearly betrayed or placed in unacceptable danger. Henchmen are not important people, and are usually marginal sorts, criminals, the desperate, or other persons with few options. You can use more conventional pay or inducements to acquire additional henchmen, but these extra hirelings are no more loyal or competent than your pay and treatment can purchase. Level 1: Gain Lead as a bonus skill. You can acquire henchmen within 24 hours of arriving in a community, assuming anyone is suitable hench material. These henchmen will not fight except to save their own lives, but will go with you on missions and risk great danger to help you. Most corper henchmen will have 5 HP, a +0 attack bonus, and a Morale of 7, plus whatever gear theyre given. Slum-dwellers and other natives of harsh societies will fight as Street Thugs per page 188 if pressed. You can have one henchmen at a time for every three character levels you have, rounded up. You can release henchmen with no hard feelings at any plausible time and pick them back up later should you be without a current henchman. Level 2: Your henchmen are remarkably loyal and determined, and will fight for you against anything but clearly overwhelming odds. Whether through natural competence or their devotion to you, theyre treated as a Basic Corp Security from page 186. You can make faithful henchmen out of skilled and highly-capable NPCs, but this requires that you actually have done them some favor or help that would reasonably earn such fierce loyalty.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Many Faces",
+        "level": 1,
+        "description": "You have multiple usable identities registered with corporate and governmental databases. These identities are so deeply embedded in the systems that theyre almost impossible to pry out unless you do something to compromise them. Level 1: Gain Sneak as a bonus skill. You can maintain one alternate identity at a time per three character levels, rounded up. These identities have their own names, backgrounds, criminal records, financial dealings, and bank accounts, and will register as authentic to all normal corporate and governmental checks. If an identity is compromised or you want a different one, you can replace it with a weeks work. False identities cannot be important people or involve corporations you dont have a Contact in already.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Pop Idol",
+        "level": 1,
+        "description": "Whether a street musician, graffiti artist, underground journalist, cam girl, folk singer, or Robin Hood-esque thief, you have a devoted following of enthusiasts who are willing to help you when you need them. Level 1: Gain Perform as a bonus skill. Once per game week, with an hour or so of messaging, you can mobilize about a hundred of your fans to perform some act of your choice, provided its no more than mildly criminal or slightly dangerous. Flash mobs, getaway drivers, scouting reports, tailing people, or instant parties might all qualify as services. Your fans dont have any special skills, but theyll do anything ordinary workers or civilians could do. If you mobilize them for donations or merch purchases, you get $1,000 per character level, doubled at fifth level and quadrupled at tenth. You cant mobilize them to buy your content more than once per month. Level 2: You can mobilize up to a hundred fans per character level, though major mobs are likely to draw a law enforcement response. Youve cultivated fan leaders who can pass along your wishes deniably, concealing your involvement in the crowd. Your donation and merch earning amounts double. Your Charisma modifier increases by +1, to a maximum of +2.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Roamer",
+        "level": 1,
+        "description": "You might be a footloose bum with a knack for stowing aboard cargo shipments, a hard-bitten outlander smuggler, or a restless seeker of the horizon. Either way, youve seen more of the world with your own two eyes than any common corper ever will. Level 1: Gain Survive and Drive as bonus skills. You have conversational skill in all common languages spoken in the region or city, and you never get lost. You have acquired one or more vehicles worth no more than the budget given on page 18. You can replace lost or damaged vehicles at a rate of $10,000 per week. Level 2: Once per scene, as an Instant action, you can reroll a failed skill check related to safe traveling or vehicle operation, whether to fix a blown engine or talk down a ganger who doesnt like strangers crossing his turf.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Safe Haven",
+        "level": 1,
+        "description": "You have the contacts and expertise to find safehouses and bolt holes that no one else would think to find. You know how to persuade landlords into helping you for nebulous future advantages. Level 1: Gain Sneak as a bonus skill. If you spend a week in a particular neighborhood, you can find or arrange a secure safe house and the on-call assistance of a local cyberdoc or medic willing to perform emergency care for no more than you can afford to pay. This safe house will always go unnoticed unless you are at Heat 8+ or specifically compromise it; even in that case, it will remain undiscovered for at least 24 hours if you can get to it without being followed. If a safe house is burnt, you can find a new one with another weeks work. A PC cant have more safe houses active at once than their character level. Level 2: Your safe houses are actively protected by the local authorities, be they gang members, paid-off cops, or cooperative corp security. Provided you dont make them angry, theyll defend you from most ordinary degrees of pursuit. You can find safe havens geared with the equivalent of tech workshops or level one cyberclinics.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Shocking Assault",
+        "level": 1,
+        "description": "Youre extremely dangerous to enemies around you. The ferocity of your melee attacks stresses and distracts enemies even when your blows dont draw blood. Level 1: Gain Punch or Stab as a bonus skill. The Shock damage of your weapon treats all targets as if they were AC 10, assuming your weapon is capable of harming the target in the first place and the target is not immune to Shock. Level 2: In addition, you gain a +2 bonus to the Shock damage rating of all melee weapons and unarmed attacks that do Shock. As usual, regular hits never do less damage than this Shock would do.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Sniper's Eye",
+        "level": 1,
+        "description": "You are an expert at placing a bullet or arrow on an unsuspecting target. These special benefits only apply when making an Execution Attack with a gun, bow, or thrown weapon, as described on page 37. Level 1: Gain Shoot as a bonus skill. When making a skill check for a ranged Execution Attack or target shooting, roll 3d6 and drop the lowest die. Level 2: You dont miss ranged Execution Attacks. A target hit by one takes a -4 penalty on the Physical saving throw to avoid immediate mortal injury. Even if the save is successful, the target takes double the normal damage inflicted by the attack.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Specialist",
+        "level": 1,
+        "description": "You are remarkably talented at a particular skill. Whether a marvelous cat burglar, a natural athlete, a brilliant engineer, or some other savant, your expertise is extremely reliable. You may take this Focus more than once for different skills. Level 1: Gain a non-combat skill as a bonus. Roll 3d6 and drop the lowest die for all skill checks in this skill. Level 2: Roll 4d6 and drop the two lowest dice for all skill checks in this skill.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Tinker",
+        "level": 1,
+        "description": "You have a natural talent for modifying and improving equipment, as given in the rules on page 46. Level 1: Gain Fix as a bonus skill. Your Maintenance score is doubled, allowing you to maintain twice as many mods. Vehicle, cyber, and gear mods cost only half their usual price in dollars, though experimental component requirements remain the same. Level 2: Your Fix skill is treated as one level higher for purposes of building and maintaining mods and calculating your Maintenance score, up to a maximum of Fix-5. Advanced mods require one fewer experimental components to make, down to a minimum of zero.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Unarmed Combatant",
+        "level": 1,
+        "description": "Your empty hands are more dangerous than knives in the grip of the less gifted. Your unarmed attacks are counted as melee weapons when it comes to binding up opponents wielding pistols, rifles and similar ranged arms, though you need at least one hand free to do so. Level 1: Gain Punch as a bonus skill. Your unarmed attacks become more dangerous as your Punch skill increases. At level-0, they do 1d6 damage. At level-1, they do 1d8 damage. At level-2 they do 1d10, level-3 does 1d12, and level-4 does 1d12+1. At Punch-1 or better, they have the Shock quality equal to your Punch skill against AC 15 or less. While you normally add your Punch skill level to any unarmed damage you inflict, dont add it twice to Shock damage. If you choose to strike lethally with unarmed attacks, they have a Trauma Die of 1d6 and a Trauma Rating of x2. Level 2: Even on a miss with a Punch attack, you do an unmodified 1d6 damage, plus any Shock that the blow might inflict on the target. Your Trauma Die becomes 1d8 for lethal attacks.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Unique Gift",
+        "level": 1,
+        "description": "Your PC has a unique piece of cyberware, an exceptional human ability, or some experimental genetic modification that grants them some benefit that isnt covered under existing options. This benefit shouldnt be a simple bonus to something you already do; it should be a power or ability that gives you options that you just wouldnt have otherwise. It also shouldnt be used to simply optimize an existing character concept, but instead should allow you to make a character who wouldnt make sense without this special ability. Its up to the GM to decide whats reasonable and fair to be covered under this gift, and whatever they allow should be roughly equivalent to the existing Focus options in overall power If an ability is particularly powerful or the cybernetics are especially draining, it might require the user to take System Strain to use it, as described on page 40. As a general rule this ability should be better than a piece of gear the PC could buy. The player is spending a very limited resource when they make this Focus pick, so what they get should be good enough that they cant just duplicate it with a fat bank account.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Unregistered",
+        "level": 1,
+        "description": "Whether by unrecorded birth, database corruption, or sheer luck, you simply do not exist in any government or corporate database. If taken with the Many Faces Focus, your own identity is lost, but you can create others for your own uses. If this Focus is taken after character creation, it means your existing records have become hopelessly corrupted and lost. Level 1: You have no government or corporate database records associated with you, and it is almost impossible to add any such records without them ending up corrupted or deleted within a week. Human beings can remember you, but they cant rely on computerized records to keep track of you or your activities. You can keep money on credit chips or in cash, but banking or formal property ownership is almost impossible for you.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    },
+    {
+        "name": "Whirlwind Assault",
+        "level": 1,
+        "description": "You are a frenzy of bloody havoc in melee combat, and can hack down numerous lesser foes in close combat assuming you survive being surrounded. Level 1: Gain Stab or Punch as a bonus skill. Once per scene, as an On Turn action, apply your Shock damage to all foes within melee range, assuming theyre susceptible to your Shock. Level 2: The first time you kill someone in a round with a normal attack, either with its rolled damage on a hit or with the Shock damage it inflicts, instantly gain a second attack on any target within range using any Ready weapon you have.",
+        "source_book": "Cities WN",
+        "source_pages": [
+            23,
+            24,
+            25,
+            26,
+            27
+        ]
+    }
+]

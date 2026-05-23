@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stars Without Number - Quick Start",
+            "step1_title": "Step 1: Character Creation",
+            "step1_desc": "Use `/swn` for a random character or `/threshold_wizard` to roll stats.\nImport from **[characterswithoutnumber.app](https://characterswithoutnumber.app)** or Sectors Without Number using `/importsheet`.",
+            "step2_title": "Step 2: Core Mechanics",
+            "step2_desc": "• **Skill Checks**: Roll `2d6 + Skill + Attribute`. High is better.\n• **Combat**: Roll `1d20 + Attack Bonus + Attribute`. Meet or beat AC.\n• **Saves**: Roll `1d20`. Equal or higher than your Save target.",
+            "step3_title": "Step 3: Bot Commands",
+            "step3_desc": "• `/sheet`: View your stats.\n• `/update`: Sync with source URL.\n• `/roll 2d6+1`: Generic dice roller."
+        },
+        "wwn": {
+            "title": "⚔️ Worlds Without Number - Quick Start",
+            "step1_title": "Step 1: Character Creation",
+            "step1_desc": "Use `/wwn` for a random character or `/threshold_wizard` for manual stats.\nImport sheets from Google or **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Step 2: Core Mechanics",
+            "step2_desc": "• **Skills**: `2d6 + Skill + Attribute`. Target is usually 6-10.\n• **Combat**: `1d20 + AB + Attribute`. Target is Enemy AC.\n• **Shock**: Melee weapons often deal damage even on a miss!",
+            "step3_title": "Step 3: Bot Commands",
+            "step3_desc": "• `/skill [name]`: Roll a specific skill.\n• `/update`: Sync your character stats.\n• `/attack [weapon]`: Roll attack and damage logic."
+        },
+        "cwn": {
+            "title": "💾 Cities Without Number - Quick Start",
+            "step1_title": "Step 1: Character Creation",
+            "step1_desc": "Use `/cwn` for a random character or `/threshold_wizard`.\nSync your gear from **[characterswithoutnumber.app](https://characterswithoutnumber.app)** using `/importjson`.",
+            "step2_title": "Step 2: Core Mechanics",
+            "step2_desc": "• **Checks**: `2d6` for skills, `1d20` for combat. Standard OSR base.\n• **Hacking**: Use specialized programs and your cyberdeck.\n• **Trauma**: Watch out for specialized damage types!",
+            "step3_title": "Step 3: Bot Commands",
+            "step3_desc": "• `/gen npc`: Quick cyberpunk flavor.\n• `/update`: Sync stats from online builder.\n• `/tracker damage`: Deal damage by name."
+        },
+        "footer": "Pro-tip: All commands work with !prefix too! Type /help for more."
+    },
+    "commands": {
+        "starthere_desc": "Quick start guide for SWN, WWN, or CWN.",
+        "swnhelp_desc": "Quick start guide for Stars Without Number.",
+        "wwnhelp_desc": "Quick start guide for Worlds Without Number.",
+        "cwnhelp_desc": "Quick start guide for Cities Without Number.",
+        "lang_set_success": "✅ Language set to **{lang}**.",
+        "lang_invalid": "⚠️ Invalid language! Choose from: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Without Number Bot Help",
+        "description": "Welcome! This bot helps you roll dice, check equipment, and manage your character sheet.\n🌐 **Bot Info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatible with:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**New? Type `/swnhelp`, `/wwnhelp`, or `/cwnhelp` for a quick guide!**\n**Change Language:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**All commands work with both `/` (Slash) and `!` (Prefix)!**",
+        "char_imports_title": "1a. Character Imports",
+        "char_imports_body": "**`/update` | `/sync` | `!update`**\nInstantly refresh your active character stats from its stored source URL.\n\n**`/importsheet` | `!importsheet` <url>**\nLink your Google Sheet (SWN, WWN, or CWN). It loads stats and enables sync!\n\n**`/importjson` | `!importjson` <url>**\nImport from a raw JSON URL (fastest way to sync *characterswithoutnumber.app*).\n\n**`/link` | `!link` <url>**\nConnect your character to a persistent URL (JSON or Google Sheet) for easy syncing.\n\n**JSON File Upload**\nSimply drag and drop your `.json` export file into the chat. The bot handles it automatically!\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nView your character. **`/sc`** for Combat view, **`/sf`** for Full view.",
+        "char_mgmt_title": "1b. Character Management",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <name>**\nSwap between your imported characters.\n\n**`/portrait` | `!portrait` [url]**\nSet an image for any of your characters. Attach a file OR paste a URL. Shows as a thumbnail on `/sheet`!\n\n**`/bind` | `/unbind`**\n🎭 Associate a character with the current channel. The bot will remember which hero you are playing in each game!\n\n**`/awardxp` | `!awardxp` <amount>**\nAward XP to your active character.\n\n**`/swn`, `/wwn`, `/cwn`**\nInstantly generate a random Level 1 character for that system.\n\n**`/threshold` | `/threshold_wizard`**\nRoll 3d6 attributes in order, or use the interactive Wizard!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nQuick-start guides for your chosen system (SWN, WWN, or CWN)!",
+        "rolling_title": "2. Rolling & Combat",
+        "rolling_body": "**`/attack` | `!attack` [weapon]**\nRolls a 1d20 attack. Adds modifiers automatically from your sheet!\n\n**`/gmroll` | `!gmroll`**\nHidden roll (private/ephemeral) so only you see the result.\n\n**`/skill` | `!skill` [skill_name]**\nRolls a 2d6 skill check. (e.g., `!notice`, `!skill notice dexterity`).\n\n**`/roll` | `!roll` <expression> [comment]**\nSupports complicated rolls: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Specialist:* Use `3d6kh` or `3d6dl` to auto-apply Specialist focus (Keep Highest 2).\n↳ *Multiples:* Use `3x 1d20+5` or `3#2d6` to repeat a roll!\n↳ *Emojis & Combos:* Use commas to roll multiple things at once! (e.g. `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <amount> <expression>**\nRoll the same expression multiple times with separate detailed lines.",
+        "tools_title": "3. Reference & Tools",
+        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nView or list your imported starships from Sectors Without Number JSON files.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\nBrowse items from the compendium! Works for SWN, WWN, and CWN.\n\n**`/rule` | `!rule` <keyword>**\nSearch the core rulebooks for a specific phrase or rule.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheat-sheets for combat, hacking, and space combat.",
+        "sandbox_title": "4. GM Sandbox Generation",
+        "sandbox_body": "**`/gen <planet | npc | corp | alien>`**\nInstantly generate a beautiful reference card with randomized traits.\nNPCs and Aliens come with built-in Attack, AC, and HP stats ready for rolling!",
+        "tracker_title": "5. GM Tracker & Tactical Map",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Add enemies (Bulk supported!).\n**`/tracker party`** - Auto-adds all active campaign players.\n**`/tracker map`** - Opens the **Interactive Tactical Map** with theme dropdowns!\n**`/tracker controller`** - Open the **Native Discord Controller** (Buttons!).\n**`/importmap <image>`** - Upload a custom background for the map.\n**`/tracker next`** | **`/tracker damage`** | **`/tracker clear`**\n↳ *Pro-tip:* Use **`!sync`** if slash commands seem out of date!",
+        "faction_title": "6. Faction Tracker",
+        "faction_body": "**`/faction create`, `/faction list`, `/faction edit`**\nManage your campaign's global factions and their stats.\n**`/faction attack`** - Roll an opposed faction attack.",
+        "storyteller_title": "7. Storyteller Tools",
+        "storyteller_body": "**`/plot`** - Generate a random plot hook or situational idea to spark creativity.\n**`/oracle`** - Ask a Yes/No question to the 2d6 Oracle (Solo/GM helper).\n**`/reaction`** - Roll a 2d6 NPC reaction (Hostile -> Helpful).\n**`/morale <target>`** - Roll a 2d6 morale check against a target score.\n**`/loot`** - Find a random flavor item/trinket in an NPC's pocket.",
+        "party_title": "8. Party & Ship Tracking",
+        "party_body": "**`/party info`** - Ship Debt, Credits, and Hull Points.\n**`/ship` | `!ship`** - View active starship stats.\n**`/party split <amount>`** - Calculate an even payout split!",
+        "campaign_title": "9. Campaign Tracking",
+        "campaign_body": "**`/campaign start`** | **`/campaign join`** | **`/campaign info`**\nLink players together for automated combat entry and tracking.",
+        "voice_title": "🎙️ Hands-Free & Voice Control",
+        "voice_body": "**`/voice` | `!voice`**\nOpens the **Voice Remote Portal**. Speak your message or dice rolls, and they'll be sent instantly to Discord.\n\n**Voice Integration (Web)**\nOn the Map and Storyteller, look for the **[Voice Mode]** toggle. It adds visible **[Say: Click ...]** hints to every button, making them easy to trigger with Windows Voice Access.",
+        "channel_role_title": "10. Channel Management",
+        "channel_role_body": "**`/channel setup <role> <emoji>`**\nInstantly create a join message with a reaction role.\n\n**`!rr [#channel] @role <emoji>`**\nSuper simple prefix command for one reaction role.\n\n**`!role <emoji> <ID> ... [#channel]`**\n**Bulk Setup!** Create one message that grants access to multiple categories or channels by passing their IDs! Example: `!role 🚀 1111 💰 2222 #welcome`\n\n**`/channel role set <role>`**\nDesignate a role as 'GM' for this channel to control trackers."
+    },
+    "errors": {
+        "no_gm_permission": "❌ You do not have GM permissions in this channel. (Requires Server Admin, Campaign GM, or designated Channel Role)"
+    }
+}

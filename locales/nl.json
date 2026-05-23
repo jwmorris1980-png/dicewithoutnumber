@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Sterren zonder nummer - Snelle start",
+            "step1_title": "Stap 1: Karaktercreatie",
+            "step1_desc": "Gebruik `/swn` voor een willekeurig teken of `/threshold_wizard` om statistieken te bekijken.\nImporteer vanuit **[characterswithoutnumber.app](https://characterswithoutnumber.app)** of sectoren zonder nummer met `/importsheet`.",
+            "step2_title": "Stap 2: Kernmechanica",
+            "step2_desc": "• **Vaardigheidscontroles**: worp `2d6 + Vaardigheid + Attribuut`. Hoog is beter.\n• **Gevecht**: worp `1d20 + Aanvalsbonus + Attribuut`. Ontmoet of versla AC.\n• **Opgeslagen**: worp `1d20`. Gelijk aan of hoger dan uw opslagdoel.",
+            "step3_title": "Stap 3: Bot-opdrachten",
+            "step3_desc": "• `/sheet`: Bekijk uw statistieken.\n• `/update`: Synchroniseren met bron-URL.\n• `/roll 2d6+1`: Algemene dobbelstenenroller."
+        },
+        "wwn": {
+            "title": "⚔️ Werelden zonder nummer - Snelle start",
+            "step1_title": "Stap 1: Karaktercreatie",
+            "step1_desc": "Gebruik `/wwn` voor een willekeurig teken of `/threshold_wizard` voor handmatige statistieken.\nImporteer bladen van Google of **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Stap 2: Kernmechanica",
+            "step2_desc": "• **Vaardigheden**: `2d6 + Vaardigheid + Attribuut`. Het doel is meestal 6-10.\n• **Gevecht**: `1d20 + AB + Attribuut`. Doelwit is vijandelijke AC.\n• **Schok**: contactwapens richten zelfs bij een misser vaak schade aan!",
+            "step3_title": "Stap 3: Bot-opdrachten",
+            "step3_desc": "• `/skill [naam]`: gooi een specifieke vaardigheid.\n• `/update`: Synchroniseer je karakterstatistieken.\n• `/attack [wapen]`: logica voor rolaanvallen en schade."
+        },
+        "cwn": {
+            "title": "💾 Steden zonder nummer - Snelle start",
+            "step1_title": "Stap 1: Karaktercreatie",
+            "step1_desc": "Gebruik `/cwn` voor een willekeurig teken of `/threshold_wizard`.\nSynchroniseer uw uitrusting vanaf **[characterswithoutnumber.app](https://characterswithoutnumber.app)** met behulp van `/importjson`.",
+            "step2_title": "Stap 2: Kernmechanica",
+            "step2_desc": "• **Checks**: `2d6` voor vaardigheden, `1d20` voor gevechten. Standaard OSR-basis.\n• **Hacking**: gebruik gespecialiseerde programma's en uw cyberdeck.\n• **Trauma**: pas op voor gespecialiseerde soorten schade!",
+            "step3_title": "Stap 3: Bot-opdrachten",
+            "step3_desc": "• `/gen npc`: snelle cyberpunk-smaak.\n• `/update`: Synchroniseer statistieken van online builder.\n• `/tracker damage`: Verdeel schade op naam."
+        },
+        "footer": "Pro-tip: Alle opdrachten werken ook met !prefix! Typ /help voor meer."
+    },
+    "commands": {
+        "starthere_desc": "Snelstartgids voor SWN, WWN of CWN.",
+        "swnhelp_desc": "Snelstartgids voor sterren zonder nummer.",
+        "wwnhelp_desc": "Snelstartgids voor Werelden zonder nummer.",
+        "cwnhelp_desc": "Snelstartgids voor steden zonder nummer.",
+        "lang_set_success": "✅ Taal ingesteld op **{lang}**.",
+        "lang_invalid": "⚠️ Ongeldige taal! Kies uit: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Zonder nummerbothulp",
+        "description": "Welkom! Deze bot helpt je met dobbelstenen gooien, uitrusting controleren en je karakterblad beheren.\n🌐 **Bot-info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatibel met:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Nieuw? Typ `/swnhelp`, `/wwnhelp` of `/cwnhelp` voor een korte handleiding!**\n**Taal wijzigen:** `/taal lang:[EN|FR|ES|DE|PT|SV]`\n**Alle opdrachten werken met zowel `/` (Slash) als `!` (Prefix)!**",
+        "char_imports_title": "1a. Karakterimport",
+        "char_imports_body": "**`/importblad` | `!importblad` <url>**\nKoppel uw Google-spreadsheet (SWN, WWN of CWN). Het laadt statistieken en maakt synchronisatie mogelijk!\n\n**`/importjson` | `!importjson` <url>**\nImporteer vanuit een onbewerkte JSON-URL (snelste manier om *characterswithoutnumber.app*) te synchroniseren.\n\n**`/bijwerken` | `!bijwerken`**\nVervers direct uw actieve karakterstatistieken vanaf de opgeslagen bron-URL.\n\n**`/link` | `!link` <url>**\nVerbind je personage met een permanente URL (JSON of Google Spreadsheet) voor eenvoudige synchronisatie.\n\n**JSON-bestand uploaden**\nSleep eenvoudig uw `.json`-exportbestand naar de chat. De bot handelt het automatisch af!\n\n**`/blad` | `!blad` | `/sc` | `/sf`**\nBekijk je karakter. **`/sc`** voor gevechtsweergave, **`/sf`** voor volledige weergave.",
+        "char_mgmt_title": "1b. Karakterbeheer",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <naam>**\nWissel tussen uw geïmporteerde karakters.\n\n**`/portret` | `!portret` [url]**\nStel een afbeelding in voor een van je personages. Voeg een bestand toe OF plak een URL. Wordt weergegeven als miniatuur op `/sheet`!\n\n**`/binden` | `/ontbinden`**\n🎭 Koppel een personage aan het huidige kanaal. De bot onthoudt welke held je in elk spel speelt!\n\n**`/awardxp` | `!awardxp` <bedrag>**\nGeef XP aan je actieve personage.\n\n**`/swn`, `/wwn`, `/cwn`**\nGenereer direct een willekeurig niveau 1-teken voor dat systeem.\n\n**`/drempel` | `/threshold_wizard`**\nRol 3D6-attributen in volgorde, of gebruik de interactieve wizard!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nSnelstartgidsen voor het door u gekozen systeem (SWN, WWN of CWN)!",
+        "rolling_title": "2. Rollen en vechten",
+        "rolling_body": "**`/aanval` | `!aanval` [wapen]**\nRolt een 1d20-aanval. Voegt automatisch modificatoren toe vanaf uw blad!\n\n**`/gmroll` | `!gmroll`**\nVerborgen rol (privé/kortstondig), zodat alleen jij het resultaat ziet.\n\n**`/vaardigheid` | `!skill` [vaardigheidsnaam]**\nGooit een 2d6-vaardigheidstest. (bijvoorbeeld `!opmerking`, `!vaardigheidsopmerking behendigheid`).\n\n**`/rol` | `!roll` <expressie> [opmerking]**\nOndersteunt ingewikkelde rollen: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Meervouden:* Gebruik `3x 1d20+5` of `3#2d6` om een ​​worp te herhalen!\n↳ *Emoji's en combo's:* Gebruik komma's om meerdere dingen tegelijk te rollen! (bijvoorbeeld `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multirol` | `!multiroll` <bedrag> <expressie>**\nRol dezelfde uitdrukking meerdere keren met afzonderlijke gedetailleerde lijnen.",
+        "tools_title": "3. Referentie en hulpmiddelen",
+        "tools_body": "**`/schip` | `!schip` | `/scheepslijst` | `!scheepslijst`**\nBekijk of vermeld uw geïmporteerde ruimteschepen uit Sectors Without Number JSON-bestanden.\n\n**`/wapen`, `/pantser`, `/uitrusting`, `/foci`**\nBlader door items uit het compendium! Werkt voor SWN, WWN en CWN.\n\n**`/regel` | `!regel` <trefwoord>**\nZoek in de kernregelboeken naar een specifieke zin of regel.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheatsheets voor gevechten, hacking en ruimtegevechten.",
+        "sandbox_title": "4. Generatie van GM-sandboxen",
+        "sandbox_body": "**`/gen <planeet | npc | corp | buitenaards wezen>`**\nGenereer direct een prachtige referentiekaart met gerandomiseerde eigenschappen.\nNPC's en Aliens worden geleverd met ingebouwde aanvals-, AC- en HP-statistieken, klaar voor gebruik!",
+        "tracker_title": "5. GM-tracker en tactische kaart",
+        "tracker_body": "**`/tracker add <name> <hp> <ac> [qty]`** - Voeg vijanden toe (Bulk ondersteund!).\n**`/tracker party`** - Voegt automatisch alle actieve campagnespelers toe.\n**`/tracker map`** - Opent de **Interactieve Tactische Kaart** met vervolgkeuzelijsten voor thema's!\n**`/tracker controller`** - Open de **Native Discord Controller** (knoppen!).\n**`/importmap <image>`** - Upload een aangepaste achtergrond voor de kaart.\n**`/tracker volgende`** | **`/trackerschade`** | **`/tracker vrij`**\n↳ *Pro-tip:* Gebruik **`!sync`** als slash-opdrachten verouderd lijken!",
+        "faction_title": "6. Factietracker",
+        "faction_body": "**`/factie aanmaken`, `/factielijst`, `/factie bewerken`**\nBeheer de wereldwijde facties en hun statistieken van uw campagne.\n**`/Factieaanval`** - Voer een aanval van een tegengestelde factie uit.",
+        "storyteller_title": "7. Hulpmiddelen voor verhalenvertellers",
+        "storyteller_body": "**`/plot`** - Genereer een willekeurige plothook of situationeel idee om de creativiteit te stimuleren.\n**`/oracle`** - Stel een Ja/Nee-vraag aan het 2d6 Oracle (Solo/GM-helper).\n**`/reactie`** - Gooi een 2d6 NPC-reactie (vijandig -> behulpzaam).\n**`/moraal <doel>`** - Gooi een 2d6 moreelcontrole tegen een doelscore.\n**`/loot`** - Vind een willekeurig smaakitem/snuisterij in de zak van een NPC.",
+        "party_title": "8. Volgen van feesten en schepen",
+        "party_body": "**`/party info`** - Scheepsschulden, kredieten en romppunten.\n**`/schip` | `!ship`** - Bekijk actieve ruimteschipstatistieken.\n**`/partijverdeling <bedrag>`** - Bereken een gelijkmatige uitbetalingsverdeling!",
+        "campaign_title": "9. Campagne volgen",
+        "campaign_body": "**`/campagnestart`** | **`/deelname aan campagne`** | **`/campagne-informatie`**\nKoppel spelers aan elkaar voor automatische gevechtsinvoer en -tracking.",
+        "voice_title": "🎙️ Handsfree en stembediening",
+        "voice_body": "**`/stem` | `!stem`**\nOpent de **Voice Remote Portal**. Spreek uw bericht in of dobbelstenen gooien, en ze worden onmiddellijk naar Discord gestuurd.\n\n**Spraakintegratie (web)**\nZoek op de Kaart en Verteller naar de schakelaar **[Spraakmodus]**. Het voegt zichtbare **[Zeg: Klik ...]**-hints toe aan elke knop, waardoor ze gemakkelijk te activeren zijn met Windows Voice Access.",
+        "channel_role_title": "10. Kanaalbeheer",
+        "channel_role_body": "**`/kanaalinstellingen <rol> <emoji>`**\nCreëer direct een join-bericht met een reactierol.\n\n**`!rr [#kanaal] @rol <emoji>`**\nSupereenvoudig prefixcommando voor één reactierol.\n\n**`!rol <emoji> <ID> ... [#kanaal]`**\n**Bulkconfiguratie!** Creëer één bericht dat toegang geeft tot meerdere categorieën of kanalen door hun ID's door te geven! Voorbeeld: `!rol 🚀 1111 💰 2222 #welkom`\n\n**`/kanaalrol ingesteld <rol>`**\nWijs een rol toe als 'GM' voor dit kanaal om trackers te besturen."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Je hebt geen GM-rechten voor dit kanaal. (Vereist serverbeheerder, campagne-GM of aangewezen kanaalrol)"
+    }
+}

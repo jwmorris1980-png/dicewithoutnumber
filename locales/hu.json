@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Sztárok szám nélkül – Gyors indulás",
+            "step1_title": "1. lépés: Karakterkészítés",
+            "step1_desc": "Használja a „/swn” karaktert véletlenszerű karakterhez, vagy a „/threshold_wizard” karakterláncot a statisztikák görgetéséhez.\nImportáljon a **[characterswithoutnumber.app](https://characterswithoutnumber.app)** vagy a szám nélküli szektorokból a `/importsheet' használatával.",
+            "step2_title": "2. lépés: Az alapvető mechanika",
+            "step2_desc": "• **Képességellenőrzés**: Dobj `2d6 + Képesség + Tulajdonság`. A magas jobb.\n• **Harc**: Dobj `1d20 + Támadásbónusz + Tulajdonság`. Ismerje meg vagy győzze le az AC-t.\n• **Mentés**: \"1d20\" dobás. Egyenlő vagy magasabb, mint a mentési cél.",
+            "step3_title": "3. lépés: Bot parancsok",
+            "step3_desc": "• `/lap`: Statisztikák megtekintése.\n• `/frissítés`: Szinkronizálás a forrás URL-lel.\n• `/roll 2d6+1`: Általános kockadob."
+        },
+        "wwn": {
+            "title": "⚔️ Szám nélküli világok – Gyors indulás",
+            "step1_title": "1. lépés: Karakterkészítés",
+            "step1_desc": "Használja a `/wwn`-et véletlenszerű karakterekhez, vagy a `/threshold_wizard`-ot a kézi statisztikákhoz.\nImportáljon munkalapokat a Google-ból vagy a **[characterswithoutnumber.app](https://characterswithoutnumber.app)** webhelyről.",
+            "step2_title": "2. lépés: Az alapvető mechanika",
+            "step2_desc": "• **Készségek**: \"2d6 + Készség + Tulajdonság\". A cél általában 6-10.\n• **Harc**: \"1d20 + AB + tulajdonság\". A cél az Enemy AC.\n• **Sokk**: A közelharci fegyverek gyakran még kihagyáskor is sebznek!",
+            "step3_title": "3. lépés: Bot parancsok",
+            "step3_desc": "• `/skill [név]`: Adott készség dobása.\n• `/frissítés`: A karakterstatisztikák szinkronizálása.\n• `/attack [fegyver]`: Roll támadás és sebzés logika."
+        },
+        "cwn": {
+            "title": "💾 Városok szám nélkül – Gyors indulás",
+            "step1_title": "1. lépés: Karakterkészítés",
+            "step1_desc": "Használja a „/cwn” karaktert véletlenszerű karakterhez, vagy a „/threshold_wizard” karakterláncot.\nSzinkronizálja felszerelését a **[characterswithoutnumber.app](https://characterswithoutnumber.app)** webhelyről a `/importjson` használatával.",
+            "step2_title": "2. lépés: Az alapvető mechanika",
+            "step2_desc": "• **Checks**: `2d6` a készségekért, `1d20` a harcért. Szabványos OSR alap.\n• **Hackelés**: Használjon speciális programokat és kiberdeckjét.\n• **Trauma**: Ügyeljen a speciális sérüléstípusokra!",
+            "step3_title": "3. lépés: Bot parancsok",
+            "step3_desc": "• `/gen npc`: Gyors cyberpunk íz.\n• `/frissítés`: Statisztikák szinkronizálása az online építőből.\n• `/tracker damage`: Név szerint okozza a sebzést."
+        },
+        "footer": "Pro-tipp: Minden parancs működik !előtaggal is! További információért írja be a /help parancsot."
+    },
+    "commands": {
+        "starthere_desc": "Gyors útmutató az SWN, WWN vagy CWN használatához.",
+        "swnhelp_desc": "Gyors útmutató a szám nélküli csillagokhoz.",
+        "wwnhelp_desc": "Gyors útmutató a szám nélküli világokhoz.",
+        "cwnhelp_desc": "Gyors útmutató a szám nélküli városokhoz.",
+        "lang_set_success": "✅ A nyelv beállítása **{lang}**.",
+        "lang_invalid": "⚠️ Érvénytelen nyelv! Válasszon a következők közül: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Number Bot segítség nélkül",
+        "description": "Üdvözöljük! Ez a bot segít a kockadobásban, a felszerelés ellenőrzésében és a karakterlap kezelésében.\n🌐 **Bot információ:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Kompatibilis:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n** Új? Írja be a `/swnhelp`, `/wwnhelp` vagy `/cwnhelp` parancsot a gyors útmutatóért!**\n**Nyelv módosítása:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**Minden parancs működik a `/` (Slash) és `!` (előtag) karakterekkel is!**",
+        "char_imports_title": "1a. Karakter importálás",
+        "char_imports_body": "**\"/importlap\" | `!importlap` <url>**\nKapcsolja össze Google-táblázatát (SWN, WWN vagy CWN). Betölti a statisztikákat és lehetővé teszi a szinkronizálást!\n\n**`/importjson` | `!importjson` <url>**\nImportálás nyers JSON URL-ből (a *characterswithoutnumber.app* szinkronizálásának leggyorsabb módja).\n\n**`/frissítés` | `!frissítés`**\nAzonnal frissítse aktív karakterstatisztikáit a tárolt forrás-URL-ről.\n\n**\"/link\" | `!link` <url>**\nCsatlakoztassa karakterét egy állandó URL-hez (JSON vagy Google Sheet) az egyszerű szinkronizálás érdekében.\n\n**JSON fájl feltöltése**\nEgyszerűen húzza át a „.json” exportfájlt a csevegésbe. A bot automatikusan kezeli!\n\n**\"/lap\" | `!lap` | \"/sc\" | `/sf`**\nTekintse meg karakterét. **`/sc`** a Combat nézethez, **`/sf`** a teljes nézethez.",
+        "char_mgmt_title": "1b. Karakterkezelés",
+        "char_mgmt_body": "**`/kapcsolókar` | `!switchchar` <név>**\nVáltás az importált karakterek között.\n\n**\"/portré\" | `!portré` [url]**\nÁllítson be képet bármelyik karakteréhez. Csatoljon fájlt VAGY illesszen be egy URL-t. Miniatűrként jelenik meg a `/lapon'!\n\n**\"/köt\" | `/lekötés'**\n🎭 Társíts egy karaktert az aktuális csatornához. A bot minden játékban emlékezni fog, hogy melyik hőssel játszol!\n\n**`/awardxp` | `!awardxp` <összeg>**\nNyerj XP-t aktív karakterednek.\n\n**`/swn`, `/wwn`, `/cwn`**\nAzonnal generáljon egy véletlenszerű 1. szintű karaktert az adott rendszerhez.\n\n**\"/küszöbérték\" | `/threshold_wizard`**\nDobja sorrendben a 3d6 attribútumokat, vagy használja az interaktív varázslót!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nGyors útmutató a választott rendszerhez (SWN, WWN vagy CWN)!",
+        "rolling_title": "2. Rolling & Combat",
+        "rolling_body": "**\"/támadás\" | `!támadás` [fegyver]**\n1d20-as támadást dob. Automatikusan hozzáadja a módosítókat a lapról!\n\n**`/gmroll` | `!gmroll`**\nRejtett tekercs (privát/tűnő), így csak te látod az eredményt.\n\n**\"/készség\" | `!készség` [készség_neve]**\n2d6 ügyességi ellenőrzést dob. (pl. `!figyelem`, `!készség észrevétel ügyesség`).\n\n**\"/tekercs\" | `!roll` <kifejezés> [megjegyzés]**\nTámogatja a bonyolult tekercseket: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Többszörös:* A dobás ismétléséhez használja a `3x 1d20+5` vagy a `3#2d6` gombot!\n↳ *Hangulatjelek és kombók:* Használjon vesszőt több dolog egyidejű görgetéséhez! (pl. `!tekercs ⚔️ 1d20+5, 💥 1d8+2`)\n\n**\"/multiroll\" | `!multiroll` <összeg> <kifejezés>**\nUgyanazt a kifejezést többször is görgesse külön részletes sorokkal.",
+        "tools_title": "3. Referencia és eszközök",
+        "tools_body": "**\"/hajó\" | `!hajó` | \"/hajólista\" | `!hajólista`**\nTekintse meg vagy listázza ki a Szám nélküli szektorok JSON-fájlokból importált csillaghajóit.\n\n**\"/fegyver\", \"/páncél\", \"/felszerelés\", \"/foci\"**\nBöngésszen a kompendium elemei között! SWN, WWN és CWN esetén működik.\n\n**\"/szabály\" | `!szabály` <kulcsszó>**\nKeressen az alapvető szabálykönyvekben egy adott kifejezésre vagy szabályra.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCsalólapok harchoz, hackeléshez és űrharchoz.",
+        "sandbox_title": "4. GM Sandbox Generation",
+        "sandbox_body": "**`/gen <bolygó | npc | corp | idegen>`**\nAzonnal generál egy gyönyörű referenciakártyát véletlenszerű tulajdonságokkal.\nAz NPC-k és az Aliensek beépített Attack-, AC- és HP-statisztikával készülnek, amely készen áll a görgetésre!",
+        "tracker_title": "5. GM Tracker és taktikai térkép",
+        "tracker_body": "**`/tracker hozzáadás <név> <hp> <ac> [mennyiség]`** - Ellenségek hozzáadása (Tömeges támogatás!).\n**`/tracker party`** – Automatikusan hozzáadja az összes aktív kampányjátékost.\n**`/tracker map`** - Megnyitja az **Interaktív taktikai térképet** téma legördülő menükkel!\n**`/tracker controller`** - Nyissa meg a **Native Discord Controller**-t (gombok!).\n**`/importmap <image>`** - Egyéni hátteret tölthet fel a térképhez.\n**`/következő`** | **\"/követő sérülése\"** | **`/tracker clear`**\n↳ *Pro-tip:* Használja a **`!sync`** parancsot, ha a perjel parancsok elavultnak tűnnek!",
+        "faction_title": "6. Frakciókövető",
+        "faction_body": "**`/frakció létrehozása`, `/frakciólista`, `/frakciószerkesztés`**\nKezelje kampánya globális frakcióit és statisztikáit.\n**`/frakciótámadás`** – Ellenfelei frakció támadása.",
+        "storyteller_title": "7. Mesélő eszközök",
+        "storyteller_body": "**`/plot`** – Véletlenszerű cselekményhorog vagy szituációs ötlet létrehozása a kreativitás megindítására.\n**`/oracle`** - Tegyen fel egy igen/nem kérdést a 2d6 Oracle-nek (Solo/GM helper).\n**`/reakció`** – 2d6-os NPC reakció görgetése (Hostile -> Hasznos).\n**`/morale <target>`** – 2d6 morálellenőrzést dobj a célpontszámhoz.\n**`/loot`** – Találj egy véletlenszerű ízű elemet/csecsebecsét az NPC zsebében.",
+        "party_title": "8. Party & Ship Tracking",
+        "party_body": "**`/party info`** – Szállítási adósság, kreditek és Hull Points.\n**\"/hajó\" | `!ship`** - Aktív csillaghajó statisztikák megtekintése.\n**`/party split <összeg>`** - Számítson ki egyenletes kifizetési felosztást!",
+        "campaign_title": "9. Kampánykövetés",
+        "campaign_body": "**`/kampány kezdete`** | **`/csatlakozás a kampányhoz** | **`/kampányinformáció`**\nKapcsolja össze a játékosokat az automatikus harci belépéshez és követéshez.",
+        "voice_title": "🎙️ Kihangosító és hangvezérlés",
+        "voice_body": "**\"/hang\" | `!hang`**\nMegnyitja a **Voice Remote portált**. Mondja el üzenetét vagy dobjon kockát, és azonnal elküldjük a Discord-nak.\n\n**Hangintegráció (web)**\nA Térképen és a Mesélőben keresse meg a **[Hangmód]** kapcsolót. Látható **[Mondd: Kattintson...]** tippeket ad minden gombhoz, így azok könnyen aktiválhatók a Windows Voice Access segítségével.",
+        "channel_role_title": "10. Csatornakezelés",
+        "channel_role_body": "**`/csatorna beállítása <szerep> <emoji>`**\nAzonnal hozzon létre egy csatlakozási üzenetet reakció szereppel.\n\n**`!rr [#csatorna] @szerep <emoji>`**\nSzuper egyszerű előtag parancs egy reakciószerephez.\n\n**`!szerep <emoji> <ID> ... [#csatorna]`**\n**Tömeges beállítás!** Hozzon létre egyetlen üzenetet, amely hozzáférést biztosít több kategóriához vagy csatornához azonosítóik átadásával! Példa: `!szerep 🚀 1111 💰 2222 #welcome`\n\n**`/csatorna szerepkör beállítása <role>`**\nJelöljön ki egy szerepet „GM”-ként ehhez a csatornához a nyomkövetők vezérléséhez."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Nem rendelkezel GM-engedéllyel ezen a csatornán. (Szerveradminisztrátort, Campaign GM-et vagy kijelölt csatornaszerepet igényel)"
+    }
+}

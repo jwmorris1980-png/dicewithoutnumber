@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="app-title">DICEwithoutNumber | Premium TTRPG Bot</title>
+    <script>
+        function checkDiscordActivity() {
+            const params = new URLSearchParams(window.location.search);
+            // Discord appends these for Activities
+            if (params.has('instance_id') || params.has('frame_id') || params.has('guild_id')) {
+                // Preserve all params and go to the map
+                window.location.href = '/map' + window.location.search;
+                return true;
+            }
+            return false;
+        }
+        if (checkDiscordActivity()) {
+            // Stop loading the rest of the page if redirecting
+            window.stop();
+        }
+
+        function getGuildId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('guild_id');
+        }
+
+        async function loadSettings() {
+            try {
+                const guildIdFromURL = getGuildId();
+                const url = guildIdFromURL ? `/api/settings?guild_id=${guildIdFromURL}` : '/api/settings';
+                const res = await fetch(url);
+                const settings = await res.json();
+                window.APP_CONFIG = settings;
+                
+                // Prioritize Personal Name (localStorage) over Overridden/Global Name
+                const personalName = localStorage.getItem('personal_app_name');
+                const activeName = personalName || settings.app_name || "DICEwithoutNumber";
+                
+                document.title = activeName + " | Premium TTRPG Bot";
+                document.querySelectorAll('.dynamic-app-name').forEach(el => el.textContent = activeName);
+                document.querySelectorAll('.logo-text').forEach(el => el.textContent = activeName);
+                
+                // Sync input fields if they exist
+                if (document.getElementById('personal-app-name')) {
+                    document.getElementById('personal-app-name').value = personalName || "";
+                }
+
+                // Server Branding Section Setup
+                const serverIdInput = document.getElementById('server-id-input');
+                const serverNameInput = document.getElementById('server-app-name');
+                
+                if (guildIdFromURL) {
+                    serverIdInput.value = guildIdFromURL;
+                    serverIdInput.readOnly = true;
+                    serverIdInput.style.opacity = "0.7";
+                    serverIdInput.style.cursor = "not-allowed";
+                    document.getElementById('server-id-label').textContent = "Server ID (Active from URL)";
+                }
+                
+                if (serverNameInput) {
+                    serverNameInput.value = settings.app_name || "";
+                }
+            } catch(e) { console.error("Failed to load settings", e); }
+        }
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+    
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="Master your TTRPG campaign with DICEwithoutNumber. Specialized support for Stars Without Number, Worlds Without Number, and Cities Without Number. Tactical maps, faction tracking, and multi-language support.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="/static/style.css?v=1.0.2">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container nav-content">
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="fas fa-dice-d20"></i></div>
+                <span class="logo-text">DICEwithoutNumber</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="/storyteller">AI Storyteller</a></li>
+                <li><a href="/map">Tactical Map</a></li>
+                <li><a href="#commands">Commands</a></li>
+                <li><a href="#support">Support</a></li>
+                <li id="google_translate_element" style="margin-left: 10px; padding-top: 8px;"></li>
+            </ul>
+            <script type="text/javascript">
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
+            }
+            </script>
+            <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+            <a href="https://discord.com/api/oauth2/authorize?client_id=123456789&permissions=8&scope=bot%20applications.commands" class="btn btn-primary" style="padding: 12px 25px;">Add to Discord</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <span class="section-tag">Premium TTRPG Bot</span>
+                    <h1>Your Campaign, <span class="text-gradient">Elevated.</span></h1>
+                    <p>The only Discord bot perfectly tailored for the *Without Number* systems. Fully compatible with <strong>characterswithoutnumber.app</strong>.</p>
+                    <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px;">
+                        <a href="https://discord.com/api/oauth2/authorize?client_id=123456789&permissions=8&scope=bot%20applications.commands" class="btn btn-primary">Add to Discord</a>
+                        <a href="/storyteller" class="btn btn-outline" style="border-color: #5865f2; color: #5865f2;"><i class="fas fa-brain" style="margin-right: 8px;"></i> Try AI Storyteller</a>
+                        <a href="#commands" class="btn btn-outline">View Commands</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-img-wrapper">
+                        <img src="/static/hero_premium.png" alt="DICEwithoutNumber Interface">
+                    </div>
+                    <!-- Glassmorphism floating cards -->
+                    <div class="floating-card card-1">
+                        <div style="color: var(--primary); font-weight: 700; margin-bottom: 5px;">/roll 2d6+3</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);">Result: 11 (8, 3) + 3</div>
+                    </div>
+                    <div class="floating-card card-2">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="width: 10px; height: 10px; border-radius: 50%; background: #2ecc71;"></div>
+                            <div style="font-weight: 700;">Faction Updated</div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">The Heptarchy: +2 Wealth</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Language Section -->
+    <section id="languages" class="lang-section">
+        <div class="container">
+            <div class="lang-grid">
+                <div class="lang-visual">
+                    <img src="/static/world_support.png" alt="Global Support" style="width: 100%; border-radius: 40px; box-shadow: var(--shadow-premium);">
+                </div>
+                <div class="lang-text">
+                    <span class="section-tag">Global Support</span>
+                    <h2 class="section-title">Play in Your <span class="text-gradient">Own Language.</span></h2>
+                    <p class="section-desc">DICEwithoutNumber speaks your language. Toggle between 5 major world languages instantly for help menus, intros, and roll results.</p>
+                    <div class="lang-list">
+                        <div class="lang-item">
+                            <span class="lang-flag">🇺🇸</span>
+                            <span class="lang-name">English</span>
+                        </div>
+                        <div class="lang-item">
+                            <span class="lang-flag">🇫🇷</span>
+                            <span class="lang-name">Français</span>
+                        </div>
+                        <div class="lang-item">
+                            <span class="lang-flag">🇪🇸</span>
+                            <span class="lang-name">Español</span>
+                        </div>
+                        <div class="lang-item">
+                            <span class="lang-flag">🇵🇹</span>
+                            <span class="lang-name">Português</span>
+                        </div>
+                        <div class="lang-item">
+                            <span class="lang-flag">🇩🇪</span>
+                            <span class="lang-name">Deutsch</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 80px;">
+                <span class="section-tag">Powerful Features</span>
+                <h2 class="section-title">Everything a GM <span class="text-gradient">Needs.</span></h2>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="fas fa-map"></i></div>
+                    <h3>Tactical Grid</h3>
+                    <p>Open a real-time web-based map. Drag and drop tokens, change themes, and upload custom battlemaps.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="fas fa-shield-halved"></i></div>
+                    <h3>Faction Suite</h3>
+                    <p>Track global assets, roll faction attacks, and manage planetary resources across the sector.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="fas fa-file-invoice"></i></div>
+                    <h3>Sheet Sync</h3>
+                    <p>Import from Google Sheets or characterswithoutnumber.app. Your HP, AC, and gear stay in sync.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-box" style="background: rgba(88, 101, 242, 0.2); color: #5865f2;"><i class="fas fa-brain"></i></div>
+                    <h3>Storyteller Toolkit</h3>
+                    <p>New! Generate plot hooks, NPC reactions, morale checks, and oracle responses instantly. Perfect for solo play or GM inspiration.</p>
+                    <a href="/storyteller" class="btn btn-outline" style="margin-top: 15px; padding: 8px 15px; font-size: 0.8rem; border-radius: 8px; width: auto;">View GM Tools</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="admin-settings" style="background: #090a0c; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05);">            <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 30px;">
+                <!-- Server-Specific Branding -->
+                <div id="server-branding-section" style="background: #1c1d21; padding: 30px; border-radius: 16px; border: 2px solid #5865f2; box-shadow: 0 0 30px rgba(88,101,242,0.15);">
+                    <h3 style="margin-top: 0; font-family: 'Outfit'; color: #fff; font-size: 1.3rem;"><i class="fas fa-server" style="color: #5865f2; margin-right: 10px;"></i> This Server's Identity</h3>
+                    <p style="font-size: 0.9rem; color: #888; margin-bottom: 25px;">Changes the bot's name <strong>ONLY</strong> in the specific Discord server below.</p>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label id="server-id-label" style="display: block; font-size: 0.75rem; color: #5865f2; font-weight: 800; margin-bottom: 8px; text-transform: uppercase;">Discord Server ID</label>
+                        <input type="text" id="server-id-input" placeholder="Paste Guild ID here..." style="width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 1rem;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 0.75rem; color: #fff; font-weight: 800; margin-bottom: 8px; text-transform: uppercase;">Server Bot Nickname</label>
+                        <input type="text" id="server-app-name" placeholder="Enter name for this server..." style="width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; font-size: 1rem;">
+                    </div>
+                    
+                    <button onclick="saveServerSettings()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; background: #5865f2; border-radius: 8px;">Save Server Branding</button>
+                    <div id="server-status" style="margin-top: 15px; font-size: 0.8rem; text-align: center;"></div>
+                </div>
+
+                <!-- Personal Override -->
+                <div style="background: #121316; padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <h3 style="margin-top: 0; font-family: 'Outfit'; color: #aaa; font-size: 1.3rem;"><i class="fas fa-user-secret" style="color: #666; margin-right: 10px;"></i> Your Private View</h3>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 25px;">Changes the bot's name <strong>ONLY FOR YOU</strong> in this browser. No one else will see this change.</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 0.75rem; color: #fff; font-weight: 800; margin-bottom: 8px; text-transform: uppercase;">Your Personal Name</label>
+                        <input type="text" id="personal-app-name" placeholder="Enter custom name..." style="width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 1rem;">
+                    </div>
+                    
+                    <button onclick="savePersonalSettings()" class="btn btn-outline" style="width: 100%; padding: 12px; font-size: 1rem; border-color: #333; border-radius: 8px;">Apply locally</button>
+                    <div id="personal-status" style="margin-top: 15px; font-size: 0.8rem; text-align: center;"></div>
+                </div>
+            </div>
+       </div>
+            </div>
+                
+                <script>
+                    async function saveAppSettings(guildId) {
+                        const targetId = guildId || null;
+                        const inputId = guildId ? 'server-app-name' : 'settings-app-name';
+                        const statusId = guildId ? 'server-status' : 'settings-status';
+                        
+                        const newName = document.getElementById(inputId).value;
+                        const status = document.getElementById(statusId);
+                        status.textContent = "Saving...";
+                        
+                        try {
+                            const payload = { app_name: newName };
+                            if (targetId) payload.guild_id = targetId;
+
+                            const res = await fetch('/api/settings', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            const data = await res.json();
+                            if (data.status === 'ok') {
+                                status.style.color = "#2ecc71";
+                                status.textContent = "Saved! Syncing...";
+                                loadSettings();
+                            }
+                        } catch(e) { status.style.color = "#e74c3c"; status.textContent = "Error: " + e; }
+                    }
+
+                    function saveServerSettings() {
+                        const guildId = document.getElementById('server-id-input').value;
+                        if (!guildId) {
+                            const status = document.getElementById('server-status');
+                            status.style.color = "#e74c3c";
+                            status.textContent = "Please enter a Server ID!";
+                            return;
+                        }
+                        saveAppSettings(guildId);
+                    }
+
+                    function savePersonalSettings() {
+                        const newName = document.getElementById('personal-app-name').value;
+                        const status = document.getElementById('personal-status');
+                        
+                        if (newName.trim() === "") {
+                            localStorage.removeItem('personal_app_name');
+                        } else {
+                            localStorage.setItem('personal_app_name', newName);
+                        }
+                        
+                        status.style.color = "#2ecc71";
+                        status.textContent = "Applied!";
+                        loadSettings();
+                    }
+                </script>
+            </div>
+        </div>
+    </section>
+    <!-- Commands Table -->
+    <section id="commands" style="background: rgba(255,255,255,0.01);">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center;">Master the <span class="text-gradient">Commands.</span></h2>
+            <p style="text-align: center; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px;">All commands are available as both slash commands and prefix commands.</p>
+            
+            <div style="max-width: 1000px; margin: 0 auto; background: var(--bg-card); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden;">
+                <!-- Category: Character -->
+                <div style="padding: 20px 30px; background: rgba(var(--primary-rgb), 0.1); font-weight: 800; color: var(--primary); letter-spacing: 1px; font-family: 'Outfit';">CHARACTER MANAGEMENT</div>
+                <div class="command-row">
+                    <code>/importsheet &lt;url&gt;</code>
+                    <div>Link your Google Sheet (SWN, WWN, or CWN) for automated stats and sync.</div>
+                </div>
+                <div class="command-row">
+                    <code>/importjson &lt;url&gt;</code>
+                    <div>Import raw JSON from characterswithoutnumber.app and enable auto-sync.</div>
+                </div>
+                <div class="command-row">
+                    <code>/update</code><br><code>/sheet update</code>
+                    <div>Instantly sync your active character stats with the stored source URL.</div>
+                </div>
+                <div class="command-row">
+                    <code>/link &lt;url&gt;</code>
+                    <div>Set or change the sync source (JSON or Google Sheet) for your active character.</div>
+                </div>
+                <div class="command-row">
+                    <code>/sheet</code>
+                    <div>View your active character. Use <code>/sc</code> for combat or <code>/sf</code> for full view.</div>
+                </div>
+                <div class="command-row">
+                    <code>/swn</code><br><code>/wwn</code><br><code>/cwn</code>
+                    <div>Instantly generate a Level 1 character for the chosen system.</div>
+                </div>
+
+                <!-- Category: Combat -->
+                <div style="padding: 20px 30px; background: rgba(var(--primary-rgb), 0.1); font-weight: 800; color: var(--primary); letter-spacing: 1px; font-family: 'Outfit';">COMBAT & DICE</div>
+                <div class="command-row">
+                    <code>/roll &lt;exp&gt; [msg]</code>
+                    <div>Standard dice roller. Supports <code>kh</code> (Keep High) and <code>kl</code> (Keep Low) notation.</div>
+                </div>
+                <div class="command-row">
+                    <code>/3d6kh</code><br><code>/4d6kh</code>
+                    <div>Quick specialized rolls that keep the highest 2 dice automatically.</div>
+                </div>
+                <div class="command-row">
+                    <code>/attack [weapon]</code>
+                    <div>Roll an attack using your character's sheet modifiers.</div>
+                </div>
+                <div class="command-row">
+                    <code>/skill [name]</code>
+                    <div>Perform a 2d6 skill check tied to your character stats.</div>
+                </div>
+                <div class="command-row">
+                    <code>/initiative</code>
+                    <div>Roll and add yourself to the active initiative tracker.</div>
+                </div>
+
+                <!-- Category: GM Tools -->
+                <div style="padding: 20px 30px; background: rgba(var(--primary-rgb), 0.1); font-weight: 800; color: var(--primary); letter-spacing: 1px; font-family: 'Outfit';">GM TOOLS & MAPS</div>
+                <div class="command-row">
+                    <code>/tracker add &lt;n&gt; &lt;h&gt; &lt;a&gt;</code>
+                    <div>Add a combatant to the tracker with Name, HP, and AC.</div>
+                </div>
+                <div class="command-row">
+                    <code>/tracker map</code>
+                    <div>Opens the interactive web-based tactical map for token movement.</div>
+                </div>
+                <div class="command-row">
+                    <code>/importmap &lt;image&gt;</code>
+                    <div>Upload a custom battlemap background for the tactical grid.</div>
+                </div>
+                <div class="command-row">
+                    <code>/gen &lt;type&gt;</code>
+                    <div>Generate random planets, NPCs, corporations, or aliens.</div>
+                </div>
+                <div class="command-row">
+                    <code>/plot</code><br><code>/oracle</code>
+                    <div>Generate random plot hooks or ask the 2d6 Oracle for a weighted response.</div>
+                </div>
+                <div class="command-row">
+                    <code>/reaction</code><br><code>/morale</code>
+                    <div>Roll 2d6 NPC reactions or morale checks against a target score.</div>
+                </div>
+                <div class="command-row">
+                    <code>/weather</code><br><code>/encounter</code><br><code>/hazard</code>
+                    <div>Quick checks for weather, random encounters, and environmental hazards.</div>
+                </div>
+
+                <!-- Category: Campaign -->
+                <div style="padding: 20px 30px; background: rgba(var(--primary-rgb), 0.1); font-weight: 800; color: var(--primary); letter-spacing: 1px; font-family: 'Outfit';">CAMPAIGN & SETTINGS</div>
+                <div class="command-row">
+                    <code>/campaign join</code>
+                    <div>Join an active campaign to sync your stats with the GM's tracker.</div>
+                </div>
+                <div class="command-row">
+                    <code>/language</code>
+                    <div>Instantly toggle the bot's interface between 5 supported languages.</div>
+                </div>
+                <div class="command-row" style="border-bottom: none;">
+                    <code>/starthere</code>
+                    <div>Access the quick start guide for any of the supported game systems.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section (Tip instead of Pricing) -->
+    <section id="support" class="pricing">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span class="section-tag">Free Forever</span>
+                <h2 class="section-title">Support the <span class="text-gradient">Creator.</span></h2>
+                <p class="section-desc" style="margin: 0 auto;">DICEwithoutNumber is and will always be free. If you find the bot helpful for your campaigns, consider leaving a tip to help keep the server running!</p>
+            </div>
+            
+            <div style="display: flex; justify-content: center;">
+                <div class="price-card featured" style="max-width: 500px; text-align: center;">
+                    <div class="logo-icon" style="margin: 0 auto 20px; font-size: 2.5rem;"><i class="fas fa-mug-hot"></i></div>
+                    <div class="price-name" style="font-size: 1.8rem; margin-bottom: 20px;">Buy me a coffee</div>
+                    <p style="color: var(--text-muted); margin-bottom: 30px;">Every contribution helps maintain the bot, update rulesets, and develop new features for the *Without Number* community.</p>
+                    <a href="https://ko-fi.com/loroman1211" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-heart"></i> Leave a Tip on Ko-fi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 60px 0; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-muted);">
+        <div class="container">
+            <p>© 2026 DICEwithoutNumber. Built for the community. Supporting Sine Nomine Publishing.</p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">Find us at: <strong>dicewithoutnumber.duckdns.org</strong></p>
+            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 30px;">
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Support Server</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

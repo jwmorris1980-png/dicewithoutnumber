@@ -1,0 +1,71 @@
+{
+    "intro": {
+        "swn": {
+            "title": "🚀 Stjerner uten nummer - hurtigstart",
+            "step1_title": "Trinn 1: Oppretting av karakterer",
+            "step1_desc": "Bruk `/swn` for et tilfeldig tegn eller `/threshold_wizard` for å rulle statistikk.\nImporter fra **[characterswithoutnumber.app](https://characterswithoutnumber.app)** eller Sectors Without Number ved å bruke `/importsheet`.",
+            "step2_title": "Trinn 2: Kjernemekanikk",
+            "step2_desc": "• **Skill Checks**: Roll `2d6 + Skill + Attribute`. Høyt er bedre.\n• **Combat**: Kast `1d20 + Attack Bonus + Attribute`. Møt eller slå AC.\n• **Lagre**: Rull `1d20`. Lik eller høyere enn ditt Lagre-mål.",
+            "step3_title": "Trinn 3: Bot-kommandoer",
+            "step3_desc": "• `/sheet`: Se statistikken din.\n• `/update`: Synkroniser med kilde-URL.\n• `/roll 2d6+1`: Generisk terningkast."
+        },
+        "wwn": {
+            "title": "⚔️ Verdener uten tall - hurtigstart",
+            "step1_title": "Trinn 1: Oppretting av karakterer",
+            "step1_desc": "Bruk `/wwn` for et tilfeldig tegn eller `/threshold_wizard` for manuell statistikk.\nImporter ark fra Google eller **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step2_title": "Trinn 2: Kjernemekanikk",
+            "step2_desc": "• **Skills**: `2d6 + Skill + Attribut`. Målet er vanligvis 6-10.\n• **Combat**: `1d20 + AB + Attribut`. Målet er Enemy AC.\n• **Sjokk**: Nærkampvåpen gir ofte skade selv på et bom!",
+            "step3_title": "Trinn 3: Bot-kommandoer",
+            "step3_desc": "• `/skill [navn]`: Kast en spesifikk ferdighet.\n• `/update`: Synkroniser karakterstatistikken din.\n• `/attack [våpen]`: Roll angrep og skade logikk."
+        },
+        "cwn": {
+            "title": "💾 Byer uten nummer - hurtigstart",
+            "step1_title": "Trinn 1: Oppretting av karakterer",
+            "step1_desc": "Bruk `/cwn` for et tilfeldig tegn eller `/threshold_wizard`.\nSynkroniser utstyret ditt fra **[characterswithoutnumber.app](https://characterswithoutnumber.app)** ved å bruke `/importjson`.",
+            "step2_title": "Trinn 2: Kjernemekanikk",
+            "step2_desc": "• **Sjekker**: `2d6` for ferdigheter, `1d20` for kamp. Standard OSR base.\n• **Hacking**: Bruk spesialiserte programmer og cyberdekket ditt.\n• **Traumer**: Se opp for spesialiserte skadetyper!",
+            "step3_title": "Trinn 3: Bot-kommandoer",
+            "step3_desc": "• `/gen npc`: Rask cyberpunk-smak.\n• `/update`: Synkroniser statistikk fra nettbyggeren.\n• `/tracker damage`: Del skade etter navn."
+        },
+        "footer": "Pro-tips: Alle kommandoer fungerer også med !prefix! Skriv /help for mer."
+    },
+    "commands": {
+        "starthere_desc": "Hurtigstartguide for SWN, WWN eller CWN.",
+        "swnhelp_desc": "Hurtigstartguide for stjerner uten nummer.",
+        "wwnhelp_desc": "Hurtigstartguide for Worlds Without Number.",
+        "cwnhelp_desc": "Hurtigstartguide for byer uten nummer.",
+        "lang_set_success": "✅ Språk satt til **{lang}**.",
+        "lang_invalid": "⚠️ Ugyldig språk! Velg mellom: EN, FR, ES, DE, PT, SV, RU."
+    },
+    "help": {
+        "title": "🎲 Uten nummerbothjelp",
+        "description": "Velkomst! Denne boten hjelper deg med å kaste terninger, sjekke utstyr og administrere karakterarket ditt.\n🌐 **Bot Info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Kompatibel med:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**Ny? Skriv `/swnhelp`, `/wwnhelp` eller `/cwnhelp` for en rask veiledning!**\n**Endre språk:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**Alle kommandoer fungerer med både `/` (skråstrek) og `!` (prefiks)!**",
+        "char_imports_title": "1a. Karakterimport",
+        "char_imports_body": "**`/importark` | `!importsheet` <url>**\nKoble til Google-arket ditt (SWN, WWN eller CWN). Den laster inn statistikk og muliggjør synkronisering!\n\n**`/importjson` | `!importjson` <url>**\nImporter fra en rå JSON-URL (raskeste måten å synkronisere *characterswithoutnumber.app*).\n\n**`/oppdatering` | `!oppdatering`**\nOppdater din aktive karakterstatistikk umiddelbart fra den lagrede kilde-URLen.\n\n**`/link` | `!link` <url>**\nKoble karakteren din til en vedvarende URL (JSON eller Google Sheet) for enkel synkronisering.\n\n**JSON-filopplasting**\nBare dra og slipp `.json`-eksportfilen inn i chatten. Boten håndterer det automatisk!\n\n**`/ark` | `!ark` | `/sc` | `/sf`**\nSe karakteren din. **`/sc`** for kampvisning, **`/sf`** for full visning.",
+        "char_mgmt_title": "1b. Karakterhåndtering",
+        "char_mgmt_body": "**`/switchchar` | `!switchchar` <navn>**\nBytt mellom de importerte tegnene dine.\n\n**`/portrett` | `!portrait` [url]**\nAngi et bilde for noen av karakterene dine. Legg ved en fil ELLER lim inn en URL. Vises som et miniatyrbilde på `/ark`!\n\n**`/bind` | `/unbind`**\n🎭 Knytt en karakter til gjeldende kanal. Boten vil huske hvilken helt du spiller i hvert spill!\n\n**`/awardxp` | `!awardxp` <amount>**\nGi XP til din aktive karakter.\n\n**`/swn`, `/wwn`, `/cwn`**\nGenerer umiddelbart et tilfeldig nivå 1-tegn for det systemet.\n\n**`/terskel` | `/threshold_wizard`**\nRull 3d6-attributter i rekkefølge, eller bruk den interaktive veiviseren!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nHurtigstartguider for ditt valgte system (SWN, WWN eller CWN)!",
+        "rolling_title": "2. Rolling & Combat",
+        "rolling_body": "**`/angrep` | `!angrep` [våpen]**\nKaster et 1d20-angrep. Legger til modifikatorer automatisk fra arket ditt!\n\n**`/gmroll` | `!gmroll`**\nSkjult rull (privat/flyktig) så bare du ser resultatet.\n\n**`/ferdighet` | `!skill` [skill_name]**\nKaster en 2d6 ferdighetssjekk. (f.eks. `!notice`, `!skill notice behendighet`).\n\n**`/roll` | `!roll` <uttrykk> [kommentar]**\nStøtter kompliserte kast: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Multipler:* Bruk `3x 1d20+5` eller `3#2d6` for å gjenta et kast!\n↳ *Emojier og kombinasjoner:* Bruk kommaer til å rulle flere ting samtidig! (f.eks. `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <amount> <expression>**\nRull det samme uttrykket flere ganger med separate detaljerte linjer.",
+        "tools_title": "3. Referanse og verktøy",
+        "tools_body": "**`/skip` | `!skip` | `/shiplist` | `!skipsliste`**\nSe eller liste opp de importerte stjerneskipene dine fra JSON-filer for sektorer uten nummer.\n\n**`/våpen`, `/armor`, `/gear`, `/foci`**\nBla gjennom gjenstander fra kompendiet! Fungerer for SWN, WWN og CWN.\n\n**`/regel` | `!regel` <søkeord>**\nSøk i kjerneregelbøkene etter en bestemt setning eller regel.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nJukseark for kamp, hacking og romkamp.",
+        "sandbox_title": "4. GM Sandbox Generation",
+        "sandbox_body": "**`/gen <planet | npc | korp | romvesen>`**\nGenerer øyeblikkelig et vakkert referansekort med randomiserte egenskaper.\nNPC-er og romvesener kommer med innebygd Attack-, AC- og HP-statistikk klar til å rulle!",
+        "tracker_title": "5. GM Tracker og taktisk kart",
+        "tracker_body": "**`/tracker legg til <navn> <hp> <ac> [kvantall]`** - Legg til fiender (støttet masse!).\n**`/tracker party`** - Legger til alle aktive kampanjespillere automatisk.\n**`/tracker map`** - Åpner **Interactive Tactical Map** med tema-rullegardiner!\n**`/tracker controller`** - Åpne **Native Discord Controller** (knapper!).\n**`/importmap <image>`** – Last opp en tilpasset bakgrunn for kartet.\n**`/tracker neste`** | **`/tracker skade`** | **`/tracker clear`**\n↳ *Pro-tips:* Bruk **`!sync`** hvis skråstrekkommandoer virker utdaterte!",
+        "faction_title": "6. Fraksjonssporer",
+        "faction_body": "**`/fraksjon opprette`, `/fraksjonsliste`, `/fraksjon rediger`**\nAdministrer kampanjens globale fraksjoner og deres statistikk.\n**`/fraksjonsangrep`** - Rull et motsatt fraksjonsangrep.",
+        "storyteller_title": "7. Fortellerverktøy",
+        "storyteller_body": "**`/plot`** – Generer en tilfeldig plottkrok eller situasjonsbestemt idé for å vekke kreativitet.\n**`/oracle`** - Still et Ja/Nei-spørsmål til 2d6 Oracle (Solo/GM-hjelper).\n**`/reaction`** - Rull en 2d6 NPC-reaksjon (fiendtlig -> Nyttig).\n**`/morale <target>`** - Kast en 2d6 moralsjekk mot en målscore.\n**`/loot`** - Finn en tilfeldig smaksgjenstand/pynt i lommen til en NPC.",
+        "party_title": "8. Fest- og skipssporing",
+        "party_body": "**`/party info`** – Send gjeld, kreditter og skrogpoeng.\n**`/skip` | `!ship`** - Se aktive stjerneskipstatistikker.\n**`/party split <amount>`** - Beregn en jevn utbetalingsdeling!",
+        "campaign_title": "9. Kampanjesporing",
+        "campaign_body": "**`/kampanjestart`** | **`/campaign join`** | **`/kampanjeinformasjon`**\nKoble spillere sammen for automatisert kampinngang og sporing.",
+        "voice_title": "🎙️ Håndfri og stemmekontroll",
+        "voice_body": "**`/stemme` | `!stemme`**\nÅpner **Voice Remote Portal**. Si meldingen din eller terningkast, så sendes de umiddelbart til Discord.\n\n**Stemmeintegrering (nett)**\nSe etter **[Voice Mode]**-bryteren på kartet og historiefortelleren. Den legger til synlige **[Si: Klikk ...]** hint til hver knapp, noe som gjør dem enkle å utløse med Windows Voice Access.",
+        "channel_role_title": "10. Kanalstyring",
+        "channel_role_body": "**`/kanaloppsett <rolle> <emoji>`**\nLag en blit-melding med en reaksjonsrolle umiddelbart.\n\n**`!rr [#kanal] @rolle <emoji>`**\nSuperenkel prefikskommando for én reaksjonsrolle.\n\n**`!rolle <emoji> <ID> ... [#kanal]`**\n**Masseoppsett!** Lag én melding som gir tilgang til flere kategorier eller kanaler ved å sende ID-ene deres! Eksempel: `!rolle 🚀 1111 💰 2222 #velkommen`\n\n**`/kanal rollesett <rolle>`**\nUtpek en rolle som 'GM' for denne kanalen for å kontrollere sporere."
+    },
+    "errors": {
+        "no_gm_permission": "❌ Du har ikke GM-tillatelser i denne kanalen. (Krever Server Admin, Campaign GM eller angitt kanalrolle)"
+    }
+}

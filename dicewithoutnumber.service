@@ -1,0 +1,16 @@
+[Unit]
+Description=Dice Without Number Discord Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/DICEwithoutNumber
+ExecStart=/usr/bin/python bot.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/root/DICEwithoutNumber/bot_new.log
+StandardError=append:/root/DICEwithoutNumber/bot_new.log
+
+[Install]
+WantedBy=multi-user.target

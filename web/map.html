@@ -1,0 +1,3093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="app-title">Tactical Map | DICEwithoutNumber</title>
+    <title id="app-title">Tactical Map | DICEwithoutNumber</title>
+    <script>
+        // --- CUSTOMIZATION ---
+        function getGuildId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('guild_id');
+        }
+
+        async function loadSettings() {
+            try {
+                const guildId = getGuildId();
+                const url = guildId ? `/api/settings?guild_id=${guildId}` : '/api/settings';
+                const res = await fetch(url);
+                const settings = await res.json();
+                
+                const personalName = localStorage.getItem('personal_app_name');
+                const activeName = personalName || settings.app_name || "DICEwithoutNumber";
+                
+                document.title = "Tactical Map | " + activeName;
+                document.querySelectorAll('.dynamic-app-name').forEach(el => el.textContent = activeName);
+            } catch(e) { console.error("Failed to load settings", e); }
+        }
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <!-- Discord SDK for Activity Support -->
+    <script src="https://cdn.jsdelivr.net/npm/@discord/embedded-app-sdk@1.2.0/lib/discord.js"></script>
+    <!-- Three.js for 3D Map -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        :root {
+            --accent-blue: #5865f2;
+            --accent-indigo: #4752c4;
+            --accent-red: #ed4245;
+            --bg-dark: #121417;
+            --bg-mid: #1e1f22;
+            --bg-glass: rgba(18, 20, 23, 0.75);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --header-font: 'Outfit', 'Inter', sans-serif;
+            --body-font: 'Inter', sans-serif;
+            --theme-grid: rgba(255, 255, 255, 0.15);
+        }
+
+        * { box-sizing: border-box; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background: var(--bg-dark); 
+            color: #dbdee1; font-family: var(--body-font);
+        }
+
+        .theme-default { --theme-bg: #1e1f22; --theme-grid: rgba(255,255,255,0.1); }
+        .theme-forest { --theme-bg: #2d3e2d; --theme-grid: rgba(255,255,255,0.2); --theme-image: url('/assets/map_forest_new.png'); }
+        .theme-cave { --theme-bg: #1a1a1a; --theme-grid: rgba(255,255,255,0.15); --theme-image: url('/assets/map_cave_new.png'); }
+        .theme-desert { --theme-bg: #4a3728; --theme-grid: rgba(255,255,255,0.2); --theme-image: url('/assets/map_desert_new.png'); }
+        
+        .theme-cyberpunk { --theme-bg: #0d0914; --theme-grid: rgba(255,0,255,0.2); --theme-image: url('/assets/map_cyberpunk_1773887614197.png'); }
+        .theme-starship { --theme-bg: #11141f; --theme-grid: rgba(0,255,255,0.15); --theme-image: url('/assets/map_starship_1773887640903.png'); }
+        .theme-alien { --theme-bg: #0a1f18; --theme-grid: rgba(100,255,100,0.15); --theme-image: url('/assets/map_alien_ruins_1773887666120.png'); }
+        .theme-lab { --theme-bg: #dbe4ee; --theme-grid: rgba(0,100,255,0.15); --theme-image: url('/assets/map_science_lab_1773887705015.png'); }
+        .theme-dungeon { 
+            --theme-bg: #1a1a1a; 
+            --theme-accent: #f87171;
+            --theme-image: url('/assets/map_dungeon_dark_1773831825631.png');
+        }
+
+        /* Generic theme for custom uploads */
+        .theme-custom {
+            --theme-bg: #0b0c0e;
+            --theme-accent: var(--accent-blue);
+            --theme-image: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        #app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg-dark);
+        }
+
+        #sidebar {
+            width: 350px;
+            height: 100vh;
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-glass);
+            border-left: none;
+            z-index: 1000;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            overflow: hidden; /* use hidden so tabs scroll inside */
+            flex-shrink: 0;
+            
+            position: absolute;
+            left: 0;
+            top: 0;
+            resize: both;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+
+        #sidebar.collapsed {
+            display: none !important;
+        }
+        
+        #sidebar-drag-handle {
+            text-align: center;
+            cursor: grab;
+            color: #888;
+            padding: 5px;
+            margin: -24px -24px 0 -24px;
+            background: rgba(0,0,0,0.5);
+            user-select: none;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        #sidebar-drag-handle:active {
+            cursor: grabbing;
+        }
+
+        #toggle-sidebar-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #toggle-sidebar-btn:hover {
+            background: var(--accent-blue);
+            transform: scale(1.05);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            margin: 0;
+            color: white;
+        }
+
+        .section-label {
+            font-family: var(--header-font);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #8e9297;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .toggle-group {
+            display: flex;
+            background: #1e1f22;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #3f4147;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            color: #80848e;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        select {
+            background: #1e1f22;
+            color: white;
+            border: 1px solid #3f4147;
+            padding: 8px;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        /* Zoom Controls */
+        #zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .zoom-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(43, 45, 49, 0.9);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .zoom-btn:hover {
+            background: var(--accent-blue);
+            transform: scale(1.1);
+        }
+
+        #view-toggle {
+            display: flex;
+            background: #1e1f22;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid #3f4147;
+            margin-top: 10px;
+        }
+
+        /* Removed duplicate grid definitions */
+
+        #bench {
+            flex-grow: 1;
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            align-content: start;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .bench-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: grab;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border: none !important;
+            transition: transform 0.2s;
+        }
+        .bench-item:hover { transform: scale(1.1); }
+
+        .bench-item.enemy { 
+            background: linear-gradient(135deg, #ed4245 0%, #da373a 100%);
+            box-shadow: 0 4px 15px rgba(237, 66, 69, 0.4);
+        }
+        
+        .bench-item .initials { pointer-events: none; }
+
+        .bench-item:hover::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: -20px;
+            font-size: 10px;
+            background: black;
+            padding: 2px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            z-index: 100;
+        }
+
+        #map-area {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0b0c0e;
+            z-index: 0;
+        }
+
+        #map-viewport {
+            position: absolute;
+            top: 50%; left: 50%;
+            /* 100%x100% by default, ResizeObserver will shrink to image aspect ratio */
+            width: 100%; height: 100%;
+            transform-origin: center center;
+            transition: transform 0.1s linear;
+            display: flex;
+            align-items: center; justify-content: center;
+            will-change: transform;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #map-background {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #grid-container-2d {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(50, 1fr);
+            grid-template-rows: repeat(50, 1fr);
+            pointer-events: auto;
+        }
+
+        .cell {
+            width: 100%;
+            height: 100%;
+            border: 0.5px solid var(--theme-grid);
+            box-sizing: border-box;
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+        
+        .painted-red { background-color: rgba(237, 66, 69, 0.4); }
+        .painted-green { background-color: rgba(50, 255, 50, 0.3); }
+        .painted-blue { background-color: rgba(50, 150, 255, 0.4); }
+        .painted-purple { background-color: rgba(200, 50, 255, 0.4); }
+
+        .token {
+            position: absolute;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
+            background-image: linear-gradient(135deg, rgba(88, 101, 242, 0.4) 0%, rgba(71, 82, 196, 0.4) 100%);
+            backdrop-filter: blur(5px);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: grab;
+            z-index: 5;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255,255,255,0.1);
+            border: none !important;
+            margin: 0;
+            user-select: none;
+            flex-direction: column;
+            transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .token.enemy { 
+            background-color: var(--accent-red);
+            background-image: linear-gradient(135deg, rgba(237, 66, 69, 0.4) 0%, rgba(218, 55, 58, 0.4) 100%);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255,255,255,0.1);
+            border: none !important;
+        }
+        .token:active { cursor: grabbing; z-index: 1000; }
+
+        .token-info {
+            font-size: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 1px 4px;
+            border-radius: 3px;
+            position: absolute;
+            top: -15px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .hp-bar {
+            position: absolute;
+            bottom: -5px;
+            width: 80%;
+            height: 4px;
+            background: #444;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .hp-fill { height: 100%; background: #3ba55c; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 2000;
+        }
+        .modal {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            width: 95%; max-width: 500px;
+            max-height: 90vh; overflow-y: auto;
+            padding: 20px; border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            color: white;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .modal h2 { margin: 0 0 24px 0; font-family: var(--header-font); font-weight: 600; font-size: 1.5rem; }
+        .modal label { display: block; margin-top: 16px; margin-bottom: 6px; font-size: 0.85rem; color: #b9bbbe; font-weight: 500; }
+        .modal input[type="text"], .modal input[type="number"], .modal select {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2); color: white; margin-bottom: 5px;
+            font-family: var(--body-font);
+        }
+        .modal input:focus { border-color: var(--accent-blue); outline: none; }
+        .modal .checkbox-wrap { margin-top: 15px; display: flex; align-items: center; gap: 10px; }
+        .modal .checkbox-wrap label { margin: 0; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+        .btn {
+            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;
+            font-weight: 600; color: white; transition: 0.2s;
+        }
+        .btn-primary { background: var(--accent-blue); }
+        .btn-primary:hover { filter: brightness(1.2); }
+        .btn-danger { background: var(--accent-red); }
+        .btn-danger:hover { filter: brightness(1.2); }
+        .btn-secondary { background: #4f545c; }
+        .btn-secondary:hover { filter: brightness(1.2); }
+        
+        .action-btn {
+            width: 100%; padding: 10px; margin-top: 10px;
+            background: #1e1f22; border: 1px solid #3f4147;
+            color: #dbdee1; border-radius: 4px; cursor: pointer;
+            font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s;
+        }
+        .action-btn:hover { background: #3f4147; }
+        .action-add { border-color: var(--accent-blue); color: #8ea1fa; }
+
+        /* Token Gallery Styles */
+        .token-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; background: #1e1f22; padding: 10px; border-radius: 6px; border: 1px solid #3f4147; max-height: 150px; overflow-y: auto; }
+        .gallery-item { aspect-ratio: 1; border-radius: 50%; border: none !important; cursor: pointer; background-size: cover; overflow: hidden; }
+        .gallery-item.selected { border-color: var(--accent-blue); box-shadow: 0 0 10px var(--accent-blue); }
+        .gallery-item:hover { transform: scale(1.1); }
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            #app-container {
+                flex-direction: column;
+            }
+            #sidebar {
+                width: 100%;
+                max-width: none;
+                height: 55vh;
+                max-height: 90vh;
+                left: 0 !important;
+                resize: vertical;
+                border: none;
+                border-bottom: 2px solid var(--border-glass);
+            }
+            /* .collapsed is handled by generic display:none!important now */
+            #map-area {
+                height: 100vh;
+                width: 100vw;
+            }
+            .sidebar-content {
+                padding: 15px;
+            }
+            #toggle-sidebar-btn {
+                background: var(--primary);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            }
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+                padding: 15px;
+            }
+            .action-buttons {
+                flex-direction: row !important;
+                flex-wrap: wrap;
+            }
+            .action-btn {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+        /* Tabs System */
+        .tabs-header { display: flex; gap: 5px; margin: 0 0 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 5px 0 10px 0; }
+        .tab-btn { background: none; border: none; color: #aaa; padding: 8px 12px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; cursor: pointer; border-radius: 5px; transition: all 0.2s; white-space: nowrap; }
+        .tab-btn.active { background: rgba(255,255,255,0.1); color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .tab-btn:hover:not(.active) { color: white; background: rgba(255,255,255,0.05); }
+
+        /* Mobile specific header adjustment */
+        @media (max-width: 768px) {
+            .tabs-header { padding-left: 45px; } /* Space for the ☰ button */
+        }
+
+        /* Chat Styles */
+        #chat-tab { display: none; flex-direction: column; gap: 15px; height: 100%; overflow: hidden; }
+        #channel-select { width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; color: #8ea1fa; font-size: 0.85rem; outline: none; }
+        #chat-history { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .chat-msg { font-size: 0.85rem; line-height: 1.4; animation: fadeIn 0.3s ease; }
+        .chat-author { font-weight: 700; color: #fff; margin-right: 5px; }
+        .chat-time { font-size: 0.7rem; opacity: 0.4; margin-left: 5px; }
+        .chat-content { color: #dbdee1; word-wrap: break-word; }
+        
+        .chat-input-container { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+        #chat-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; font-size: 0.9rem; outline: none; }
+        #chat-input:focus { border-color: var(--accent-blue); }
+        #btn-send-chat { background: var(--accent-blue); border: none; padding: 8px 15px; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; }
+        #btn-send-chat:hover { background: var(--accent-indigo); }
+
+        #btn-mic-chat {
+            background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--glass-border);
+            width: 40px; height: 40px; border-radius: 6px;
+            cursor: pointer; transition: 0.2s; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #btn-mic-chat.active {
+            background: rgba(237, 66, 69, 0.1); color: #ed4245; border-color: #ed4245;
+            animation: pulse-red-map 1.5s infinite;
+        }
+        @keyframes pulse-red-map {
+            0% { box-shadow: 0 0 0 0 rgba(237, 66, 69, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(237, 66, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(237, 66, 69, 0); }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* AI Storyteller Specifics */
+        .ai-msg { margin-bottom: 12px; animation: fadeIn 0.3s ease; }
+        .ai-author { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #5865f2; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
+        .ai-content { font-size: 0.9rem; line-height: 1.5; color: #dbdee1; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .ai-content::before { content: '"'; position: absolute; left: 4px; top: 0; font-size: 2rem; opacity: 0.1; font-family: serif; }
+        
+        #ai-history::-webkit-scrollbar { width: 4px; }
+        #ai-history::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .voice-hint { display: none; font-size: 0.6rem; color: var(--accent-blue); font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+        body.voice-mode .voice-hint { display: block; }
+
+        .voice-toggle-btn {
+            background: rgba(81, 101, 246, 0.1); color: #8ea1fa;
+            border: 1px solid rgba(255,255,255,0.1); padding: 5px 10px;
+            border-radius: 15px; font-size: 0.7rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s; margin-left: auto;
+        }
+        .voice-toggle-btn.active { background: var(--accent-blue); color: white; border: none; }
+    </style>
+</head>
+<body class="theme-default">
+    <div id="status-panel" style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 10px 20px; border-radius: 8px; color: white; display: none; font-weight: bold; pointer-events: none;"></div>
+    <div id="app-container">
+        <div id="sidebar">
+            <div id="sidebar-drag-handle" title="Drag to move">≡</div>
+            <div class="tabs-header" style="display: flex; align-items: center; flex-wrap: wrap;">
+                <button class="tab-btn active" id="tab-tokens-btn" aria-label="Players Tab">♟️ Players</button>
+                <button class="tab-btn" id="tab-chat-btn" aria-label="Chat Tab">💬 Chat</button>
+                <button id="btn-voice-toggle" class="voice-toggle-btn" aria-label="Toggle Voice Control Hints">
+                    <i class="fas fa-comment-dots"></i> Voice mode
+                </button>
+                <div id="google_translate_element" style="margin-left: auto; padding-top: 5px;"></div>
+            </div>
+            <script type="text/javascript">
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
+            }
+            </script>
+            <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+            <!-- Tokens Tab -->
+            <div id="tokens-tab-content" style="display: flex; flex-direction: column; gap: 20px; flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; min-height: 0;">
+                <div>
+                    <div class="section-label">Theme</div>
+                    <select id="theme-select">
+                        <option value="default">Space / Void</option>
+                        <option value="starship">Starship Bridge (AI)</option>
+                        <option value="cyberpunk">Neon Cyberpunk (AI)</option>
+                        <option value="alien">Alien Ruins (AI)</option>
+                        <option value="dungeon">📜 Stone Dungeon (Builder)</option>
+                        <option value="forest">Mystic Forest (AI)</option>
+                        <option value="cave">Cave</option>
+                        <option value="desert">Desert</option>
+                        <option value="lab">Science Lab (AI)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <div class="section-label">Grid Mode</div>
+                    <div class="toggle-group">
+                        <button class="toggle-btn active" id="btn-grid-square">⬜ Square</button>
+                        <button class="toggle-btn" id="btn-grid-hex">⬡ Hex</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-label">Perspective</div>
+                    <div id="view-toggle">
+                        <button class="toggle-btn active" id="btn-view-3d">🧊 3D</button>
+                        <button class="toggle-btn" id="btn-view-2d">🗺️ 2D</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-label">Interaction</div>
+                    <div class="toggle-group">
+                        <button class="toggle-btn active" id="mode-move">♟️ Move</button>
+                        <button class="toggle-btn" id="mode-paint">🎨 Paint</button>
+                        <button class="toggle-btn" id="mode-pan">✋ Pan</button>
+                    </div>
+                    <div class="color-palette" id="color-palette" style="display: none; margin-top: 10px; gap: 5px;">
+                        <button class="color-btn" data-color="red" style="background: rgba(255,50,50,0.6); border: 2px solid white; cursor: pointer; width: 25px; height: 25px; border-radius: 4px;"></button>
+                        <button class="color-btn" data-color="green" style="background: rgba(50,255,50,0.6); border: 2px solid transparent; cursor: pointer; width: 25px; height: 25px; border-radius: 4px;"></button>
+                        <button class="color-btn" data-color="blue" style="background: rgba(50,150,255,0.6); border: 2px solid transparent; cursor: pointer; width: 25px; height: 25px; border-radius: 4px;"></button>
+                        <button class="color-btn" data-color="purple" style="background: rgba(200,50,255,0.6); border: 2px solid transparent; cursor: pointer; width: 25px; height: 25px; border-radius: 4px;"></button>
+                    </div>
+                </div>
+
+                <div class="action-buttons" style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="action-btn" id="btn-add-token" aria-label="Add Character" style="background: rgba(100, 100, 255, 0.2); border: 1px solid rgba(100, 100, 255, 0.4); color: #88f; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;">+ Add Character</button>
+                    <span class="voice-hint">[Say: Click Add Character]</span>
+
+                    <button class="action-btn" id="btn-update-map" aria-label="Update Map" style="background: rgba(100, 255, 100, 0.1); border: 1px solid rgba(100, 255, 100, 0.3); color: #8f8; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;">🗺️ Update Map</button>
+                    <span class="voice-hint">[Say: Click Update Map]</span>
+
+                    <button class="action-btn" id="btn-clear-drawings" aria-label="Clear Drawings" style="background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.3); color: #f88; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;">🪄 Clear Drawings</button>
+                    <span class="voice-hint">[Say: Click Clear Drawings]</span>
+                </div>
+
+                <div id="bench-section" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+                    <div class="section-label">Reinforcements</div>
+                    <div id="bench" style="overflow-y:auto; flex:1; min-height: 100px;">
+                        <!-- Unplaced tokens go here -->
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Chat Tab -->
+            <div id="chat-tab" style="display: none; flex-direction: column; gap: 15px; flex: 1; overflow: hidden;">
+                <h1 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.2rem; color: white;">Social Feed</h1>
+                
+                <div>
+                    <div class="section-label">Channel</div>
+                    <select id="channel-select">
+                        <option value="">Loading channels...</option>
+                    </select>
+                </div>
+
+                <div id="chat-history">
+                    <div style="opacity: 0.5; font-size: 0.8rem; text-align: center; margin-top: 20px;">
+                        Select a channel to see messages
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Aa">
+                    <button id="btn-mic-chat" title="Voice Input"><i class="fas fa-microphone"></i></button>
+                    <button id="btn-send-chat">Send</button>
+                </div>
+            </div>
+
+            <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;" id="help-text">
+                Drag tokens to deploy. Use tabs for chat!
+            </div>
+        </div>
+
+        <div id="map-area">
+            <div id="loading-screen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #121417; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: white; transition: opacity 0.5s;">
+                <div class="logo-icon" style="font-size: 4rem; margin-bottom: 20px; animation: pulse 2s infinite;"><i class="fas fa-dice-d20" style="color: #5865f2;"></i></div>
+                <h2 style="font-family: 'Outfit';">Initializing Tactical Grid...</h2>
+                <div id="loading-status" style="margin-top: 10px; color: #888; font-size: 0.9rem;">Connecting to Discord...</div>
+                <style>@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }</style>
+            </div>
+            <div id="map-viewport">
+                <div id="map-background"></div>
+                <div id="canvas-container"></div>
+                <div id="grid-container-2d"></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="toggle-sidebar-btn">☰</button>
+
+    <div id="zoom-controls">
+        <button class="zoom-btn" id="btn-zoom-in" title="Zoom In">+</button>
+        <button class="zoom-btn" id="btn-zoom-out" title="Zoom Out">−</button>
+        <button class="zoom-btn" id="btn-zoom-reset" title="Reset Scale">⟲</button>
+        <button class="zoom-btn" id="btn-center-map" style="font-size: 1.1rem;" title="Center Map">🎯</button>
+    </div>
+
+    <!-- Update Map Modal -->
+    <div class="modal-overlay" id="map-modal">
+        <div class="modal">
+            <h2>🗺️ Update Map</h2>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px;">Image URL (Direct or Google Drive)</label>
+                <input type="text" id="map-url-input" placeholder="https://..." style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:5px; color:white;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:5px;">Or Upload File</label>
+                <input type="file" id="map-upload-input" accept="image/*" style="width:100%; color:#aaa;">
+            </div>
+            <div style="display:flex; gap:10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" id="btn-cancel-map">Cancel</button>
+                <button class="btn btn-primary" id="btn-submit-map">Update Map</button>
+            </div>
+        </div>
+    </div>
+    <!-- Add Token Modal -->
+    <div class="modal-overlay" id="add-modal">
+        <div class="modal">
+            <h2>Add Token</h2>
+            
+            <div style="max-height: 480px; overflow-y: auto; padding-right: 5px;">
+                <label>Load PC (Optional)</label>
+                <select id="load-pc-select">
+                    <option value="">-- Select PC --</option>
+                </select>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Left: Image Selection -->
+                <div>
+                    <label>Token Image</label>
+                    <div style="margin: 8px 0; display:flex; gap:5px;">
+                        <button class="btn btn-secondary" id="btn-upload-custom" style="padding: 8px; flex:1">📁 File</button>
+                        <input type="text" id="add-url" placeholder="Paste Link" style="flex:2; padding:8px;">
+                        <input type="file" id="token-upload-input" style="position:absolute; visibility:hidden; width:1px; height:1px;" accept="image/*">
+                    </div>
+                    <div class="token-gallery" id="add-token-gallery" style="max-height: 200px;">
+                        <div class="gallery-item selected" data-url="" style="background-color: var(--accent-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px;">None</div>
+                    </div>
+                </div>
+
+                <!-- Right: Stats -->
+                <div>
+                    <label>Name</label>
+                    <input type="text" id="add-name" placeholder="Name" style="margin-bottom:10px;">
+                    
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div><label>HP</label><input type="number" id="add-hp" value="10"></div>
+                        <div><label>AC</label><input type="number" id="add-ac" value="10"></div>
+                        <div><label>Qty</label><input type="number" id="add-count" value="1" min="1"></div>
+                        <div>
+                            <label>Size</label>
+                            <select id="add-size">
+                                <option value="1x1">1x1</option>
+                                <option value="2x2">2x2</option>
+                                <option value="3x3">3x3</option>
+                                <option value="4x4">4x4</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-wrap" style="margin-top: 15px;">
+                        <input type="checkbox" id="add-enemy" checked> <label style="display:inline; margin:0">Enemy</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top:20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                <button class="btn btn-secondary" id="btn-cancel-add">Cancel</button>
+                <button class="btn btn-primary" id="btn-submit-add">Add Tokens</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Token Modal -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal">
+            <h2>Edit Token</h2>
+            <input type="hidden" id="edit-id">
+            
+            <div style="margin-bottom: 15px;">
+                <label>Select Token Image</label>
+                <div class="token-gallery" id="edit-token-gallery">
+                    <div class="gallery-item" data-url="" style="background-color: var(--accent-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px;">None</div>
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+
+            <label>Name</label><input type="text" id="edit-name">
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1"><label>Curr HP</label><input type="number" id="edit-hp-curr"></div>
+                <div style="flex:1"><label>Max HP</label><input type="number" id="edit-hp-max"></div>
+                <div style="flex:1"><label>AC</label><input type="number" id="edit-ac"></div>
+                <div style="flex:1">
+                    <label>Size</label>
+                    <select id="edit-size">
+                        <option value="1x1">1x1</option>
+                        <option value="2x2">2x2</option>
+                        <option value="3x3">3x3</option>
+                        <option value="4x4">4x4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions" style="justify-content: space-between;">
+                <button class="btn btn-danger" id="btn-delete-token">Delete</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary" id="btn-cancel-edit">Cancel</button>
+                    <button class="btn btn-primary" id="btn-submit-edit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global State & Three.js Vars
+        let discordSdk = null;
+        const searchParams = new URLSearchParams(window.location.search);
+        let guildId = searchParams.get('guild_id');
+        let channelId = searchParams.get('channel_id');
+        let activeChannelId = channelId;
+        let currentTheme = 'default';
+        let currentMode = 'move';
+        let gridType = 'square';
+        let isPainting = false;
+        let lastPaintedCell = null;
+        let paintColor = 'red';
+        let partyLoaded = false;
+        let selectedImageUrl = '';
+        let activeDragToken3D = null;
+        let activeDragToken2D = null;
+        let isDragging = false;
+        let currentView = '3d';
+        let lastThemeChangeTime = 0;
+        const GRID_SIZE = 50;
+        let mapScale = 1.0;
+        let mapTranslateX = 0;
+        let mapTranslateY = 0;
+        let isPanning = false;
+        let startPanX = 0;
+        let startPanY = 0;
+        
+        let scene, camera, renderer, controls, raycaster, mouse;
+        let composer, bloomPass;
+        let gridHelper, environmentPlane, hitDot, torchLight, cells3D = [];
+        let blocks = [];
+        let tokens3D = new Map();
+        
+        try {
+            const SDKClass = (window.Discord && window.Discord.DiscordSDK) || (window.discordSdk && window.discordSdk.DiscordSDK);
+            if (SDKClass) {
+                discordSdk = new SDKClass("{{CLIENT_ID}}");
+                discordSdk.ready().then(() => {
+                    console.log("Discord SDK Ready");
+                    if (discordSdk.guildId) guildId = discordSdk.guildId;
+                    if (discordSdk.channelId) {
+                        channelId = discordSdk.channelId;
+                        activeChannelId = channelId;
+                    }
+                    if (guildId) {
+                        fetchState();
+                        initCore(); // Try to start if we found a guild
+                    }
+                }).catch(e => {
+                    console.log("SDK Ready error:", e);
+                    remoteLog('ERROR', 'Discord SDK Ready Error', e.message);
+                });
+            }
+        } catch(e) { 
+            console.log("SDK init skipped", e); 
+            remoteLog('DEBUG', 'SDK Init Skipped', e.message);
+        }
+
+        async function remoteLog(level, msg, data='') {
+            try {
+                fetch('/api/log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level, msg, data: JSON.stringify(data) })
+                });
+            } catch(e) {}
+        }
+
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error(`PROMISE ERR: ${event.reason}`);
+            showStatus(`Error: ${event.reason}`, 'error');
+            remoteLog('ERROR', 'Unhandled Promise Rejection', event.reason);
+        });
+
+        window.onerror = function(msg, url, line) {
+            showStatus(`JS Error: ${msg} at ${line}`, 'error');
+            remoteLog('ERROR', `JS Error: ${msg}`, { url, line });
+            return false;
+        };
+
+        function showStatus(msg, type='info') {
+            const panel = document.getElementById('status-panel');
+            if (!panel) return;
+            panel.textContent = msg;
+            panel.style.background = type === 'error' ? 'rgba(237, 66, 69, 0.8)' : 'rgba(88, 101, 242, 0.8)';
+            panel.style.display = 'block';
+            setTimeout(() => { panel.style.display = 'none'; }, 5000);
+        }
+
+        function showConnectionRequired() {
+            document.body.innerHTML = `
+                <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#121417; color:white; font-family:Inter,sans-serif; text-align:center; padding:20px;">
+                    <div style="width: 80px; height: 80px; background: rgba(88, 101, 242, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5865f2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                    </div>
+                    <h1 style="font-family:Outfit; font-size:2rem; margin-bottom:10px;">Tactical Map Connection Required</h1>
+                    <p style="font-size:1.1rem; max-width:500px; line-height:1.6; opacity: 0.8; margin-bottom: 40px;">To see your tokens and grid, please use the <b>/map</b> command in your Discord server.</p>
+                    
+                    <div style="padding:32px; background:rgba(255,255,255,0.03); border-radius:24px; border:1px solid rgba(255,255,255,0.08); width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                        <p style="opacity:0.6; font-size:0.9rem; margin-bottom: 20px; font-weight: 500;">OR CONNECT MANUALLY</p>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <input type="text" id="manual-guild-id" placeholder="Paste Server ID here..." 
+                                style="flex: 1; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); color: white; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#5865f2'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
+                                onkeydown="if(event.key==='Enter') window.location.search = '?guild_id=' + this.value">
+                            <button onclick="window.location.search = '?guild_id=' + document.getElementById('manual-guild-id').value" 
+                                style="background: #5865f2; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: background 0.2s; font-size: 1rem;">
+                                Connect to Grid
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 40px;">
+                        <a href="/" style="color: #5865f2; text-decoration: none; font-weight: 600; font-size: 0.9rem;">← Back to Home</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* SDK handled above */
+
+        // Three.js Core
+               function init3D() {
+            if (typeof THREE === 'undefined') {
+                showStatus("Critical: THREE.js not loaded!", 'error');
+                return;
+            }
+            try {
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x0a0b0d);
+                scene.fog = new THREE.FogExp2(0x0a0b0d, 0.00015);
+                
+                const container = document.getElementById('canvas-container');
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                
+                const width = container.clientWidth || window.innerWidth || 1024;
+                const height = container.clientHeight || window.innerHeight || 768;
+                
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio || 1);
+                renderer.shadowMap.enabled = true;
+                container.appendChild(renderer.domElement);
+                
+                camera = new THREE.PerspectiveCamera(45, width / height, 1, 20000);
+                camera.position.set(0, 1500, 1500);
+                camera.lookAt(0, 0, 0);
+                
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.maxPolarAngle = Math.PI / 2.1;
+                
+                scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+                const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+                sun.position.set(500, 1000, 500);
+                sun.castShadow = true;
+                sun.shadow.mapSize.width = 2048;
+                sun.shadow.mapSize.height = 2048;
+                scene.add(sun);
+                
+                torchLight = new THREE.PointLight(0xffaa66, 0, 800); 
+                torchLight.castShadow = true;
+                scene.add(torchLight);
+
+                // Post-Processing
+                try {
+                    if (typeof THREE.EffectComposer !== 'undefined' && typeof THREE.UnrealBloomPass !== 'undefined') {
+                        const renderScene = new THREE.RenderPass(scene, camera);
+                        bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(width, height), 1.5, 0.4, 0.85);
+                        bloomPass.threshold = 0.21; bloomPass.strength = 1.2; bloomPass.radius = 0.55;
+                        composer = new THREE.EffectComposer(renderer);
+                        composer.addPass(renderScene);
+                        composer.addPass(bloomPass);
+                    }
+                } catch(e) { console.error("Bloom failed", e); composer = null; }
+                
+                // Grid and Helpers
+                createHexGrid();
+                gridHelper = new THREE.GridHelper(3000, GRID_SIZE, 0x555555, 0x333333);
+                scene.add(gridHelper);
+                
+                const planeGeom = new THREE.PlaneGeometry(5000, 5000);
+                const planeMat = new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide });
+                environmentPlane = new THREE.Mesh(planeGeom, planeMat);
+                environmentPlane.rotation.x = -Math.PI / 2;
+                environmentPlane.receiveShadow = true;
+                scene.add(environmentPlane);
+
+                // Starfield
+                const skyGeom = new THREE.SphereGeometry(4000, 32, 32);
+                const sky = new THREE.Mesh(skyGeom, new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.BackSide, transparent: true, opacity: 0.8 }));
+                scene.add(sky);
+
+                // Paintable cells
+                for(let y=0; y<GRID_SIZE; y++) {
+                    for(let x=0; x<GRID_SIZE; x++) {
+                        const cell = new THREE.Mesh(new THREE.PlaneGeometry(56, 56), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, color: 0xff0000 }));
+                        cell.rotation.x = -Math.PI / 2;
+                        cell.position.set((x - (GRID_SIZE/2 - 0.5)) * 60, 0.1, (y - (GRID_SIZE/2 - 0.5)) * 60);
+                        cell.userData = { x, y };
+                        scene.add(cell);
+                        cells3D.push(cell);
+                    }
+                }
+                
+                // Selection Ring
+                hitDot = new THREE.Mesh(new THREE.TorusGeometry(32, 2, 8, 32), new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2, transparent: true, opacity: 0.6 }));
+                hitDot.rotation.x = Math.PI / 2;
+                hitDot.visible = false;
+                scene.add(hitDot);
+                
+                raycaster = new THREE.Raycaster();
+                mouse = new THREE.Vector2();
+                
+                window.addEventListener('resize', onWindowResize);
+                container.addEventListener('mousedown', onMouseDown);
+                container.addEventListener('mousemove', onMouseMove);
+                container.addEventListener('mouseup', onMouseUp);
+                
+                // Touch events for 3D token dragging
+                container.addEventListener('touchstart', onMouseDown, { passive: false });
+                container.addEventListener('touchmove', onMouseMove, { passive: false });
+                container.addEventListener('touchend', onMouseUp, { passive: false });
+                
+                // Allow dropping tokens from reinforcements
+                container.ondragover = (e) => e.preventDefault();
+                container.ondrop = async (e) => {
+                    e.preventDefault();
+                    const tokenId = e.dataTransfer.getData('tokenId');
+                    if (!tokenId) return;
+
+                    const rect = container.getBoundingClientRect();
+                    const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                    const mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+                    const dropRay = new THREE.Raycaster();
+                    dropRay.setFromCamera({ x: mouseX, y: mouseY }, camera);
+                    const intersects = dropRay.intersectObject(environmentPlane);
+
+                    if (intersects.length > 0) {
+                        const pt = intersects[0].point;
+                        const x = Math.round(pt.x / 60 + (GRID_SIZE / 2 - 0.5));
+                        const y = Math.round(pt.z / 60 + (GRID_SIZE / 2 - 0.5));
+
+                        if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+                            remoteLog('INFO', `Dropping token ${tokenId} at grid (${x}, ${y})`);
+                            showStatus(`Placing token at ${x}, ${y}...`);
+                            await fetch('/api/move', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    guild_id: guildId,
+                                    channel_id: activeChannelId || channelId || 'default',
+                                    id: parseInt(tokenId),
+                                    x, y
+                                })
+                            });
+                            fetchState();
+                        }
+                    }
+                };
+                
+                animate();
+            } catch (e) {
+                console.error("3D Init Failed:", e);
+                showStatus("3D Error: " + e.message, 'error');
+            }
+        }
+
+        function setupResizeObserver() {
+            const mapArea = document.getElementById('map-area');
+            const grid = document.getElementById('grid-container-2d');
+            const mapBackground = document.getElementById('map-background');
+            const viewport = document.getElementById('map-viewport');
+            
+            const observer = new ResizeObserver(() => {
+                const bgImg = getComputedStyle(mapBackground).backgroundImage;
+                if (bgImg === 'none' || bgImg === 'initial') {
+                    viewport.style.width = '90vmin';
+                    viewport.style.height = '90vmin';
+                    return;
+                }
+                
+                const img = new Image();
+                // Extract URL from url("...") or url('...')
+                const url = bgImg.slice(4, -1).replace(/"/g, "").replace(/'/g, "");
+                img.src = url;
+                img.onload = () => {
+                    const ratio = img.width / img.height;
+                    const rect = mapArea.getBoundingClientRect();
+                    if (!rect.width || !rect.height) return;
+                    
+                    const areaRatio = rect.width / rect.height;
+                    
+                    if (areaRatio > ratio) {
+                        viewport.style.height = '100%';
+                        viewport.style.width = (rect.height * ratio) + 'px';
+                    } else {
+                        viewport.style.width = '100%';
+                        viewport.style.height = (rect.width / ratio) + 'px';
+                    }
+                };
+                img.onerror = () => {
+                    viewport.style.width = '90vmin';
+                    viewport.style.height = '90vmin';
+                };
+            });
+            observer.observe(mapArea);
+        }
+
+        function init2D() {
+            const grid = document.getElementById('grid-container-2d');
+            grid.innerHTML = '';
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    cell.onmousedown = (e) => on2DMouseDown(e, x, y);
+                    cell.onmouseenter = (e) => on2DMouseEnter(e, x, y);
+                    grid.appendChild(cell);
+                }
+            }
+            window.addEventListener('mouseup', on2DMouseUp);
+            
+            // Allow dropping tokens from bench
+            grid.ondragover = (e) => e.preventDefault();
+            grid.ondrop = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const tokenId = e.dataTransfer.getData('tokenId');
+                if (!tokenId) return;
+                
+                const rect = grid.getBoundingClientRect();
+                const cellSize = rect.width / GRID_SIZE;
+                const x = Math.floor((e.clientX - rect.left) / cellSize);
+                const y = Math.floor((e.clientY - rect.top) / cellSize);
+                
+                if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+                    remoteLog('INFO', `Dropping 2D token ${tokenId} at (${x}, ${y})`);
+                    showStatus(`Placing token at ${x}, ${y}...`);
+                    await fetch('/api/move', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: parseInt(tokenId), x, y })
+                    });
+                    fetchState();
+                }
+            };
+        }
+
+        function setView(view) {
+            currentView = view;
+            const container3D = document.getElementById('canvas-container');
+            const container2D = document.getElementById('grid-container-2d');
+            const btn3D = document.getElementById('btn-view-3d');
+            const btn2D = document.getElementById('btn-view-2d');
+
+            if (view === '3d') {
+                container3D.style.display = 'block';
+                container2D.style.display = 'none';
+                btn3D.classList.add('active');
+                btn2D.classList.remove('active');
+                if (controls) controls.enabled = true;
+                
+                // If 3D is not initialized, try now
+                if (!scene && typeof THREE !== 'undefined') {
+                    try { init3D(); } catch(e) { console.error("3D init failed:", e); }
+                }
+            } else {
+                container3D.style.display = 'none';
+                container2D.style.display = 'grid';
+                btn3D.classList.remove('active');
+                btn2D.classList.add('active');
+                if (controls) controls.enabled = false;
+            }
+            fetchState();
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvas-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            if (composer) composer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls) {
+                try { controls.update(); } catch(e) {}
+            }
+            
+            // Interpolate tokens to target positions (60fps smoothness)
+            if (tokens3D) {
+                for (const [id, token] of tokens3D) {
+                    try {
+                        if (activeDragToken3D !== token && token.userData.targetX !== undefined) {
+                            token.position.x += (token.userData.targetX - token.position.x) * 0.15;
+                            token.position.z += (token.userData.targetZ - token.position.z) * 0.15;
+                            token.position.y += (0 - token.position.y) * 0.1;
+                            
+                            // Snap to target if very close to save calculations
+                            if (Math.abs(token.position.x - token.userData.targetX) < 0.1) token.position.x = token.userData.targetX;
+                            if (Math.abs(token.position.z - token.userData.targetZ) < 0.1) token.position.z = token.userData.targetZ;
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            if (renderer && scene && camera) {
+                try {
+                    // Temporarily forcing standard render to fix black screen
+                    renderer.render(scene, camera);
+                } catch(e) {
+                    console.error("Render failed:", e);
+                }
+            }
+        }
+
+        function updateMousePos(e) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            let cx = e.clientX, cy = e.clientY;
+            if (e.touches && e.touches.length > 0) {
+                cx = e.touches[0].clientX;
+                cy = e.touches[0].clientY;
+            } else if (e.changedTouches && e.changedTouches.length > 0) {
+                cx = e.changedTouches[0].clientX;
+                cy = e.changedTouches[0].clientY;
+            }
+            mouse.x = ((cx - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((cy - rect.top) / rect.height) * 2 + 1;
+        }
+
+        // Interaction Handlers
+
+        function onMouseDown(e) {
+            updateMousePos(e);
+            raycaster.setFromCamera(mouse, camera);
+            
+            if (currentMode === 'paint') {
+                isPainting = true;
+                handle3DPaint();
+                return;
+            }
+            
+            const interacts = raycaster.intersectObjects(Array.from(tokens3D.values()), true);
+            if (interacts.length > 0) {
+                let obj = interacts[0].object;
+                while(obj.parent && !obj.userData.id) obj = obj.parent;
+                if (obj.userData.id) {
+                    activeDragToken3D = obj;
+                    isDragging = true;
+                    controls.enabled = false;
+                }
+            }
+        }
+
+        function onMouseMove(e) {
+            updateMousePos(e);
+            if (activeDragToken3D && isDragging) {
+                if (e.preventDefault) e.preventDefault();
+                raycaster.setFromCamera(mouse, camera);
+                const blocks = scene.children.filter(c => c.userData.isWall);
+                const intersects = raycaster.intersectObjects([environmentPlane, ...cells3D, ...blocks]);
+                if (intersects.length > 0) {
+                    const pt = intersects[0].point;
+                    activeDragToken3D.position.x = pt.x;
+                    activeDragToken3D.position.z = pt.z;
+                    // Adjust height if on a block
+                    if (intersects[0].object.userData && intersects[0].object.userData.isWall) {
+                        const h = intersects[0].object.geometry.parameters.height;
+                        activeDragToken3D.position.y = h + 10;
+                    } else {
+                        activeDragToken3D.position.y = 10;
+                    }
+                    
+                    if (hitDot) {
+                        hitDot.position.copy(pt);
+                        hitDot.position.y = activeDragToken3D.position.y;
+                        hitDot.visible = true;
+                    }
+                    if (torchLight) {
+                        torchLight.position.copy(pt);
+                        torchLight.position.y = activeDragToken3D.position.y + 20;
+                        torchLight.intensity = 2;
+                    }
+                }
+            } else if (isPainting) {
+                handle3DPaint();
+            } else {
+                // Show torchlight even when not dragging
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObject(environmentPlane);
+                if (intersects.length > 0) {
+                    torchLight.position.copy(intersects[0].point);
+                    torchLight.position.y = 100;
+                    torchLight.intensity = 1.5;
+                    torchLight.distance = 1200;
+                }
+            }
+        }
+
+        async function onMouseUp() {
+            if (isPainting) {
+                isPainting = false;
+                lastPaintedCell = null;
+            }
+            if (isDragging && activeDragToken3D) {
+                const finalX = Math.round(activeDragToken3D.position.x / 60 + (GRID_SIZE/2 - 0.5));
+                const finalY = Math.round(activeDragToken3D.position.z / 60 + (GRID_SIZE/2 - 0.5));
+                const tokenId = activeDragToken3D.userData.id;
+
+                try {
+                    const res = await fetch('/api/move', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            guild_id: guildId,
+                            channel_id: activeChannelId || channelId || 'default',
+                            id: parseInt(tokenId), 
+                            x: (finalX >= 0 && finalX < GRID_SIZE && finalY >= 0 && finalY < GRID_SIZE) ? finalX : null,
+                            y: (finalX >= 0 && finalX < GRID_SIZE && finalY >= 0 && finalY < GRID_SIZE) ? finalY : null
+                        })
+                    });
+                    if (res.ok) showStatus("Token moved");
+                } catch (e) { showStatus("Move failed", 'error'); }
+                
+                activeDragToken3D = null;
+                isDragging = false;
+                controls.enabled = true;
+                fetchState();
+            }
+        }
+
+        // 2D Interaction Handlers
+        function on2DMouseDown(e, x, y) {
+            if (currentMode === 'paint') {
+                isPainting = true;
+                handle2DPaint(x, y);
+            }
+        }
+
+        function on2DMouseEnter(e, x, y) {
+            if (isPainting && currentMode === 'paint') {
+                handle2DPaint(x, y);
+            }
+        }
+
+        function on2DMouseUp() {
+            isPainting = false;
+        }
+
+        function handle2DPaint(x, y) {
+            const cell = document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+            if (!cell || lastPaintedCell === cell) return;
+            lastPaintedCell = cell;
+            
+            cell.className = `cell painted-${paintColor}`;
+            syncPaint(x, y, 'paint');
+        }
+
+        function start2DDrag(e, c) {
+            e.preventDefault();
+            activeDragToken2D = { id: c.id, element: e.currentTarget };
+            isDragging = true;
+            
+            const onMove = (moveEvent) => {
+                if (!isDragging || !activeDragToken2D) return;
+                const grid = document.getElementById('grid-container-2d').getBoundingClientRect();
+                const x = moveEvent.clientX - grid.left - activeDragToken2D.offsetX;
+                const y = moveEvent.clientY - grid.top - activeDragToken2D.offsetY;
+                activeDragToken2D.element.style.left = `${x}px`;
+                activeDragToken2D.element.style.top = `${y}px`;
+                activeDragToken2D.element.style.transition = 'none';
+            };
+            
+            const onUp = async (upEvent) => {
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+                
+                if (activeDragToken2D) {
+                    const grid = document.getElementById('grid-container-2d').getBoundingClientRect();
+                    const cellSize = grid.width / GRID_SIZE;
+                    const finalX = Math.floor((upEvent.clientX - grid.left) / cellSize);
+                    const finalY = Math.floor((upEvent.clientY - grid.top) / cellSize);
+                    
+                    const tokenId = activeDragToken2D.id;
+                    try {
+                        await fetch('/api/move', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: parseInt(tokenId), 
+                                x: (finalX >= 0 && finalX < GRID_SIZE && finalY >= 0 && finalY < GRID_SIZE) ? finalX : null,
+                                y: (finalX >= 0 && finalX < GRID_SIZE && finalY >= 0 && finalY < GRID_SIZE) ? finalY : null
+                            })
+                        });
+                    } catch (e) {}
+                    
+                    isDragging = false;
+                    activeDragToken2D = null;
+                    fetchState();
+                }
+            };
+            
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+        }
+
+        function handle3DPaint() {
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects([environmentPlane, ...cells3D]);
+            if (intersects.length > 0) {
+                const pt = intersects[0].point;
+                const x = Math.round(pt.x / 60 + (GRID_SIZE/2 - 0.5));
+                const y = Math.round(pt.z / 60 + (GRID_SIZE/2 - 0.5));
+                
+                if (hitDot) {
+                    hitDot.position.copy(pt);
+                    hitDot.position.y = 1;
+                    hitDot.visible = true;
+                }
+
+                if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+                    const cell = cells3D.find(c => c.userData.x === x && c.userData.y === y);
+                    if (cell && lastPaintedCell !== cell) {
+                        lastPaintedCell = cell;
+                        cell.material.opacity = 0.4;
+                        cell.material.color.set(paintColor === 'red' ? 0xff0000 : 
+                                              paintColor === 'green' ? 0x00ff00 :
+                                              paintColor === 'blue' ? 0x0000ff : 0xaa00ff);
+                        syncPaint(x, y, 'paint');
+                    }
+                }
+            }
+        }
+
+        async function syncPaint(x, y, action) {
+            if (!guildId) return;
+            try {
+                await fetch('/api/paint', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', x, y, action, color: paintColor })
+                });
+            } catch (err) {}
+        }
+
+        let currentTab = 'tokens';
+        activeChannelId = channelId;
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tokens-tab-content').style.display = tab === 'tokens' ? 'flex' : 'none';
+            document.getElementById('chat-tab').style.display = tab === 'chat' ? 'flex' : 'none';
+            
+            document.getElementById('tab-tokens-btn').classList.toggle('active', tab === 'tokens');
+            document.getElementById('tab-chat-btn').classList.toggle('active', tab === 'chat');
+            
+            if (tab === 'chat') {
+                fetchChannels();
+                setTimeout(scrollToBottom, 50);
+            }
+        }
+
+        async function fetchChannels() {
+            try {
+                const res = await fetch(`/api/channels/${guildId}`);
+                const data = await res.json();
+                if (data.channels) {
+                    const select = document.getElementById('channel-select');
+                    const currentValue = select.value;
+                    select.innerHTML = '';
+                    data.channels.forEach(ch => {
+                        const opt = document.createElement('option');
+                        opt.value = ch.id;
+                        opt.textContent = `# ${ch.name}`;
+                        select.appendChild(opt);
+                    });
+                    if (currentValue) select.value = currentValue;
+                    else if (activeChannelId) select.value = activeChannelId;
+                }
+            } catch (e) { console.error("Failed to fetch channels:", e); }
+        }
+
+        function switchChannel(cid) {
+            activeChannelId = cid;
+            fetchState(); // Immediate refresh
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            const cid = document.getElementById('channel-select').value;
+            if (!msg || !cid) return;
+
+            input.value = '';
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        guild_id: guildId,
+                        channel_id: cid,
+                        user_name: "Map User",
+                        message: msg
+                    })
+                });
+                if (res.ok) fetchState();
+            } catch (e) { console.error("Failed to send msg:", e); }
+        }
+
+        function updateChatHistory(msgs) {
+            const history = document.getElementById('chat-history');
+            const isAtBottom = history.scrollHeight - history.scrollTop <= history.clientHeight + 50;
+            
+            history.innerHTML = '';
+            if (!msgs || msgs.length === 0) {
+                history.innerHTML = '<div style="opacity:0.3; text-align:center; margin-top:20px;">No recent messages</div>';
+                return;
+            }
+
+            msgs.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'chat-msg';
+                const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                div.innerHTML = `
+                    <span class="chat-author">${m.author}</span>
+                    <span class="chat-time">${time}</span>
+                    <div class="chat-content">${m.content}</div>
+                `;
+                history.appendChild(div);
+            });
+
+            if (isAtBottom) scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const history = document.getElementById('chat-history');
+            if (history) history.scrollTop = history.scrollHeight;
+        }
+
+        function scrollAiToBottom() {
+            // Reverted
+        }
+
+        async function fetchState() {
+            if (!guildId) return;
+            try {
+                let url = `/api/tracker/${guildId}`;
+                if (activeChannelId) url += `?channel_id=${activeChannelId}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.active_channel_id && !activeChannelId) {
+                    activeChannelId = data.active_channel_id;
+                    const select = document.getElementById('channel-select');
+                    if (select) select.value = activeChannelId;
+                }
+
+                if (currentTab === 'chat' && data.recent_chat) {
+                    updateChatHistory(data.recent_chat);
+                }
+                
+                if (data.grid_type && data.grid_type !== gridType) {
+                    setGridType(data.grid_type);
+                }
+
+                if (data.theme) {
+                    let actualThemeToLoad = data.theme;
+                    let isCustom = false;
+                    
+                    if (data.background_url) {
+                        const select = document.getElementById('theme-select');
+                        if (!select.querySelector('option[value="custom"]')) {
+                            const opt = document.createElement('option');
+                            opt.value = 'custom';
+                            opt.textContent = '🖼️ Custom Map';
+                            select.appendChild(opt);
+                        }
+                    }
+
+                    if (data.theme === 'custom' && data.background_url) {
+                        actualThemeToLoad = data.background_url;
+                        isCustom = true;
+                    }
+                    
+                    if (actualThemeToLoad !== currentTheme) {
+                        // Only override if it's been more than 5 seconds since our last manual change
+                        if (Date.now() - lastThemeChangeTime > 5000) {
+                            changeTheme(actualThemeToLoad, isCustom); // Don't save again
+                            document.getElementById('theme-select').value = data.theme;
+                            if (typeof THREE !== 'undefined' && scene) update3DTheme(data.theme);
+                        }
+                    }
+                }
+
+                if (currentView === '3d') {
+                    cells3D.forEach(c => { c.material.opacity = 0; });
+                } else {
+                    document.querySelectorAll('.cell').forEach(c => c.className = 'cell');
+                }
+
+                if (data.drawings) {
+                    const drawingKeys = new Set(data.drawings.map(d => `block-${d.x}-${d.y}`));
+                    // Remove blocks no longer in data
+                    const toRemove = [];
+                    scene.children.forEach(child => {
+                        if (child.name && child.name.startsWith('block-') && !drawingKeys.has(child.name)) {
+                            toRemove.push(child);
+                        }
+                    });
+                    toRemove.forEach(c => scene.remove(c));
+
+                    data.drawings.forEach(d => {
+                        // Create blocks for 3D regardless of current view
+                        if (scene) {
+                            let block = scene.getObjectByName(`block-${d.x}-${d.y}`);
+                            if (!block) {
+                                const h = (d.color === 'purple' ? 120 : 60);
+                                const geom = new THREE.BoxGeometry(59.5, h, 59.5);
+                                
+                                // Better stone texture
+                                const canvas = document.createElement('canvas');
+                                canvas.width = 128; canvas.height = 128;
+                                const ctx = canvas.getContext('2d');
+                                ctx.fillStyle = '#444'; ctx.fillRect(0,0,128,128);
+                                ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+                                ctx.strokeRect(4,4,120,120); // Border for block look
+                                for(let i=0; i<30; i++) {
+                                    ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.3})`;
+                                    ctx.fillRect(Math.random()*120, Math.random()*120, 15, 15);
+                                }
+                                
+                                const tex = new THREE.CanvasTexture(canvas);
+                                block = new THREE.Mesh(geom, new THREE.MeshPhongMaterial({ map: tex }));
+                                block.name = `block-${d.x}-${d.y}`;
+                                block.position.set((d.x - (GRID_SIZE/2 - 0.5)) * 60, h/2, (d.y - (GRID_SIZE/2 - 0.5)) * 60);
+                                block.userData.isWall = true;
+                                scene.add(block);
+                            }
+                        }
+                        
+                        // Update 2D cells
+                        const cell = document.querySelector(`.cell[data-x="${d.x}"][data-y="${d.y}"]`);
+                        if (cell) cell.className = `cell painted-${d.color}`;
+                    });
+                }
+                
+                // If in Hex mode, clear 2D grid highlight as it's not implemented yet
+                if (gridType === 'hex') {
+                    document.querySelectorAll('.cell').forEach(c => c.classList.remove('painted-red', 'painted-green', 'painted-blue', 'painted-purple'));
+                }
+
+                if (data.combatants) {
+                    renderMap(data.combatants);
+                }
+            } catch (err) { console.error("Fetch error:", err); }
+        }
+
+        function setGridType(type, save = false) {
+            gridType = type;
+            const btnSquare = document.getElementById('btn-grid-square');
+            const btnHex = document.getElementById('btn-grid-hex');
+            if (btnSquare) btnSquare.classList.toggle('active', type === 'square');
+            if (btnHex) btnHex.classList.toggle('active', type === 'hex');
+            
+            if (save && guildId) {
+                fetch('/api/grid', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', grid_type: type })
+                });
+            }
+            fetchState();
+        }
+
+        function createPlanet() {
+            const geom = new THREE.SphereGeometry(25, 32, 32);
+            const colors = [0x3B4CC0, 0x8D38C9, 0xC03B3B, 0x3BC04C, 0xC0C03B];
+            const mat = new THREE.MeshPhongMaterial({ 
+                color: colors[Math.floor(Math.random() * colors.length)],
+                shininess: 10
+            });
+            const planet = new THREE.Mesh(geom, mat);
+            planet.position.y = 25;
+            
+            // Random ring?
+            if (Math.random() > 0.7) {
+                const ringGeom = new THREE.TorusGeometry(35, 2, 2, 64);
+                const ringMat = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.6 });
+                const ring = new THREE.Mesh(ringGeom, ringMat);
+                ring.rotation.x = Math.PI / 2;
+                    planet.add(ring);
+            }
+            return planet;
+        }
+
+        function createHexGrid() {
+            const group = new THREE.Group();
+            const hexRadius = 35;
+            const hexHeight = Math.sqrt(3) * hexRadius;
+            const hexWidth = 2 * hexRadius;
+
+            // Simple line-based hex grid for debug/fallback
+            const points = [];
+            for (let i = 0; i <= 6; i++) {
+                const angle = (i * 60) * Math.PI / 180;
+                points.push(new THREE.Vector2(Math.cos(angle) * hexRadius, Math.sin(angle) * hexRadius));
+            }
+            const shape = new THREE.Shape(points);
+            const geometry = new THREE.ShapeGeometry(shape);
+            const material = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.3 });
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const mesh = new THREE.Mesh(geometry, material);
+                    const pos = hexToPixel(c - GRID_SIZE/2, r - GRID_SIZE/2, hexRadius);
+                    mesh.position.set(pos.x, 0.1, pos.z);
+                    mesh.rotation.x = -Math.PI / 2;
+                    group.add(mesh);
+                }
+            }
+            return group;
+        }
+
+        function hexToPixel(q, r, size) {
+            const x = size * (3/2 * q);
+            const z = size * (Math.sqrt(3)/2 * q + Math.sqrt(3) * r);
+            return { x, z };
+        }
+
+        function createStar() {
+            const geom = new THREE.SphereGeometry(30, 32, 32);
+            const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            const star = new THREE.Mesh(geom, mat);
+            star.position.y = 30;
+            
+            const light = new THREE.PointLight(0xffff00, 2, 500);
+            star.add(light);
+            
+            // Glow effect (Sprite)
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            grad.addColorStop(0, 'rgba(255, 255, 0, 1)');
+            grad.addColorStop(1, 'rgba(255, 255, 0, 0)');
+            ctx.fillStyle = grad; ctx.fillRect(0,0,64,64);
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), transparent: true }));
+            sprite.scale.set(120, 120, 1);
+            star.add(sprite);
+            
+            return star;
+        }
+
+        function update3DTheme(theme) {
+            const colors = {
+                'cyberpunk': 0x0d0914, 'starship': 0x11141f, 'alien': 0x0a1f18, 
+                'dungeon': 0x1a1a1a, 'lab': 0xdbe4ee, 'forest': 0x2d3e2d, 'cave': 0x1a1a1a, 'desert': 0x4a3728
+            };
+            const themeImgs = {
+                'cyberpunk': '/static/assets/map_cyberpunk_1773887614197.png',
+                'starship': '/static/assets/map_starship_1773887640903.png',
+                'alien': '/static/assets/map_alien_ruins_1773887666120.png',
+                'forest': '/static/assets/map_forest_1773887258322.png',
+                'cave': '/static/assets/map_cave_1773887309440.png',
+                'desert': '/static/assets/map_desert_1773887284112.png',
+                'lab': '/static/assets/map_science_lab_1773887705015.png'
+            };
+
+            const bgColor = colors[theme] || 0x1e1f22;
+            scene.background = new THREE.Color(bgColor);
+            
+            // Clear old 3D walls
+            scene.children.forEach(child => {
+                if (child.userData.isWall) scene.remove(child);
+            });
+
+            if (theme === 'starship' || theme === 'cyberpunk' || theme === 'alien') {
+                const wallGeom = new THREE.BoxGeometry(60, 100, 60);
+                const wallMat = new THREE.MeshStandardMaterial({ 
+                    color: theme === 'starship' ? 0x555566 : (theme === 'cyberpunk' ? 0x2a0044 : 0x003311),
+                    metalness: 0.8,
+                    roughness: 0.4,
+                    emissive: theme === 'cyberpunk' ? 0x1a002a : 0x000000,
+                    emissiveIntensity: 0.5
+                });
+                // Add randomized pillars to make it feel like a real map
+                for(let i=0; i<20; i++) {
+                    const wall = new THREE.Mesh(wallGeom, wallMat);
+                    const rx = Math.floor(Math.random() * GRID_SIZE);
+                    const ry = Math.floor(Math.random() * GRID_SIZE);
+                    if (Math.abs(rx-GRID_SIZE/2) < 5 && Math.abs(ry-GRID_SIZE/2) < 5) continue;
+                    wall.position.set((rx - (GRID_SIZE/2-0.5)) * 60, 50, (ry - (GRID_SIZE/2-0.5)) * 60);
+                    wall.userData.isWall = true;
+                    wall.castShadow = true;
+                    wall.receiveShadow = true;
+                    scene.add(wall);
+                }
+            }
+            
+            if (themeImgs[theme]) {
+                const loader = new THREE.TextureLoader();
+                loader.load(themeImgs[theme], (tex) => {
+                    if (environmentPlane) {
+                        tex.anisotropy = 16; // Sharp textures at angles
+                        environmentPlane.material = new THREE.MeshStandardMaterial({ 
+                            map: tex, 
+                            side: THREE.DoubleSide,
+                            roughness: 0.7,
+                            metalness: 0.3
+                        });
+                        environmentPlane.visible = true;
+                    }
+                });
+            } else if (theme === 'dungeon') {
+                if (environmentPlane) {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 512; canvas.height = 512;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#111'; ctx.fillRect(0,0,512,512);
+                    
+                    // Procedural stone tiles
+                    ctx.strokeStyle = '#222'; ctx.lineWidth = 8;
+                    for(let i=0; i<4; i++) {
+                        for(let j=0; j<4; j++) {
+                            ctx.strokeRect(i*128, j*128, 128, 128);
+                            ctx.fillStyle = `rgba(255,255,255,${Math.random()*0.05})`;
+                            ctx.fillRect(i*128+10, j*128+10, 108, 108);
+                        }
+                    }
+                    
+                    const tex = new THREE.CanvasTexture(canvas);
+                    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+                    tex.repeat.set(GRID_SIZE, GRID_SIZE);
+                    environmentPlane.material = new THREE.MeshStandardMaterial({ 
+                        map: tex, 
+                        side: THREE.DoubleSide,
+                        roughness: 0.9,
+                        metalness: 0.1
+                    });
+                    environmentPlane.visible = true;
+                }
+            } else {
+                if (environmentPlane) {
+                    environmentPlane.material = new THREE.MeshStandardMaterial({ color: bgColor, side: THREE.DoubleSide, roughness: 1 });
+                    environmentPlane.visible = true;
+                }
+            }
+            
+            if (scene.fog) scene.fog.color.set(bgColor);
+        }
+
+        function renderMap(items) {
+            console.log(`Rendering map with ${items.length} items. View: ${currentView}`);
+            if (currentView === '3d') {
+                renderMap3D(items);
+            } else {
+                renderMap2D(items);
+            }
+        }
+
+        function renderMap3D(items) {
+            const currentIds = new Set();
+            const bench = document.getElementById('bench');
+            bench.innerHTML = '';
+
+            items.forEach(c => {
+                if (c.x !== null && c.y !== null) {
+                    currentIds.add(String(c.id));
+                    updateToken3D(c);
+                } else {
+                    createBenchItem(c);
+                }
+            });
+
+            for (const [id, obj] of tokens3D) {
+                if (!currentIds.has(id) && activeDragToken3D !== obj) {
+                    scene.remove(obj);
+                    tokens3D.delete(id);
+                }
+            }
+        }
+
+        function renderMap2D(items) {
+            const container = document.getElementById('grid-container-2d');
+            if (!container) return;
+            const currentTokens = container.querySelectorAll('.token');
+            const currentIds = new Set();
+            const bench = document.getElementById('bench');
+            bench.innerHTML = '';
+
+            items.forEach(c => {
+                if (c.x !== null && c.y !== null) {
+                    currentIds.add(String(c.id));
+                    let token = document.getElementById(`token-${c.id}`);
+                    if (!token) {
+                        token = document.createElement('div');
+                        token.id = `token-${c.id}`;
+                        token.className = `token ${c.is_enemy ? 'enemy' : ''}`;
+                        token.draggable = false; // Disable native drag to prevent mobile disappearance bugs
+            
+            // Unified Pointer Events for Tokens on Map (Mouse + Touch)
+            token.addEventListener('pointerdown', (e) => {
+                if (e.button && e.button !== 0) return; // Only left click or touch
+                e.preventDefault(); 
+                
+                token.setPointerCapture(e.pointerId);
+                
+                activeDragToken2D = {
+                    id: c.id,
+                    source: 'map',
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    initialLeft: token.offsetLeft,
+                    initialTop: token.offsetTop,
+                    isMoved: false
+                };
+                
+                token.style.zIndex = '2000';
+                token.style.transition = 'none';
+            });
+
+            token.addEventListener('pointermove', (e) => {
+                if (!activeDragToken2D || activeDragToken2D.id !== c.id) return;
+                e.preventDefault();
+                activeDragToken2D.isMoved = true;
+                
+                const dx = e.clientX - activeDragToken2D.startX;
+                const dy = e.clientY - activeDragToken2D.startY;
+                
+                token.style.left = `${activeDragToken2D.initialLeft + dx}px`;
+                token.style.top = `${activeDragToken2D.initialTop + dy}px`;
+            });
+
+            token.addEventListener('pointerup', async (e) => {
+                if (!activeDragToken2D || activeDragToken2D.id !== c.id) return;
+                e.preventDefault();
+                
+                token.releasePointerCapture(e.pointerId);
+                token.style.zIndex = '';
+                
+                const dx = e.clientX - activeDragToken2D.startX;
+                const dy = e.clientY - activeDragToken2D.startY;
+                
+                // Handle tap/click
+                if (Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+                    const now = Date.now();
+                    if (now - (token.lastTap || 0) < 300) {
+                        openEditModal(c);
+                    }
+                    token.lastTap = now;
+                    activeDragToken2D = null;
+                    return; // Didn't drag
+                }
+                
+                const grid = document.getElementById('grid-container-2d').getBoundingClientRect();
+                const cellSize = grid.width / GRID_SIZE;
+                
+                const x = Math.floor((e.clientX - grid.left) / cellSize);
+                const y = Math.floor((e.clientY - grid.top) / cellSize);
+                
+                if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+                    try {
+                        await fetch('/api/move', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: parseInt(c.id), x, y })
+                        });
+                        fetchState();
+                    } catch(err) {}
+                } else {
+                    fetchState(); // Snap back
+                }
+                
+                activeDragToken2D = null;
+            });
+            
+            token.ondblclick = (e) => { e.stopPropagation(); openEditModal(c); };
+                        
+                        const info = document.createElement('div');
+                        info.className = 'token-info';
+                        info.textContent = `${c.name} (AC ${c.ac})`;
+                        token.appendChild(info);
+                        
+                        const hpBar = document.createElement('div');
+                        hpBar.className = 'hp-bar';
+                        const hpFill = document.createElement('div');
+                        hpFill.className = 'hp-fill';
+                        hpBar.appendChild(hpFill);
+                        token.appendChild(hpBar);
+                        
+                        if (c.image_url) {
+                            token.style.backgroundImage = `url('${c.image_url}'), linear-gradient(135deg, rgba(88, 101, 242, 0.4) 0%, rgba(71, 82, 196, 0.4) 100%)`;
+                            token.textContent = '';
+                        } else {
+                            const initials = c.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                            token.textContent = initials;
+                            token.style.backgroundImage = 'none';
+                        }
+                        
+                        container.appendChild(token);
+                    }
+                    
+                    // Add mouse wheel resize (outside if to ensure it's always attached/updated)
+                    token.onwheel = async (e) => {
+                        e.preventDefault();
+                        const delta = e.deltaY < 0 ? 1 : -1;
+                        let size = parseInt(c.size) || 1;
+                        const newSize = Math.min(4, Math.max(1, size + delta));
+                        const sizeStr = `${newSize}x${newSize}`;
+                        
+                        if (sizeStr !== c.size) {
+                            showStatus(`Resizing ${c.name} to ${sizeStr}...`);
+                            try {
+                                await fetch('/api/token/update', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({
+                                        guild_id: guildId, channel_id: activeChannelId || channelId || 'default',
+                                        id: c.id, size: sizeStr
+                                    })
+                                });
+                                fetchState();
+                            } catch(err) {
+                                showStatus("Resize failed", 'error');
+                            }
+                        }
+                    };
+                    
+                    // Double-click to Edit (Standard behavior)
+                    token.ondblclick = (e) => {
+                        e.stopPropagation();
+                        openEditModal(c);
+                    };
+                    
+                    const sizeScale = parseInt(c.size) || 1; 
+                    const isThisTokenDragging = activeDragToken2D && activeDragToken2D.id === c.id;
+                    if (!isThisTokenDragging) {
+                        token.style.left = `${(c.x / GRID_SIZE) * 100}%`;
+                        token.style.top = `${(c.y / GRID_SIZE) * 100}%`;
+                        token.style.width = `${(sizeScale / GRID_SIZE) * 100}%`;
+                        token.style.height = `${(sizeScale / GRID_SIZE) * 100}%`;
+                        token.style.transition = 'left 0.4s, top 0.4s';
+                    }
+                    
+                    const hpFill = token.querySelector('.hp-fill');
+                    if (hpFill) {
+                        const hpPercent = (c.current_hp / c.max_hp) * 100;
+                        hpFill.style.width = `${hpPercent}%`;
+                        hpFill.style.background = hpPercent < 30 ? '#ed4245' : (hpPercent < 70 ? '#faa61a' : '#3ba55c');
+                    }
+                    
+                } else {
+                    createBenchItem(c);
+                }
+            });
+
+            currentTokens.forEach(t => {
+                const id = t.id.replace('token-', '');
+                if (!currentIds.has(id)) t.remove();
+            });
+        }
+
+        function updateToken3D(c) {
+            let token = tokens3D.get(String(c.id));
+            const sizeScale = parseInt(c.size) || 1;
+            let targetX, targetZ;
+            
+            if (currentGridMode === 'hex') {
+                const pos = hexToPixel(c.x - GRID_SIZE/2, c.y - GRID_SIZE/2, 35);
+                targetX = pos.x; targetZ = pos.z;
+            } else {
+                targetX = (c.x + (sizeScale - 1) / 2 - (GRID_SIZE / 2 - 0.5)) * 60;
+                targetZ = (c.y + (sizeScale - 1) / 2 - (GRID_SIZE / 2 - 0.5)) * 60;
+            }
+
+            if (!token) {
+                token = new THREE.Group();
+                token.userData = { id: c.id };
+                
+                // Sector Asset Check (SWN/WWN flavor)
+                const isPlanet = c.name.toLowerCase().includes('planet') || c.name.toLowerCase().includes('world');
+                const isStar = c.name.toLowerCase().includes('star') || c.name.toLowerCase().includes('sun');
+                
+                if (isPlanet) {
+                    const planet = createPlanet();
+                    token.add(planet);
+                } else if (isStar) {
+                    const star = createStar();
+                    token.add(star);
+                } else {
+                    // Premium 3D Base
+                    const baseGroup = new THREE.Group();
+                    
+                    // Main disk
+                    const base = new THREE.Mesh(
+                        new THREE.CylinderGeometry(28, 30, 8, 32),
+                        new THREE.MeshStandardMaterial({ 
+                            color: c.is_enemy ? 0xed4245 : 0x5865f2,
+                            metalness: 0.7,
+                            roughness: 0.2,
+                            emissive: c.is_enemy ? 0x330000 : 0x000033
+                        })
+                    );
+                    base.castShadow = true;
+                    base.receiveShadow = true;
+                    baseGroup.add(base);
+
+                    // Glowing Ring
+                    const ringGeom = new THREE.TorusGeometry(31, 1.5, 12, 48);
+                    const ringMat = new THREE.MeshStandardMaterial({ 
+                        color: c.is_enemy ? 0xff0000 : 0x00ffff,
+                        emissive: c.is_enemy ? 0xff0000 : 0x00ffff,
+                        emissiveIntensity: 2
+                    });
+                    const ring = new THREE.Mesh(ringGeom, ringMat);
+                    ring.rotation.x = Math.PI / 2;
+                    ring.position.y = -2;
+                    baseGroup.add(ring);
+                    
+                    token.add(baseGroup);
+                }
+
+                if (c.image_url) {
+                    // Thick Token Image (Extruded look)
+                    const imgGeom = new THREE.CylinderGeometry(26, 26, 2, 32);
+                    const texture = new THREE.TextureLoader().load(c.image_url);
+                    const imgMat = new THREE.MeshStandardMaterial({ 
+                        map: texture, 
+                        transparent: true,
+                        roughness: 0.5,
+                        metalness: 0.1
+                    });
+                    const imgMesh = new THREE.Mesh(imgGeom, imgMat);
+                    imgMesh.position.y = 5.1; // Slightly above base
+                    token.add(imgMesh);
+
+                    // Add a subtle rim light/glow to the token
+                    const pointLight = new THREE.PointLight(c.is_enemy ? 0xff0000 : 0x5865f2, 0.5, 100);
+                    pointLight.position.y = 10;
+                    token.add(pointLight);
+                } else {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 128; canvas.height = 128;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Background for initials
+                    ctx.fillStyle = c.is_enemy ? '#ed4245' : '#5865f2';
+                    ctx.beginPath(); ctx.arc(64, 64, 60, 0, Math.PI*2); ctx.fill();
+                    
+                    ctx.fillStyle = 'white'; ctx.font = 'bold 64px Inter'; ctx.textAlign = 'center';
+                    const initials = c.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    ctx.fillText(initials, 64, 85);
+                    
+                    const tex = new THREE.CanvasTexture(canvas);
+                    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex }));
+                    sprite.scale.set(40, 40, 1);
+                    sprite.position.y = 25;
+                    token.add(sprite);
+                }
+
+                const sizeScale = parseInt(c.size) || 1;
+                token.scale.set(sizeScale, sizeScale, sizeScale);
+
+                scene.add(token);
+                tokens3D.set(String(c.id), token);
+                token.position.set(targetX, 0, targetZ);
+                token.userData.targetX = targetX;
+                token.userData.targetZ = targetZ;
+            } else {
+                token.userData.targetX = targetX;
+                token.userData.targetZ = targetZ;
+            }
+        }
+
+        function createBenchItem(c) {
+            const bench = document.getElementById('bench');
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'bench-item-wrapper';
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.alignItems = 'center';
+            wrapper.style.marginBottom = '15px';
+            wrapper.style.position = 'relative';
+
+            const item = document.createElement('div');
+            item.className = `bench-item ${c.is_enemy ? 'enemy' : ''}`;
+            const initials = c.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            item.innerHTML = `<span class="initials">${initials}</span>`;
+            if (c.image_url) {
+                item.style.backgroundImage = `url('${c.image_url}')`;
+                item.style.backgroundSize = 'cover';
+                item.querySelector('.initials').style.display = 'none';
+            }
+            
+            // Disable native HTML5 drag to prevent disappearing bug on mobile
+            item.draggable = false;
+
+            // Unified Pointer Events for Bench Items (Mouse + Touch)
+            item.addEventListener('pointerdown', (e) => {
+                if (e.button && e.button !== 0) return; // Only left click or touch
+                
+                item.setPointerCapture(e.pointerId);
+                item.touchData = {
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    ghost: null,
+                    moved: false
+                };
+            });
+
+            item.addEventListener('pointermove', (e) => {
+                if (!item.touchData) return;
+                
+                const dx = e.clientX - item.touchData.startX;
+                const dy = e.clientY - item.touchData.startY;
+                
+                // If they moved enough, it's a drag
+                if (!item.touchData.moved && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+                    item.touchData.moved = true;
+                    // Create ghost
+                    const ghost = item.cloneNode(true);
+                    ghost.style.position = 'fixed';
+                    ghost.style.left = `${e.clientX - 25}px`;
+                    ghost.style.top = `${e.clientY - 25}px`;
+                    ghost.style.zIndex = '9999';
+                    ghost.style.opacity = '0.7';
+                    ghost.style.pointerEvents = 'none'; // so drop target works
+                    document.body.appendChild(ghost);
+                    item.touchData.ghost = ghost;
+                }
+                
+                if (item.touchData.moved) {
+                    e.preventDefault(); // Stop sidebar scroll
+                    if (item.touchData.ghost) {
+                        item.touchData.ghost.style.left = `${e.clientX - 25}px`;
+                        item.touchData.ghost.style.top = `${e.clientY - 25}px`;
+                    }
+                }
+            });
+
+            item.addEventListener('pointerup', async (e) => {
+                if (!item.touchData) return;
+                item.releasePointerCapture(e.pointerId);
+                
+                const dx = e.clientX - item.touchData.startX;
+                const dy = e.clientY - item.touchData.startY;
+                
+                // Double tap check
+                if (!item.touchData.moved && Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+                    const now = Date.now();
+                    if (now - (item.lastTap || 0) < 300) {
+                        openEditModal(c);
+                    }
+                    item.lastTap = now;
+                }
+                
+                if (item.touchData.ghost) {
+                    item.touchData.ghost.parentNode.removeChild(item.touchData.ghost);
+                }
+                
+                if (item.touchData.moved) {
+                    e.preventDefault();
+                    if (currentView === '2d') {
+                        const grid = document.getElementById('grid-container-2d').getBoundingClientRect();
+                        const cellSize = grid.width / GRID_SIZE;
+                        const x = Math.floor((e.clientX - grid.left) / cellSize);
+                        const y = Math.floor((e.clientY - grid.top) / cellSize);
+                        
+                        if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+                            try {
+                                await fetch('/api/move', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: c.id, x, y })
+                                });
+                                fetchState();
+                            } catch(err) {}
+                        }
+                    } else if (currentView === '3d' && typeof THREE !== 'undefined' && scene) {
+                        const rect = document.getElementById('canvas-container').getBoundingClientRect();
+                        const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                        const mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                        
+                        const dropRay = new THREE.Raycaster();
+                        dropRay.setFromCamera({ x: mouseX, y: mouseY }, camera);
+                        const blocks = scene.children.filter(child => child.userData.isWall);
+                        const intersects = dropRay.intersectObjects([environmentPlane, ...blocks]);
+
+                        if (intersects.length > 0) {
+                            const pt = intersects[0].point;
+                            const newX = Math.round(pt.x / 60 + (GRID_SIZE / 2 - 0.5));
+                            const newY = Math.round(pt.z / 60 + (GRID_SIZE / 2 - 0.5));
+                            
+                            if (newX >= 0 && newX < GRID_SIZE && newY >= 0 && newY < GRID_SIZE) {
+                                try {
+                                    await fetch('/api/move', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: c.id, x: newX, y: newY })
+                                    });
+                                    fetchState();
+                                } catch(err) {}
+                            }
+                        }
+                    }
+                }
+                
+                item.touchData = null;
+            });
+
+            item.onmousedown = (e) => {
+                if (currentView === '3d') {
+                    updateMousePos(e);
+                    raycaster.setFromCamera(mouse, camera);
+                    const blocks = scene.children.filter(c => c.userData.isWall);
+                    const intersects = raycaster.intersectObjects([environmentPlane, ...blocks]);
+                    if (intersects.length > 0) {
+                        const pt = intersects[0].point;
+                        c.x = Math.round(pt.x / 60 + (GRID_SIZE/2 - 0.5));
+                        c.y = Math.round(pt.z / 60 + (GRID_SIZE/2 - 0.5));
+                        updateToken3D(c);
+                        activeDragToken3D = tokens3D.get(String(c.id));
+                        isDragging = true;
+                        controls.enabled = false;
+                        
+                        fetch('/api/move', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: c.id, x: c.x, y: c.y })
+                        });
+                    } else {
+                        // Center fallback
+                        c.x = Math.floor(GRID_SIZE/2); c.y = Math.floor(GRID_SIZE/2);
+                        updateToken3D(c);
+                        fetch('/api/move', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: c.id, x: c.x, y: c.y })
+                        });
+                    }
+                }
+            };
+            item.ondblclick = (e) => { e.stopPropagation(); openEditModal(c); };
+            
+            const deployBtn = document.createElement('button');
+            deployBtn.className = 'action-button primary';
+            deployBtn.style.padding = '4px 8px';
+            deployBtn.style.fontSize = '12px';
+            deployBtn.style.marginTop = '6px';
+            deployBtn.style.borderRadius = '4px';
+            deployBtn.innerHTML = 'Deploy';
+            deployBtn.onclick = async (e) => {
+                e.stopPropagation();
+                showStatus(`Deploying ${c.name} to map...`);
+                try {
+                    await fetch('/api/move', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ 
+                            guild_id: guildId, 
+                            channel_id: activeChannelId || channelId || 'default', 
+                            id: c.id, 
+                            x: Math.floor(GRID_SIZE / 2), 
+                            y: Math.floor(GRID_SIZE / 2) 
+                        })
+                    });
+                    fetchState();
+                } catch(err) {
+                    showStatus("Deploy failed", 'error');
+                }
+            };
+
+            wrapper.appendChild(item);
+            wrapper.appendChild(deployBtn);
+            bench.appendChild(wrapper);
+        }
+
+        // Global Mode & Gallery
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-move').classList.toggle('active', mode === 'move');
+            document.getElementById('mode-paint').classList.toggle('active', mode === 'paint');
+            document.getElementById('color-palette').style.display = mode === 'paint' ? 'flex' : 'none';
+        }
+
+        const tokenImages = [
+            { name: 'Soldier', url: '/static/assets/token_soldier.png' },
+            { name: 'Hacker', url: '/static/assets/token_hacker.png' },
+            { name: 'Pilot', url: '/static/assets/token_pilot.png' },
+            { name: 'Alien', url: '/static/assets/token_alien.png' },
+            { name: 'Cyber Demon', url: '/static/assets/token_cyber_demon.png' },
+            { name: 'Drone Bot', url: '/static/assets/token_drone_bot.png' }
+        ];
+
+        function selectGalleryItem(el, url) {
+            el.parentElement.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedImageUrl = url;
+        }
+
+        function setupGallery(id) {
+            const gallery = document.getElementById(id);
+            tokenImages.forEach(img => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.style.backgroundImage = `url('${img.url}')`;
+                item.onclick = () => selectGalleryItem(item, img.url);
+                gallery.appendChild(item);
+            });
+        }
+
+        function changeTheme(theme, save = true) {
+            lastThemeChangeTime = Date.now();
+            const bg = document.getElementById('map-background');
+            const style = getComputedStyle(document.documentElement);
+            
+            // Handle Custom URL vs Preset Name
+            if (theme.startsWith('http') || theme.startsWith('/') || theme.includes('.')) {
+                const finalUrl = processDriveUrl(theme);
+                bg.style.backgroundImage = `url("${finalUrl}")`;
+                document.body.className = 'theme-custom'; // Generic class
+                currentTheme = theme;
+                
+                const select = document.getElementById('theme-select');
+                if (select) {
+                    if (!select.querySelector('option[value="custom"]')) {
+                        const opt = document.createElement('option');
+                        opt.value = 'custom';
+                        opt.textContent = '🖼️ Custom Map';
+                        select.appendChild(opt);
+                    }
+                    select.value = 'custom';
+                }
+            } else {
+                document.body.className = `theme-${theme}`;
+                currentTheme = theme;
+                
+                // Allow CSS transition to update --theme-image
+                setTimeout(() => {
+                    const activeStyle = getComputedStyle(document.body);
+                    const themeImg = activeStyle.getPropertyValue('--theme-image');
+                    if (themeImg && themeImg !== 'none') {
+                        bg.style.backgroundImage = themeImg;
+                    } else {
+                        bg.style.backgroundImage = 'none';
+                        bg.style.backgroundColor = activeStyle.getPropertyValue('--theme-bg');
+                    }
+                }, 50);
+            }
+
+            if (typeof THREE !== 'undefined' && scene) update3DTheme(currentTheme);
+            if (save && guildId) {
+                fetch('/api/theme', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', theme: theme })
+                }).catch(e => console.error("Theme save failed:", e));
+            }
+        }
+
+        function processDriveUrl(url) {
+            if (!url) return '';
+            if (url.includes('drive.google.com')) {
+                const matches = url.match(/\/d\/([^\/\?\#]+)/) || url.match(/id=([^\/&]+)/);
+                if (matches && matches[1]) {
+                    return `https://drive.google.com/uc?export=view&id=${matches[1]}`;
+                }
+            }
+            return url;
+        }
+
+        async function submitUpdateMap() {
+            const urlInput = document.getElementById('map-url-input');
+            const url = urlInput.value.trim();
+            if (url) {
+                changeTheme(url, true);
+                closeModal('map-modal');
+                urlInput.value = '';
+            }
+        }
+
+        async function uploadMapImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showStatus("Uploading map image...");
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('guild_id', guildId);
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.url) {
+                    changeTheme(result.url, true);
+                    closeModal('map-modal');
+                    showStatus("Map image uploaded and applied!");
+                } else {
+                    showStatus(`Upload failed: ${result.error}`, 'error');
+                }
+            } catch (err) {
+                showStatus(`Upload error: ${err}`, 'error');
+                console.error("Upload failed", err);
+            }
+        }
+
+        async function handleMapDrop(e) {
+            e.preventDefault();
+            const mapArea = document.getElementById('map-area');
+            if (mapArea) mapArea.style.border = 'none';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('guild_id', guildId);
+                
+                try {
+                    const response = await fetch('/api/upload', { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if (result.url) {
+                        changeTheme(result.url, true);
+                        showStatus("Map image uploaded and applied!");
+                    } else {
+                        showStatus(`Upload failed: ${result.error}`, 'error');
+                    }
+                } catch (err) {
+                    showStatus(`Upload error: ${err}`, 'error');
+                    console.error("Drop upload failed", err);
+                }
+                return;
+            }
+
+            const url = e.dataTransfer.getData('text/plain');
+            if (url) {
+                changeTheme(url, true);
+                showStatus("Map URL applied!");
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+
+        async function openAddModal() {
+            document.getElementById('add-modal').style.display = 'flex';
+            if (!partyLoaded && guildId) {
+                try {
+                    const res = await fetch(`/api/party/${guildId}`);
+                    const data = await res.json();
+                    if (data.party) {
+                        const select = document.getElementById('load-pc-select');
+                        data.party.forEach(pc => {
+                            const opt = document.createElement('option');
+                            opt.value = JSON.stringify(pc);
+                            opt.textContent = pc.name;
+                            select.appendChild(opt);
+                        });
+                        select.onchange = (e) => {
+                            const pc = JSON.parse(e.target.value);
+                            document.getElementById('add-name').value = pc.name;
+                            document.getElementById('add-hp').value = pc.hp;
+                            document.getElementById('add-ac').value = pc.ac;
+                        };
+                        partyLoaded = true;
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        async function submitAddToken() {
+            const name = document.getElementById('add-name').value || "New Token";
+            const count = parseInt(document.getElementById('add-count').value) || 1;
+            const hp = parseInt(document.getElementById('add-hp').value) || 10;
+            const ac = parseInt(document.getElementById('add-ac').value) || 10;
+            const isEnemy = document.getElementById('add-enemy').checked;
+            const size = document.getElementById('add-size').value;
+            const imageUrl = document.getElementById('add-url').value || selectedImageUrl || "";
+            
+            if (!name) { showStatus("Please enter a name", 'error'); return; }
+            
+            console.log(`[DEBUG] submitAddToken called. Name: ${name}, Count: ${count}, imgUrl: ${imageUrl}`);
+            
+            try {
+                showStatus("Linking to server...");
+                console.log("[DEBUG] Fetching /api/token/add...");
+                
+                const res = await fetch('/api/token/add', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        guild_id: guildId, channel_id: activeChannelId || channelId || 'default',
+                        name, max_hp: hp, current_hp: hp, ac, count, is_enemy: isEnemy, image_url: imageUrl, size
+                    })
+                });
+                
+                console.log("[DEBUG] Fetch response status:", res.status);
+                
+                if (!res.ok) {
+                    const errText = await res.text();
+                    console.error("[DEBUG] Fetch failed text:", errText);
+                    showStatus(`Server Error: ${res.status}`, 'error');
+                    return;
+                }
+
+                const data = await res.json();
+                console.log("[DEBUG] Fetch response data:", data);
+
+                if (data.status === 'ok') {
+                    showStatus(count > 1 ? `${count} tokens added` : "Token added");
+                    document.getElementById('add-url').value = '';
+                    closeModal('add-modal');
+                    fetchState();
+                } else {
+                    showStatus(`Error: ${data.error}`, 'error');
+                    console.error("Token add failed:", data.error);
+                }
+            } catch (err) {
+                console.error("[DEBUG] FATAL FETCH ERROR:", err);
+                showStatus(`App Error: ${err.message}`, 'error');
+                alert(`Fetch Error: ${err.message}. Check console.`);
+            }
+        }
+
+        async function uploadTokenImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            showStatus("Uploading...");
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    selectedImageUrl = data.url;
+                    showStatus("Upload successful!");
+                    // Refresh gallery to show the new image (optional, just select it)
+                    const gallery = document.getElementById('add-token-gallery');
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item selected';
+                    item.style.backgroundImage = `url('${data.url}')`;
+                    item.dataset.url = data.url;
+                    
+                    // Deselect others
+                    gallery.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('selected'));
+                    gallery.prepend(item);
+                    
+                    item.onclick = (e) => {
+                        gallery.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        selectedImageUrl = e.target.dataset.url;
+                    };
+                } else {
+                    showStatus(`Upload failed: ${data.error}`, 'error');
+                }
+            } catch (e) {
+                showStatus(`Upload error: ${e}`, 'error');
+            }
+        }
+
+        function openEditModal(c) {
+            document.getElementById('edit-id').value = c.id;
+            document.getElementById('edit-name').value = c.name;
+            document.getElementById('edit-hp-curr').value = c.current_hp;
+            document.getElementById('edit-hp-max').value = c.max_hp;
+            document.getElementById('edit-ac').value = c.ac;
+            document.getElementById('edit-size').value = c.size || '1x1';
+            selectedImageUrl = c.image_url || '';
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        async function submitEditToken() {
+            const combatantId = document.getElementById('edit-id').value;
+            const name = document.getElementById('edit-name').value;
+            const hpCurr = parseInt(document.getElementById('edit-hp-curr').value);
+            const hpMax = parseInt(document.getElementById('edit-hp-max').value);
+            const ac = parseInt(document.getElementById('edit-ac').value);
+            
+            await fetch('/api/token/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    guild_id: guildId, channel_id: activeChannelId || channelId || 'default',
+                    id: combatantId, name, max_hp: hpMax, current_hp: hpCurr, ac,
+                    size: document.getElementById('edit-size').value,
+                    image_url: selectedImageUrl
+                })
+            });
+            document.getElementById('edit-modal').style.display = 'none';
+            fetchState();
+            showStatus("Token updated");
+            showStatus("Token updated");
+            closeModal('edit-modal');
+            fetchState();
+        }
+
+        async function deleteToken() {
+            await fetch('/api/token/remove', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default', id: parseInt(document.getElementById('edit-id').value) })
+            });
+            showStatus("Token deleted");
+            closeModal('edit-modal');
+            fetchState();
+        }
+
+        // 2D Zoom and Pan Logic
+        function updateMapTransform() {
+            const viewport = document.getElementById('map-viewport');
+            if (viewport) {
+                // Return to absolute centering with manual offset
+                viewport.style.transform = `translate(calc(-50% + ${mapTranslateX}%), calc(-50% + ${mapTranslateY}%)) scale(${mapScale})`;
+            }
+        }
+
+        function zoomBy(delta, atClientX, atClientY) {
+            const oldScale = mapScale;
+            mapScale = Math.min(Math.max(0.2, mapScale + delta), 5.0);
+            
+            if (atClientX !== undefined && atClientY !== undefined) {
+                const mapArea = document.getElementById('map-area');
+                const rect = mapArea.getBoundingClientRect();
+                
+                // Cursor position relative to map area center (in pixels)
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const dx = atClientX - centerX;
+                const dy = atClientY - centerY;
+                
+                // Adjust translation to keep the point under the cursor stable
+                // Change in translation needed is proportional to the change in scale
+                const ratio = (mapScale / oldScale) - 1;
+                
+                // mapTranslateX is in percentage (0-100 style)
+                // rect.width/2 is the 50% point
+                // We need to convert pixel displacement to 'percentage units' used in our transform
+                mapTranslateX -= (dx / rect.width) * 100 * ratio;
+                mapTranslateY -= (dy / rect.height) * 100 * ratio;
+            }
+            
+            updateMapTransform();
+        }
+
+        async function clearDrawings() {
+            if (!confirm("Clear all drawings?")) return;
+            await fetch('/api/paint/clear', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ guild_id: guildId, channel_id: activeChannelId || channelId || 'default' })
+            });
+            fetchState();
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Give Discord SDK a moment, but don't block forever
+            const initTimeout = setTimeout(() => {
+                if (!window.initStarted) {
+                    console.log("SDK taking too long, forcing init...");
+                    initCore();
+                }
+            }, 3000);
+
+            if (discordSdk) {
+                discordSdk.ready().then(() => {
+                    clearTimeout(initTimeout);
+                    if (!window.initStarted) initCore();
+                }).catch(() => {
+                    clearTimeout(initTimeout);
+                    if (!window.initStarted) initCore();
+                });
+            } else {
+                clearTimeout(initTimeout);
+                if (!window.initStarted) initCore();
+            }
+        });
+
+        function initCore() {
+            if (window.initStarted) return;
+            const loadingStatus = document.getElementById('loading-status');
+            if (loadingStatus) loadingStatus.textContent = "Loading grid data...";
+            
+            if (!guildId) {
+                // If we're likely in Discord, wait a bit for the SDK to fill guildId
+                const params = new URLSearchParams(window.location.search);
+                if (params.has('instance_id') || params.has('frame_id')) {
+                    console.log("Likely in Discord, waiting for SDK...");
+                    if (loadingStatus) loadingStatus.textContent = "Waiting for Discord identity...";
+                    setTimeout(() => {
+                        if (!guildId && !window.initStarted) {
+                            console.log("No guildId after timeout, showing connection screen.");
+                            showConnectionRequired();
+                            const loading = document.getElementById('loading-screen');
+                            if (loading) loading.style.display = 'none';
+                        } else if (guildId && !window.initStarted) {
+                            initCore(); // Try again now that we have guildId
+                        }
+                    }, 3000);
+                    return;
+                }
+                
+                console.log("No guildId found, showing connection screen.");
+                showConnectionRequired();
+                const loading = document.getElementById('loading-screen');
+                if (loading) loading.style.display = 'none';
+                return;
+            }
+            
+            window.initStarted = true;
+            if (loadingStatus) loadingStatus.textContent = "Setting up interface...";
+            
+            remoteLog('INFO', `Initializing map for guild: ${guildId}`);
+            
+            const mapArea = document.getElementById('map-area');
+            if (!mapArea) return;
+
+            init2D();
+            setupGallery('add-token-gallery');
+            
+            // --- UI Listeners & Buttons ---
+            const setClick = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+            const setChange = (id, fn) => { const el = document.getElementById(id); if (el) el.onchange = fn; };
+
+            setClick('tab-tokens-btn', () => switchTab('tokens'));
+            setClick('tab-chat-btn', () => switchTab('chat'));
+
+            setClick('btn-view-3d', () => setView('3d'));
+            setClick('btn-view-2d', () => setView('2d'));
+            setClick('btn-center-map', () => { mapScale = 1.0; mapTranslateX = 0; mapTranslateY = 0; updateMapTransform(); if(controls) { controls.reset(); } });
+            
+            setClick('mode-move', () => setMode('move'));
+            setClick('mode-paint', () => setMode('paint'));
+            setClick('mode-pan', () => setMode('pan'));
+            setClick('btn-clear-drawings', clearDrawings);
+            setClick('btn-add-token', openAddModal);
+            setClick('btn-submit-add', submitAddToken);
+            setClick('btn-cancel-add', () => closeModal('add-modal'));
+            
+            setClick('btn-update-map', () => openModal('map-modal'));
+            setClick('btn-submit-map', submitUpdateMap);
+            setClick('btn-cancel-map', () => closeModal('map-modal'));
+            
+            setClick('btn-cancel-edit', () => closeModal('edit-modal'));
+            setClick('btn-submit-edit', submitEditToken);
+            setClick('btn-delete-token', deleteToken);
+            
+            setChange('theme-select', (e) => changeTheme(e.target.value));
+            setClick('btn-grid-square', () => setGridType('square', true));
+            setClick('btn-grid-hex', () => setGridType('hex', true));
+            fetchState();
+            setChange('map-upload-input', (e) => uploadMapImage(e));
+
+            // Sidebar Toggle
+            setClick('toggle-sidebar-btn', () => {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('collapsed');
+                const btn = document.getElementById('toggle-sidebar-btn');
+                btn.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
+                window.dispatchEvent(new Event('resize'));
+            });
+
+            // Chat handlers
+            setClick('btn-send-chat', sendChatMessage);
+            const chatInputEl = document.getElementById('chat-input');
+            if (chatInputEl) chatInputEl.onkeydown = (e) => { if(e.key === 'Enter') sendChatMessage(); };
+            setChange('channel-select', (e) => { activeChannelId = e.target.value; fetchState(); });
+
+            // Custom Upload Listeners
+            setClick('btn-upload-custom', () => {
+                const input = document.getElementById('token-upload-input');
+                if (input) input.click();
+            });
+            setChange('token-upload-input', (e) => uploadTokenImage(e));
+
+            // Zoom Controls
+            setClick('btn-zoom-in', () => { mapScale = Math.min(mapScale * 1.2, 10); updateMapTransform(); });
+            setClick('btn-zoom-out', () => { mapScale = Math.max(mapScale / 1.2, 0.1); updateMapTransform(); });
+            setClick('btn-zoom-reset', () => { mapScale = 1.0; updateMapTransform(); });
+
+            // 2D Pan/Zoom Events
+            mapArea.onwheel = (e) => {
+                if (currentView === '2d') {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                    mapScale = Math.min(Math.max(0.1, mapScale + delta), 10.0);
+                    updateMapTransform();
+                }
+            };
+
+            mapArea.onmousedown = (e) => {
+                if (currentView === '2d') {
+                    if (e.button === 1 || e.button === 2 || (currentMode === 'pan' && e.button === 0)) {
+                        isPanning = true;
+                        startPanX = e.clientX;
+                        startPanY = e.clientY;
+                        mapArea.style.cursor = 'grabbing';
+                        e.preventDefault();
+                    }
+                }
+            };
+
+            // Drag Sidebar Logic
+            let isDraggingSidebar = false;
+            let sidebarStartX = 0;
+            let sidebarStartY = 0;
+            let initialSidebarLeft = 0;
+            let initialSidebarTop = 0;
+            const sidebar = document.getElementById('sidebar');
+            
+            document.getElementById('sidebar-drag-handle').onmousedown = (e) => {
+                isDraggingSidebar = true;
+                sidebarStartX = e.clientX;
+                sidebarStartY = e.clientY;
+                const rect = sidebar.getBoundingClientRect();
+                initialSidebarLeft = rect.left;
+                initialSidebarTop = rect.top;
+                e.preventDefault();
+            };
+
+            window.onmousemove = (e) => {
+                if (isDraggingSidebar) {
+                    const dx = e.clientX - sidebarStartX;
+                    const dy = e.clientY - sidebarStartY;
+                    let newLeft = initialSidebarLeft + dx;
+                    let newTop = initialSidebarTop + dy;
+                    newLeft = Math.max(0, Math.min(window.innerWidth - 50, newLeft));
+                    newTop = Math.max(0, Math.min(window.innerHeight - 50, newTop));
+                    sidebar.style.left = newLeft + 'px';
+                    sidebar.style.top = newTop + 'px';
+                    sidebar.style.bottom = 'auto';
+                } else if (isPanning) {
+                    const dx = e.clientX - startPanX;
+                    const dy = e.clientY - startPanY;
+                    const rect = mapArea.getBoundingClientRect();
+                    mapTranslateX -= (dx / rect.width) * 150;
+                    mapTranslateY -= (dy / rect.height) * 150;
+                    startPanX = e.clientX;
+                    startPanY = e.clientY;
+                    updateMapTransform();
+                }
+            };
+
+            window.onmouseup = () => {
+                isDraggingSidebar = false;
+                isPanning = false;
+                mapArea.style.cursor = 'auto';
+            };
+
+            mapArea.oncontextmenu = (e) => { if (currentView === '2d') e.preventDefault(); };
+
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.color-btn').forEach(b => b.style.borderColor = 'transparent');
+                    e.target.style.borderColor = 'white';
+                    paintColor = e.target.dataset.color;
+                };
+            });
+
+            // --- Voice Control Logic ---
+            const micBtn = document.getElementById('btn-mic-chat');
+            const chatInput = document.getElementById('chat-input');
+            let isListening = false;
+            let recognition = null;
+
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                recognition.onstart = () => { isListening = true; micBtn.classList.add('active'); chatInput.placeholder = "Listening..."; };
+                recognition.onend = () => { isListening = false; micBtn.classList.remove('active'); chatInput.placeholder = "Aa"; };
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    chatInput.value = transcript;
+                    let cleanText = transcript.toLowerCase().replace(/to d/g, '2d').replace(/too d/g, '2d').replace(/for d/g, '4d').replace(/four d/g, '4d').replace(/roll /g, '').trim();
+                    if (cleanText.match(/^\d+d\d+/i)) { chatInput.value = "!roll " + cleanText; sendChatMessage(); }
+                    else { sendChatMessage(); }
+                };
+            } else if (micBtn) { micBtn.style.display = 'none'; }
+
+            if (micBtn) {
+                micBtn.addEventListener('click', () => { if (isListening) recognition.stop(); else recognition.start(); });
+            }
+
+            const voiceToggle = document.getElementById('btn-voice-toggle');
+            if (voiceToggle) {
+                voiceToggle.onclick = () => {
+                    document.body.classList.toggle('voice-mode');
+                    voiceToggle.classList.toggle('active');
+                    localStorage.setItem('voice_hints_enabled', document.body.classList.contains('voice-mode'));
+                };
+                if (localStorage.getItem('voice_hints_enabled') === 'true') {
+                    document.body.classList.add('voice-mode');
+                    voiceToggle.classList.add('active');
+                }
+            }
+
+            // --- Final Startup ---
+            setInterval(fetchState, 3000);
+            fetchState();
+            setMode('move');
+            updateMapTransform();
+            
+            console.log("Initializing 3D...");
+            if (typeof THREE !== 'undefined') {
+                try { 
+                    init3D(); 
+                } catch(e) { 
+                    console.error("3D init failed:", e); 
+                    remoteLog('ERROR', `3D Init Failed: ${e.message}`);
+                    setView('2d');
+                }
+            } else {
+                remoteLog('WARN', 'Three.js not found, falling back to 2D');
+                setView('2d');
+            }
+            
+            // Hide loading screen after a small delay to ensure rendering started
+            setTimeout(() => {
+                const loading = document.getElementById('loading-screen');
+                if (loading) loading.style.opacity = '0';
+                setTimeout(() => { if(loading) loading.style.display = 'none'; }, 500);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
