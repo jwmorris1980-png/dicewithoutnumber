@@ -52,6 +52,7 @@ class WithoutNumberBot(commands.Bot):
         self.web_service = WebService(self)
         self.localizer = localizer
         self.dice_service = DiceService()
+        self._startup_command_sync_done = False
         
         # Configure command tree for modern Discord "App Launcher" (Activities) compatibility
         self.tree.allowed_contexts = discord.app_commands.AppCommandContext(
@@ -217,6 +218,31 @@ class WithoutNumberBot(commands.Bot):
         for cmd in self.tree.get_commands():
             logger.info(f"/{cmd.name} - {cmd.description}")
         logger.info('------')
+        if not self._startup_command_sync_done:
+            self._startup_command_sync_done = True
+            asyncio.create_task(self._sync_commands_on_startup())
+
+    async def _sync_commands_on_startup(self):
+        """Refresh guild command caches after a fresh boot."""
+        try:
+            await asyncio.sleep(2)
+            synced_total = 0
+            for guild in self.guilds:
+                try:
+                    self.tree.copy_global_to(guild=guild)
+                    synced = await self.tree.sync(guild=guild)
+                    synced_total += len(synced)
+                    logger.info(f"Synced {len(synced)} commands to guild {guild.name} ({guild.id})")
+                except Exception as e:
+                    logger.error(f"Failed to sync commands to guild {guild.name}: {e}", exc_info=True)
+            try:
+                global_synced = await self.tree.sync()
+                logger.info(f"Global command sync complete: {len(global_synced)} command(s).")
+            except Exception as e:
+                logger.error(f"Global command sync failed: {e}", exc_info=True)
+            logger.info(f"Startup command refresh finished. Guild commands synced: {synced_total}")
+        except Exception as e:
+            logger.error(f"Startup command sync task failed: {e}", exc_info=True)
 
     async def on_error(self, event, *args, **kwargs):
         logger.error(f"Error in event {event}:", exc_info=True)
