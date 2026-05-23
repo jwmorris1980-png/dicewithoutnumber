@@ -4,6 +4,7 @@ from discord.ext import commands
 import random
 import re
 import logging
+from types import SimpleNamespace
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,94 @@ async def dice_autocomplete_handler(interaction: discord.Interaction, current: s
 class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling commands"):
     def __init__(self, bot):
         self.bot = bot
+
+    async def handle_message(self, message: discord.Message) -> bool:
+        """Direct text-command fallback for dice rolls."""
+        content = message.content.strip()
+        lowered = content.lower()
+        command_map = ("!roll", "!r", "!gmroll", "!gr", "!multiroll", "!skill", "!attack")
+        if not lowered.startswith(command_map):
+            return False
+
+        adapter = SimpleNamespace(
+            author=message.author,
+            user=message.author,
+            channel=message.channel,
+            message=message,
+            send=message.channel.send,
+        )
+
+        parts = content.split(maxsplit=1)
+        command = parts[0].lower()
+        remainder = parts[1].strip() if len(parts) > 1 else ""
+
+        if command in ("!roll", "!r"):
+            if not remainder:
+                await message.channel.send("❌ Usage: `!roll <expression>`")
+                return True
+            await self._perform_roll(adapter, remainder, None, 1)
+            return True
+
+        if command in ("!gmroll", "!gr"):
+            if not remainder:
+                await message.channel.send("❌ Usage: `!gmroll <expression>`")
+                return True
+            await self._perform_roll(adapter, remainder, None, 1, is_hidden=True)
+            return True
+
+        if command == "!multiroll":
+            if not remainder:
+                await message.channel.send("❌ Usage: `!multiroll <times> <expression>`")
+                return True
+            match = re.match(r"^(\d+)\s+(.+)$", remainder)
+            if not match:
+                await message.channel.send("❌ Usage: `!multiroll <times> <expression>`")
+                return True
+            times = int(match.group(1))
+            expression = match.group(2).strip()
+            await self._perform_roll(adapter, expression, None, times)
+            return True
+
+        sheet_cog = self.bot.get_cog('CharacterSheetCog')
+        if not sheet_cog:
+            await message.channel.send("❌ Character sheet system is unavailable right now.")
+            return True
+
+        char_data = await sheet_cog.get_active_character_data(adapter, allow_none=True)
+        if not char_data:
+            return True
+
+        if command == "!skill":
+            if not remainder:
+                await message.channel.send("❌ Usage: `!skill <name> [attribute] [bonus]`")
+                return True
+            tokens = remainder.split()
+            name = tokens[0]
+            attribute = None
+            bonus = 0
+            if len(tokens) >= 2:
+                if re.fullmatch(r"[-+]?\d+", tokens[1]):
+                    bonus = int(tokens[1])
+                else:
+                    attribute = tokens[1]
+            if len(tokens) >= 3 and re.fullmatch(r"[-+]?\d+", tokens[2]):
+                bonus = int(tokens[2])
+            await self._perform_skill(adapter, char_data, name, attribute, bonus)
+            return True
+
+        if command == "!attack":
+            weapon = None
+            bonus = 0
+            if remainder:
+                tokens = remainder.split()
+                if tokens:
+                    weapon = tokens[0]
+                if len(tokens) >= 2 and re.fullmatch(r"[-+]?\d+", tokens[1]):
+                    bonus = int(tokens[1])
+            await self._perform_attack(adapter, char_data, weapon, bonus)
+            return True
+
+        return False
 
     @app_commands.command(name="roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")

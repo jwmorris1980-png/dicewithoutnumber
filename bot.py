@@ -302,6 +302,10 @@ class WithoutNumberBot(commands.Bot):
         if message.author.bot and not message.webhook_id:
             return
 
+        dice_cog = self.get_cog("DiceCog")
+        if dice_cog and await dice_cog.handle_message(message):
+            return
+
         # Let discord.py resolve prefix commands on every eligible message.
         # This is safer than pre-filtering here and avoids dropping valid prefixes.
         await self.process_commands(message)
