@@ -139,7 +139,99 @@ class WithoutNumberBot(commands.Bot):
 
     async def on_interaction(self, interaction: discord.Interaction):
         if interaction.type == discord.InteractionType.application_command:
-            logger.info(f"Interaction: /{interaction.command.name if interaction.command else 'unknown'} from {interaction.user} (ID: {interaction.user.id})")
+            command_path = self._interaction_command_path(interaction)
+            logger.info(
+                f"Interaction: /{command_path} from {interaction.user} (ID: {interaction.user.id})"
+            )
+            if self._is_dice_interaction(interaction):
+                asyncio.create_task(self._dice_interaction_watchdog(interaction))
+
+    def _interaction_command_path(self, interaction: discord.Interaction) -> str:
+        """Return a readable slash command path from raw interaction data."""
+        data = interaction.data or {}
+        name = data.get("name") or (interaction.command.name if interaction.command else "unknown")
+        options = data.get("options") or []
+        if name == "dice" and options and isinstance(options[0], dict):
+            subcommand = options[0].get("name", "unknown")
+            return f"dice {subcommand}"
+        return name
+
+    def _is_dice_interaction(self, interaction: discord.Interaction) -> bool:
+        """Identify slash dice commands that should always get a fallback response."""
+        data = interaction.data or {}
+        name = data.get("name")
+        if name in {"roll", "gmroll", "multiroll", "skill", "attack"}:
+            return True
+        options = data.get("options") or []
+        if name == "dice" and options and isinstance(options[0], dict):
+            return options[0].get("name") in {"roll", "gmroll", "multiroll", "skill", "attack"}
+        return False
+
+    async def _dice_interaction_watchdog(self, interaction: discord.Interaction):
+        """Fallback handler that rescues dice slash commands if the main path never replies."""
+        try:
+            await asyncio.sleep(2.2)
+            if interaction.response.is_done():
+                return
+
+            dice_cog = self.get_cog("DiceCog")
+            if not dice_cog:
+                await interaction.response.send_message(
+                    "Dice system is temporarily unavailable.",
+                    ephemeral=True,
+                )
+                return
+
+            data = interaction.data or {}
+            name = data.get("name")
+            options = data.get("options") or []
+            sub_options = options
+
+            if name == "dice" and options and isinstance(options[0], dict):
+                name = options[0].get("name")
+                sub_options = options[0].get("options") or []
+
+            option_map = {}
+            for option in sub_options:
+                if isinstance(option, dict) and "name" in option:
+                    option_map[option["name"]] = option.get("value")
+
+            if name in {"roll", "gmroll"}:
+                expression = option_map.get("expression")
+                if not expression:
+                    await interaction.response.send_message("Missing dice expression.", ephemeral=True)
+                    return
+                comment = option_map.get("comment")
+                multiplier = int(option_map.get("multiplier") or 1)
+                await interaction.response.defer(ephemeral=(name == "gmroll"))
+                await dice_cog._perform_roll(
+                    interaction,
+                    expression,
+                    comment,
+                    multiplier,
+                    is_hidden=(name == "gmroll"),
+                )
+                logger.warning(f"Dice watchdog recovered /{name} for {interaction.user}")
+                return
+
+            if name == "multiroll":
+                times = int(option_map.get("times") or 0)
+                expression = option_map.get("expression")
+                if not times or not expression:
+                    await interaction.response.send_message("Missing multiroll inputs.", ephemeral=True)
+                    return
+                comment = option_map.get("comment")
+                await interaction.response.defer()
+                await dice_cog._perform_roll(interaction, expression, comment, times)
+                logger.warning(f"Dice watchdog recovered /multiroll for {interaction.user}")
+                return
+        except Exception as e:
+            logger.error(f"Dice watchdog failed: {e}", exc_info=True)
+            try:
+                if not interaction.response.is_done():
+                    await interaction.response.send_message(f"An error occurred: `{e}`", ephemeral=True)
+            except Exception:
+                pass
 
     async def setup_hook(self):
         # Initial identity sync in background so it doesn't block web service
