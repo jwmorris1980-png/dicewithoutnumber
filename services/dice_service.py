@@ -181,7 +181,7 @@ class DiceService:
             return err, 0
         
         if repeats > 1:
-            return f"Repetition {repeats}x: Use /wn-multiroll for detailed separate lines.", total
+            return f"Repetition {repeats}x: Use /multiroll for detailed separate lines.", total
             
         result_msg = f"Rolling {expression}: {details} = **{total}**"
         return result_msg, total

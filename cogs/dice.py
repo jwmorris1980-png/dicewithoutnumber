@@ -43,7 +43,7 @@ class DiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="wn-roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
+    @app_commands.command(name="roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def roll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
@@ -59,7 +59,7 @@ class DiceCog(commands.Cog):
         await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
         await self._perform_roll(ctx, expression, None, 1)
 
-    @app_commands.command(name="wn-gmroll", description="Perform a hidden GM roll (only visible to you).")
+    @app_commands.command(name="gmroll", description="Perform a hidden GM roll (only visible to you).")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def gmroll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
@@ -136,12 +136,12 @@ class DiceCog(commands.Cog):
                     await target.message.delete()
                 except:
                     pass
-                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/wn-gmroll` next time!)*_"
+                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/gmroll` next time!)*_"
 
         await send(final_msg, **kwargs)
 
 
-    @app_commands.command(name="wn-multiroll")
+    @app_commands.command(name="multiroll")
     async def multiroll_slash(self, interaction: discord.Interaction, times: int, expression: str, comment: str = None):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         if sheet_cog: await sheet_cog.get_active_character_data(interaction, allow_none=True)
@@ -154,7 +154,7 @@ class DiceCog(commands.Cog):
         if sheet_cog: await sheet_cog.get_active_character_data(ctx, allow_none=True)
         await self._perform_roll(ctx, expression, comment, times)
 
-    @app_commands.command(name="wn-skill")
+    @app_commands.command(name="skill")
     async def skill_slash(self, interaction: discord.Interaction, name: str, attribute: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(interaction)
@@ -190,7 +190,7 @@ class DiceCog(commands.Cog):
         send = target.followup.send if is_int else target.send
         await send(embed=embed)
 
-    @app_commands.command(name="wn-attack")
+    @app_commands.command(name="attack")
     async def attack_slash(self, interaction: discord.Interaction, weapon: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(interaction)

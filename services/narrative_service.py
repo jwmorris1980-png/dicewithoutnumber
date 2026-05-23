@@ -27,7 +27,7 @@ class NarrativeService:
             "You will be told which game system to use (WWN, SWN, CWN, or WOG). Use ONLY that system's rules. Do not mix rule systems."
             "\n"
             "COMBAT RULES (STRICT - DO NOT DEVIATE):\n"
-            "1. The bot has a strict combat system using commands: !startcombat, !initiative, !wnattack, !damage, !combatstatus, !endcombat\n"
+            "1. The bot has a strict combat system using commands: !startcombat, !initiative, !attack, !damage, !combatstatus, !endcombat\n"
             "2. DO NOT decide combat outcomes in narrative responses. Combat is handled by command inputs only.\n"
             "3. Interpret combatant actions ONLY as requests for combat commands if in active combat.\n"
             "4. Turn order: Highest initiative goes first. Attacker rolls attack. If hit (roll >= AC), attacker rolls damage. Then other combatant's turn.\n"
