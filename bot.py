@@ -233,7 +233,7 @@ class WithoutNumberBot(commands.Bot):
         await self.send_alert(f"❌ **Command Error: {ctx.command}**\nUser: {ctx.author}\nError: `{error}`")
         
         # Alert Owner for non-user errors OR common roll failures
-        is_roll_cmd = ctx.command and str(ctx.command) in ['wnroll', 'wnmultiroll', 'wnskill', 'wnattack', 'wngmroll']
+        is_roll_cmd = ctx.command and str(ctx.command) in ['roll', 'r', 'multiroll', 'skill', 'attack', 'gmroll', 'gr']
         is_user_error = isinstance(error, (commands.CheckFailure, commands.UserInputError))
         
         if not is_user_error or is_roll_cmd:

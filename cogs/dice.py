@@ -53,7 +53,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, multiplier)
 
-    @commands.command(name="wnroll", help="Roll dice. Usage: !wnroll 1d20+5, !wnroll 3x 2d6")
+    @commands.command(name="roll", aliases=["r"], help="Roll dice. Usage: !roll 1d20+5, !roll 3x 2d6")
     async def roll_prefix(self, ctx, *, expression: str):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
@@ -68,7 +68,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer(ephemeral=True)
         await self._perform_roll(interaction, expression, comment, multiplier, is_hidden=True)
 
-    @commands.command(name="wngmroll", help="Hidden GM roll. Usage: !wngmroll 1d20+5 (sent via DM)")
+    @commands.command(name="gmroll", aliases=["gr"], help="Hidden GM roll. Usage: !gmroll 1d20+5 (sent via DM)")
     async def gmroll_prefix(self, ctx, *, expression: str):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
@@ -78,7 +78,7 @@ class DiceCog(commands.Cog):
         is_int = isinstance(target, discord.Interaction)
         user = target.user if is_int else target.author
         
-        # Support comma-separated multi-rolls: !wnroll 1d20+5 Attack, 1d8+2 Damage
+        # Support comma-separated multi-rolls: !roll 1d20+5 Attack, 1d8+2 Damage
         sub_expressions = [s.strip() for s in expression.split(',')]
         
         if len(sub_expressions) > 5:
@@ -148,7 +148,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, times)
 
-    @commands.command(name="wnmultiroll")
+    @commands.command(name="multiroll")
     async def multiroll_prefix(self, ctx, times: int, expression: str, *, comment: str = None):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         if sheet_cog: await sheet_cog.get_active_character_data(ctx, allow_none=True)
@@ -162,7 +162,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_skill(interaction, char_data, name, attribute, bonus)
 
-    @commands.command(name="wnskill")
+    @commands.command(name="skill")
     async def skill_prefix(self, ctx, name: str, attribute: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(ctx)
@@ -198,7 +198,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_attack(interaction, char_data, weapon, bonus)
 
-    @commands.command(name="wnattack")
+    @commands.command(name="attack")
     async def attack_prefix(self, ctx, weapon: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(ctx)
