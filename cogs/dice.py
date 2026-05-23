@@ -47,31 +47,22 @@ class DiceCog(commands.Cog):
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def roll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        await sheet_cog.get_active_character_data(interaction, allow_none=True) if sheet_cog else None
-        
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, multiplier)
 
     @commands.command(name="roll", aliases=["r"], help="Roll dice. Usage: !roll 1d20+5, !roll 3x 2d6")
     async def roll_prefix(self, ctx, *, expression: str):
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
         await self._perform_roll(ctx, expression, None, 1)
 
     @app_commands.command(name="gmroll", description="Perform a hidden GM roll (only visible to you).")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def gmroll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        await sheet_cog.get_active_character_data(interaction, allow_none=True) if sheet_cog else None
         if not interaction.response.is_done(): await interaction.response.defer(ephemeral=True)
         await self._perform_roll(interaction, expression, comment, multiplier, is_hidden=True)
 
     @commands.command(name="gmroll", aliases=["gr"], help="Hidden GM roll. Usage: !gmroll 1d20+5 (sent via DM)")
     async def gmroll_prefix(self, ctx, *, expression: str):
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
         await self._perform_roll(ctx, expression, None, 1, is_hidden=True)
 
     async def _perform_roll(self, target, expression, comment, multiplier, is_hidden=False):
@@ -143,15 +134,11 @@ class DiceCog(commands.Cog):
 
     @app_commands.command(name="multiroll")
     async def multiroll_slash(self, interaction: discord.Interaction, times: int, expression: str, comment: str = None):
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        if sheet_cog: await sheet_cog.get_active_character_data(interaction, allow_none=True)
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, times)
 
     @commands.command(name="multiroll")
     async def multiroll_prefix(self, ctx, times: int, expression: str, *, comment: str = None):
-        sheet_cog = self.bot.get_cog('CharacterSheetCog')
-        if sheet_cog: await sheet_cog.get_active_character_data(ctx, allow_none=True)
         await self._perform_roll(ctx, expression, comment, times)
 
     @app_commands.command(name="skill")
