@@ -219,9 +219,9 @@
                     .replace(/roll /g, '') // remove "roll" if they said "roll 2d6"
                     .trim();
 
-                // If it looks like a dice expression, add !roll
+                // If it looks like a dice expression, add !wnroll
                 if (cleanText.match(/^\d+d\d+/i)) {
-                    text = "!roll " + cleanText;
+                    text = "!wnroll " + cleanText;
                 }
 
                 await fetch('/api/chat', {

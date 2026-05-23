@@ -122,7 +122,7 @@ class HelpCog(commands.Cog):
                         "3. **Setup Tracker:** GM adds enemies via `/tracker add Goblin 10 12 5` (Adds 5 goblins).\n"
                         "4. **Tactical Grid:** Use `/tracker controller` for a native button-based interactive map!\n"
                         "5. **Take Turns:** Order goes highest to lowest. GM uses `/tracker next`.\n"
-                        "6. **Player Attacks:** Player types `/attack` to roll 1d20 + Attack Bonus (+ Damage if hit!).\n"
+                        "6. **Player Attacks:** Player types `/wn-attack` to roll 1d20 + Attack Bonus (+ Damage if hit!).\n"
                         "7. **Deal Damage:** GM types `/tracker damage <id> <amount>`.\n\n"
                         "On your turn, you can take **One Main Action** and **One Move Action**. You can also take any number of On Turn actions.",
             color=discord.Color.dark_red()

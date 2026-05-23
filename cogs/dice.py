@@ -43,7 +43,7 @@ class DiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
+    @app_commands.command(name="wn-roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def roll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
@@ -53,13 +53,13 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, multiplier)
 
-    @commands.command(name="roll", aliases=["r"], help="Roll dice. Usage: !roll 1d20+5, !roll 3x 2d6")
+    @commands.command(name="wnroll", help="Roll dice. Usage: !wnroll 1d20+5, !wnroll 3x 2d6")
     async def roll_prefix(self, ctx, *, expression: str):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
         await self._perform_roll(ctx, expression, None, 1)
 
-    @app_commands.command(name="gmroll", description="Perform a hidden GM roll (only visible to you).")
+    @app_commands.command(name="wn-gmroll", description="Perform a hidden GM roll (only visible to you).")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
     async def gmroll_slash(self, interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
@@ -68,7 +68,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer(ephemeral=True)
         await self._perform_roll(interaction, expression, comment, multiplier, is_hidden=True)
 
-    @commands.command(name="gmroll", aliases=["gr"], help="Hidden GM roll. Usage: !gmroll 1d20+5 (sent via DM)")
+    @commands.command(name="wngmroll", help="Hidden GM roll. Usage: !wngmroll 1d20+5 (sent via DM)")
     async def gmroll_prefix(self, ctx, *, expression: str):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         await sheet_cog.get_active_character_data(ctx, allow_none=True) if sheet_cog else None
@@ -78,7 +78,7 @@ class DiceCog(commands.Cog):
         is_int = isinstance(target, discord.Interaction)
         user = target.user if is_int else target.author
         
-        # Support comma-separated multi-rolls: !roll 1d20+5 Attack, 1d8+2 Damage
+        # Support comma-separated multi-rolls: !wnroll 1d20+5 Attack, 1d8+2 Damage
         sub_expressions = [s.strip() for s in expression.split(',')]
         
         if len(sub_expressions) > 5:
@@ -136,25 +136,25 @@ class DiceCog(commands.Cog):
                     await target.message.delete()
                 except:
                     pass
-                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/gmroll` next time!)*_"
+                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/wn-gmroll` next time!)*_"
 
         await send(final_msg, **kwargs)
 
 
-    @app_commands.command(name="multiroll")
+    @app_commands.command(name="wn-multiroll")
     async def multiroll_slash(self, interaction: discord.Interaction, times: int, expression: str, comment: str = None):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         if sheet_cog: await sheet_cog.get_active_character_data(interaction, allow_none=True)
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, times)
 
-    @commands.command(name="multiroll")
+    @commands.command(name="wnmultiroll")
     async def multiroll_prefix(self, ctx, times: int, expression: str, *, comment: str = None):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         if sheet_cog: await sheet_cog.get_active_character_data(ctx, allow_none=True)
         await self._perform_roll(ctx, expression, comment, times)
 
-    @app_commands.command(name="skill")
+    @app_commands.command(name="wn-skill")
     async def skill_slash(self, interaction: discord.Interaction, name: str, attribute: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(interaction)
@@ -162,7 +162,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_skill(interaction, char_data, name, attribute, bonus)
 
-    @commands.command(name="skill")
+    @commands.command(name="wnskill")
     async def skill_prefix(self, ctx, name: str, attribute: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(ctx)
@@ -190,7 +190,7 @@ class DiceCog(commands.Cog):
         send = target.followup.send if is_int else target.send
         await send(embed=embed)
 
-    @app_commands.command(name="attack")
+    @app_commands.command(name="wn-attack")
     async def attack_slash(self, interaction: discord.Interaction, weapon: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(interaction)
@@ -198,7 +198,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_attack(interaction, char_data, weapon, bonus)
 
-    @commands.command(name="attack")
+    @commands.command(name="wnattack")
     async def attack_prefix(self, ctx, weapon: str = None, bonus: int = 0):
         sheet_cog = self.bot.get_cog('CharacterSheetCog')
         char_data = await sheet_cog.get_active_character_data(ctx)

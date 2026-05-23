@@ -3039,7 +3039,7 @@
                     const transcript = event.results[0][0].transcript;
                     chatInput.value = transcript;
                     let cleanText = transcript.toLowerCase().replace(/to d/g, '2d').replace(/too d/g, '2d').replace(/for d/g, '4d').replace(/four d/g, '4d').replace(/roll /g, '').trim();
-                    if (cleanText.match(/^\d+d\d+/i)) { chatInput.value = "!roll " + cleanText; sendChatMessage(); }
+                    if (cleanText.match(/^\d+d\d+/i)) { chatInput.value = "!wnroll " + cleanText; sendChatMessage(); }
                     else { sendChatMessage(); }
                 };
             } else if (micBtn) { micBtn.style.display = 'none'; }

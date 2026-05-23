@@ -66,7 +66,7 @@ class DiceService:
         
         # 2. Fuzzy Parsing for simple numbers
         # Only do this if it's a clear 2-digit number and NO other text/spaces
-        # This prevents "!roll 26" from becoming 2d6 if it was meant to be a literal 26,
+        # This prevents "!wnroll 26" from becoming 2d6 if it was meant to be a literal 26,
         # but keeps it for people who want the shortcut.
         # We also skip this if it looks like a long Discord ID.
         if expression.isdigit() and len(expression) == 2:
@@ -181,7 +181,7 @@ class DiceService:
             return err, 0
         
         if repeats > 1:
-            return f"Repetition {repeats}x: Use /multiroll for detailed separate lines.", total
+            return f"Repetition {repeats}x: Use /wn-multiroll for detailed separate lines.", total
             
         result_msg = f"Rolling {expression}: {details} = **{total}**"
         return result_msg, total

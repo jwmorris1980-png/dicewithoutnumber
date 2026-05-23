@@ -122,7 +122,7 @@ class WithoutNumberBot(commands.Bot):
         
         # 2. Alert Owner via DM for critical errors
         # Special case: If it's a roll command, alert owner even for typos if they are struggling
-        is_roll_cmd = interaction.command and interaction.command.name in ['roll', 'multiroll', 'skill', 'attack']
+        is_roll_cmd = interaction.command and interaction.command.name in ['wn-roll', 'wn-multiroll', 'wn-skill', 'wn-attack', 'wn-gmroll']
         is_user_error = isinstance(error, (app_commands.CheckFailure, app_commands.CommandNotFound))
         
         if not is_user_error or is_roll_cmd:
@@ -233,7 +233,7 @@ class WithoutNumberBot(commands.Bot):
         await self.send_alert(f"❌ **Command Error: {ctx.command}**\nUser: {ctx.author}\nError: `{error}`")
         
         # Alert Owner for non-user errors OR common roll failures
-        is_roll_cmd = ctx.command and str(ctx.command) in ['roll', 'r', 'multiroll', 'skill', 'attack']
+        is_roll_cmd = ctx.command and str(ctx.command) in ['wnroll', 'wnmultiroll', 'wnskill', 'wnattack', 'wngmroll']
         is_user_error = isinstance(error, (commands.CheckFailure, commands.UserInputError))
         
         if not is_user_error or is_roll_cmd:
