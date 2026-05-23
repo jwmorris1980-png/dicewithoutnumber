@@ -5,6 +5,7 @@ import os
 import logging
 import datetime
 import asyncio
+import json
 from services.database import DatabaseService
 from services.web_service import WebService
 from services.localization_service import LocalizationService
@@ -279,6 +280,12 @@ class WithoutNumberBot(commands.Bot):
         # Debug log for prefix detection
         if message.content.startswith(self.command_prefix):
             logger.info(f"Command detected: {message.content} from {message.author}")
+
+        if message.content and message.content.lower().startswith("!debugroll"):
+            await self._handle_debug_roll(message)
+            return
+
+        if message.content.startswith(self.command_prefix):
             await self.process_commands(message)
         elif self.user.mentioned_in(message):
             logger.info(f"Mention detected: {message.content} from {message.author}")
@@ -290,6 +297,49 @@ class WithoutNumberBot(commands.Bot):
             # or just use the display name which is usually the character name.
             logger.debug(f"Saving chat message from {author_name} in {message.channel.name}")
             self.db.save_chat_message(message.guild.id, message.channel.id, author_name, message.content)
+
+    async def _handle_debug_roll(self, message: discord.Message):
+        """Direct, command-router-free diagnostic for roll parsing and Discord send behavior."""
+        try:
+            if not hasattr(self, "owner_id_cache"):
+                app = await self.application_info()
+                self.owner_id_cache = app.owner.id
+
+            if message.author.id != self.owner_id_cache:
+                await message.channel.send("❌ `!debugroll` is owner-only.")
+                return
+
+            expression = message.content.split(maxsplit=1)[1].strip() if len(message.content.split(maxsplit=1)) > 1 else ""
+            dice_cog = self.get_cog("DiceCog")
+            parse_total = parse_details = parse_error = None
+            repeats = 1
+            end_idx = 0
+            if expression:
+                parse_total, parse_details, parse_error, repeats, end_idx = self.dice_service.parse_and_roll(expression)
+
+            payload = {
+                "command": "!debugroll",
+                "author": f"{message.author} ({message.author.id})",
+                "guild": f"{getattr(message.guild, 'name', 'DM')} ({getattr(message.guild, 'id', 'dm')})",
+                "channel": f"#{getattr(message.channel, 'name', 'unknown')} ({message.channel.id})",
+                "bot_ready": self.is_ready(),
+                "dice_cog_loaded": bool(dice_cog),
+                "command_prefix": str(self.command_prefix),
+                "expression": expression,
+                "parse_total": parse_total,
+                "parse_details": parse_details,
+                "parse_error": parse_error,
+                "parse_repeats": repeats,
+                "parse_end_index": end_idx,
+            }
+            logger.info(f"Debug roll payload: {json.dumps(payload, ensure_ascii=False)}")
+            await message.channel.send(f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```")
+        except Exception as e:
+            logger.error(f"Debug roll failed: {e}", exc_info=True)
+            try:
+                await message.channel.send(f"❌ Debug roll failed: `{e}`")
+            except Exception:
+                pass
 
 if __name__ == '__main__':
     if not TOKEN or TOKEN == "your_token_here":
