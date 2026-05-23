@@ -39,7 +39,7 @@ async def dice_autocomplete_handler(interaction: discord.Interaction, current: s
 
     return suggestions[:25]
 
-class DiceCog(commands.Cog):
+class DiceCog(commands.GroupCog, group_name="dice", description="Dice rolling commands"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -136,7 +136,7 @@ class DiceCog(commands.Cog):
                     await target.message.delete()
                 except:
                     pass
-                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/gmroll` next time!)*_"
+                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/dice gmroll` next time!)*_"
 
         await send(final_msg, **kwargs)
 
