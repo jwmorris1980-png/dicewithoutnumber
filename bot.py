@@ -277,12 +277,22 @@ class WithoutNumberBot(commands.Bot):
         if message.author.bot and not message.webhook_id:
             return
 
+        logger.info(
+            f"on_message: guild={getattr(message.guild, 'id', 'dm')} "
+            f"channel={getattr(message.channel, 'id', 'unknown')} "
+            f"author={message.author.id} content={message.content[:120]!r}"
+        )
+
         # Debug log for prefix detection
         if message.content.startswith(self.command_prefix):
             logger.info(f"Command detected: {message.content} from {message.author}")
 
         if message.content and message.content.lower().startswith("!debugroll"):
             await self._handle_debug_roll(message)
+            return
+
+        if message.content and message.content.lower().startswith("!debugping"):
+            await self._handle_debug_ping(message)
             return
 
         if message.content.startswith(self.command_prefix):
@@ -297,6 +307,13 @@ class WithoutNumberBot(commands.Bot):
             # or just use the display name which is usually the character name.
             logger.debug(f"Saving chat message from {author_name} in {message.channel.name}")
             self.db.save_chat_message(message.guild.id, message.channel.id, author_name, message.content)
+
+    async def _handle_debug_ping(self, message: discord.Message):
+        """Tiny channel ping to verify the message event is reaching the bot."""
+        await message.channel.send(
+            f"✅ debug ping received in #{getattr(message.channel, 'name', 'unknown')} "
+            f"from {message.author.display_name}"
+        )
 
     async def _handle_debug_roll(self, message: discord.Message):
         """Direct, command-router-free diagnostic for roll parsing and Discord send behavior."""
