@@ -394,6 +394,17 @@ if __name__ == '__main__':
     async def health_prefix(ctx):
         await perform_health_check(ctx)
 
+    @bot.tree.command(name="roll", description="Roll a dice expression.")
+    @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
+    async def roll_alias(interaction: discord.Interaction, expression: str, comment: str = None, multiplier: int = 1):
+        dice_cog = bot.get_cog("DiceCog")
+        if not dice_cog:
+            await interaction.response.send_message("Dice system is temporarily unavailable.", ephemeral=True)
+            return
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+        await dice_cog._perform_roll(interaction, expression, comment, multiplier)
+
     async def perform_health_check(target):
         is_int = isinstance(target, discord.Interaction)
         bot = target.client if is_int else target.bot
