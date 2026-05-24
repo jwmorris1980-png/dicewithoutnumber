@@ -593,6 +593,15 @@ if __name__ == '__main__':
             ephemeral=True,
         )
 
+    @bot.tree.command(name="echo", description="Echo text back to you.")
+    @app_commands.describe(text="Text to echo back")
+    async def echo_slash(interaction: discord.Interaction, text: str):
+        await interaction.response.send_message(text)
+
+    @bot.command(name="echo", help="Echo text back to you. Usage: !echo hello")
+    async def echo_prefix(ctx, *, text: str):
+        await ctx.send(text)
+
     @bot.tree.command(name="debugperm", description="Show channel and permission diagnostics for this bot.")
     async def debugperm_slash(interaction: discord.Interaction):
         if not interaction.guild or not interaction.channel:
