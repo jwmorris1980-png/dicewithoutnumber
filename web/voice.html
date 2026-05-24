@@ -249,6 +249,9 @@
                     statusText.textContent = `Error: ${payload.error || 'Send failed'}`;
                     return;
                 }
+                if (payload.roll_response) {
+                    transcriptDiv.textContent = payload.roll_response;
+                }
                 statusText.textContent = "Sent OK";
             } catch(e) { statusText.textContent = "Error Sending"; }
         }

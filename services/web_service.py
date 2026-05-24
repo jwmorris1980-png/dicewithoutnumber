@@ -242,7 +242,11 @@ class WebService:
                     break
             
             self.bot.db.save_tracker(guild_id, data, channel_id)
-            return web.json_response({"status": "ok"})
+            return web.json_response({
+                "status": "ok",
+                "normalized_message": message,
+                "roll_response": roll_response,
+            })
         except Exception as e:
             return web.json_response({"error": str(e)}, status=400)
 
