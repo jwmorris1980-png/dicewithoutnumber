@@ -512,7 +512,7 @@ class WebService:
         text = re.sub(r"\bminus\b", "-", text)
         text = re.sub(r"\bgm\s+roll\b", "gmroll", text)
         text = re.sub(r"\bmulti\s+roll\b", "multiroll", text)
-        text = re.sub(r"\s*d\s*", "d", text)
+        text = re.sub(r"(\d+)\s*d\s*(\d+)", r"\1d\2", text)
 
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")

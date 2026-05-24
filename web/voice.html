@@ -226,7 +226,7 @@
                     .replace(/four d/g, '4d')
                     .replace(/three d/g, '3d')
                     .replace(/ten d/g, '10d')
-                    .replace(/\s*d\s*/g, 'd')
+                    .replace(/(\d+)\s*d\s*(\d+)/g, '$1d$2')
                     .replace(/^roll\s+/g, '') // remove "roll" if they said "roll 2d6" or "roll 26"
                     .trim();
 
