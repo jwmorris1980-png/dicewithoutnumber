@@ -3,6 +3,7 @@ import json
 import os
 import asyncio
 import logging
+import re
 
 logger = logging.getLogger('web_service')
 DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID", "1478115953681367090")
@@ -440,6 +441,8 @@ class WebService:
             channel = self.bot.get_channel(channel_id)
             if not channel:
                 return web.json_response({"error": "Channel not found"}, status=404)
+
+            message, _voice_roll_expr = self._normalize_voice_roll_message(message)
                 
             # Check if this is a dice roll
             roll_response = None
@@ -468,6 +471,29 @@ class WebService:
             return web.json_response({"status": "ok"})
         except Exception as e:
             return web.json_response({"error": str(e)}, status=400)
+
+    def _normalize_voice_roll_message(self, message: str) -> tuple[str, str | None]:
+        """Normalize common voice phrases into a roll-friendly message."""
+        text = re.sub(r"\s+", " ", str(message).strip().lower())
+        if not text:
+            return message, None
+
+        def looks_like_roll(expr: str) -> bool:
+            compact = expr.replace(" ", "")
+            return bool(re.fullmatch(r"\d{2}", compact) or re.fullmatch(r"\d+d\d+(?:[+-]\d+)*", compact))
+
+        for prefix in ("!roll ", "/roll ", "roll "):
+            if text.startswith(prefix):
+                expr = text[len(prefix):].strip()
+                if looks_like_roll(expr):
+                    return f"!roll {expr.replace(' ', '')}", expr.replace(" ", "")
+                return message, None
+
+        if looks_like_roll(text):
+            compact = text.replace(" ", "")
+            return f"!roll {compact}", compact
+
+        return message, None
 
     async def handle_theme(self, request):
         try:

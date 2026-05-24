@@ -216,11 +216,12 @@
                     .replace(/four d/g, '4d')
                     .replace(/three d/g, '3d')
                     .replace(/ten d/g, '10d')
-                    .replace(/roll /g, '') // remove "roll" if they said "roll 2d6"
+                    .replace(/\s*d\s*/g, 'd')
+                    .replace(/^roll\s+/g, '') // remove "roll" if they said "roll 2d6" or "roll 26"
                     .trim();
 
-                // If it looks like a dice expression, add !roll
-                if (cleanText.match(/^\d+d\d+/i)) {
+                // If it looks like a dice expression or a simple 2-digit roll, add !roll
+                if (cleanText.match(/^\d+d\d+/i) || cleanText.match(/^\d{2}$/i)) {
                     text = "!roll " + cleanText;
                 }
 
