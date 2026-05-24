@@ -478,6 +478,21 @@ class WebService:
         if not text:
             return message, None
 
+        word_numbers = {
+            "one": "1",
+            "two": "2",
+            "three": "3",
+            "four": "4",
+            "five": "5",
+            "six": "6",
+            "seven": "7",
+            "eight": "8",
+            "nine": "9",
+            "ten": "10",
+        }
+        for word, digit in word_numbers.items():
+            text = re.sub(rf"\b{word}\b", digit, text)
+
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")
             return bool(re.fullmatch(r"\d{2}", compact) or re.fullmatch(r"\d+d\d+(?:[+-]\d+)*", compact))
