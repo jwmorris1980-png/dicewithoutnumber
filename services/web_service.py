@@ -5,6 +5,7 @@ import asyncio
 import logging
 
 logger = logging.getLogger('web_service')
+DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID", "1478115953681367090")
 
 class WebService:
     def __init__(self, bot, port=8080):
@@ -131,7 +132,7 @@ class WebService:
             
         with open(path, 'r', encoding='utf-8') as f:
             html = f.read()
-        client_id = str(self.bot.user.id) if self.bot.user else "0"
+        client_id = DISCORD_CLIENT_ID
         invite_url = f"https://discord.com/api/oauth2/authorize?client_id={client_id}&permissions=8&scope=bot%20applications.commands"
         html = html.replace('{{CLIENT_ID}}', client_id)
         html = html.replace('{{INVITE_URL}}', invite_url)
