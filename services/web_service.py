@@ -132,7 +132,9 @@ class WebService:
         with open(path, 'r', encoding='utf-8') as f:
             html = f.read()
         client_id = str(self.bot.user.id) if self.bot.user else "0"
+        invite_url = f"https://discord.com/api/oauth2/authorize?client_id={client_id}&permissions=8&scope=bot%20applications.commands"
         html = html.replace('{{CLIENT_ID}}', client_id)
+        html = html.replace('{{INVITE_URL}}', invite_url)
         return web.Response(text=html, content_type='text/html')
 
     async def handle_storyteller(self, request):
