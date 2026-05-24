@@ -24,11 +24,11 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 ## 2. Combat & Dice
 | Command | Description |
 |---------|-------------|
-| `/roll <expression>` | Complex rolls: `1d20+1d4+5`, `4d6kh3`, `2d6-1d4`. Use `3x` for multiples! Use commas for mixed rolls (e.g., `!roll ⚔️ 1d20+5, 💥 1d8+2`) |
-| `/multiroll <num> <exp>`| Roll same expression multiple times |
-| `/gmroll <exp>` | Hidden roll (private/ephemeral, use `!gmroll` for prefix) |
-| `/attack [weapon]` | Roll attack using sheet modifiers |
-| `/skill [name]` | Roll skill check (e.g., `!skill notice`) |
+| `/dice roll <expression>` | Complex rolls: `1d20+1d4+5`, `4d6kh3`, `2d6-1d4`. Use `3x` for multiples! Use commas for mixed rolls (e.g., `!roll ⚔️ 1d20+5, 💥 1d8+2`) |
+| `/dice multiroll <num> <exp>`| Roll same expression multiple times |
+| `/dice gmroll <exp>` | Hidden roll (private/ephemeral, use `!gmroll` for prefix) |
+| `/dice attack [weapon]` | Roll attack using sheet modifiers |
+| `/dice skill [name]` | Roll skill check (e.g., `!skill notice`) |
 | `/initiative` | Roll initiative |
 | `/3d6kh` / `/4d6kh` | Specialized rolls (Keep High) |
 

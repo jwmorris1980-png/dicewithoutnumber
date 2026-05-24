@@ -438,7 +438,7 @@ class WebService:
                 
             # Check if this is a dice roll
             roll_response = None
-            if message.startswith("!roll ") or message.startswith("/roll "):
+            if message.startswith("!roll ") or message.startswith("/roll ") or message.startswith("/dice roll "):
                 expr = message.split(" ", 1)[1]
                 dice_cog = self.bot.get_cog("DiceCog")
                 if dice_cog:
