@@ -139,7 +139,87 @@ class WithoutNumberBot(commands.Bot):
 
     async def on_interaction(self, interaction: discord.Interaction):
         if interaction.type == discord.InteractionType.application_command:
-            logger.info(f"Interaction: /{interaction.command.name if interaction.command else 'unknown'} from {interaction.user} (ID: {interaction.user.id})")
+            command_path = self._interaction_command_path(interaction)
+            logger.info(
+                f"Interaction: /{command_path} from {interaction.user} (ID: {interaction.user.id})"
+            )
+            if self._is_dice_interaction(interaction):
+                asyncio.create_task(self._dice_interaction_watchdog(interaction))
+
+    def _interaction_command_path(self, interaction: discord.Interaction) -> str:
+        data = interaction.data or {}
+        name = data.get("name") or (interaction.command.name if interaction.command else "unknown")
+        return name
+
+    def _is_dice_interaction(self, interaction: discord.Interaction) -> bool:
+        data = interaction.data or {}
+        return data.get("name") in {"roll", "gmroll", "multiroll", "skill", "attack"}
+
+    async def _dice_interaction_watchdog(self, interaction: discord.Interaction):
+        """Fallback for dice slash commands if the main response path stalls."""
+        try:
+            await asyncio.sleep(2.0)
+            if interaction.response.is_done():
+                return
+
+            dice_cog = self.get_cog("DiceCog")
+            if not dice_cog:
+                await interaction.response.send_message(
+                    "Dice system is temporarily unavailable.",
+                    ephemeral=True,
+                )
+                return
+
+            data = interaction.data or {}
+            name = data.get("name")
+            options = data.get("options") or []
+            option_map = {}
+            for option in options:
+                if isinstance(option, dict) and "name" in option:
+                    option_map[option["name"]] = option.get("value")
+
+            if name == "roll":
+                expression = option_map.get("expression")
+                comment = option_map.get("comment")
+                multiplier = int(option_map.get("multiplier") or 1)
+                if not expression:
+                    await interaction.response.send_message("Missing dice expression.", ephemeral=True)
+                    return
+                await interaction.response.defer()
+                await dice_cog._perform_roll(interaction, expression, comment, multiplier)
+                logger.warning(f"Recovered stalled /roll for {interaction.user}")
+                return
+
+            if name == "gmroll":
+                expression = option_map.get("expression")
+                comment = option_map.get("comment")
+                multiplier = int(option_map.get("multiplier") or 1)
+                if not expression:
+                    await interaction.response.send_message("Missing dice expression.", ephemeral=True)
+                    return
+                await interaction.response.defer(ephemeral=True)
+                await dice_cog._perform_roll(interaction, expression, comment, multiplier, is_hidden=True)
+                logger.warning(f"Recovered stalled /gmroll for {interaction.user}")
+                return
+
+            if name == "multiroll":
+                times = int(option_map.get("times") or 0)
+                expression = option_map.get("expression")
+                comment = option_map.get("comment")
+                if not times or not expression:
+                    await interaction.response.send_message("Missing multiroll inputs.", ephemeral=True)
+                    return
+                await interaction.response.defer()
+                await dice_cog._perform_roll(interaction, expression, comment, times)
+                logger.warning(f"Recovered stalled /multiroll for {interaction.user}")
+                return
+        except Exception as e:
+            logger.error(f"Dice watchdog failed: {e}", exc_info=True)
+            try:
+                if not interaction.response.is_done():
+                    await interaction.response.send_message(f"An error occurred: `{e}`", ephemeral=True)
+            except Exception:
+                pass
 
     async def setup_hook(self):
         # Initial identity sync in background so it doesn't block web service
