@@ -443,18 +443,31 @@ class WebService:
                 return web.json_response({"error": "Channel not found"}, status=404)
 
             message, _voice_roll_expr = self._normalize_voice_roll_message(message)
-                
-            # Check if this is a dice roll
+
             roll_response = None
-            if message.startswith("!roll ") or message.startswith("/roll "):
-                expr = message.split(" ", 1)[1]
+            dice_service = getattr(self.bot, "dice_service", None)
+            if not dice_service:
                 dice_cog = self.bot.get_cog("DiceCog")
-                if dice_cog:
-                    total, details, err = dice_cog.parse_and_roll(expr)
-                    if err:
-                        roll_response = f"❌ Error rolling `{expr}`: {err}"
-                    else:
-                        roll_response = f"🎲 **Result:** {details} = **{total}** (`{expr}`)"
+                if dice_cog and getattr(dice_cog, "bot", None):
+                    dice_service = getattr(dice_cog.bot, "dice_service", None)
+
+            if message.startswith((
+                "!roll ",
+                "/roll ",
+                "!gmroll ",
+                "/gmroll ",
+                "!attack ",
+                "/attack ",
+                "!skill ",
+                "/skill ",
+                "!multiroll ",
+                "/multiroll ",
+            )):
+                try:
+                    command, expr = message[1:].split(" ", 1)
+                except ValueError:
+                    command, expr = message[1:], ""
+                roll_response = self._build_voice_roll_response(command.lower(), expr.strip(), dice_service)
 
             # Send to Discord
             formatted_msg = f"**{user_name}** (Map): {message}"
@@ -462,14 +475,15 @@ class WebService:
                 formatted_msg += f"\n\n{roll_response}"
 
             await channel.send(formatted_msg)
-            
+
             # Save to local history immediately for the map to see it faster
             self.bot.db.save_chat_message(guild_id, channel_id, user_name, message)
             if roll_response:
                 self.bot.db.save_chat_message(guild_id, channel_id, self.bot.user.name, roll_response)
-                
+
             return web.json_response({"status": "ok"})
         except Exception as e:
+            logger.exception("Voice chat post failed")
             return web.json_response({"error": str(e)}, status=400)
 
     def _normalize_voice_roll_message(self, message: str) -> tuple[str, str | None]:
@@ -493,22 +507,109 @@ class WebService:
         for word, digit in word_numbers.items():
             text = re.sub(rf"\b{word}\b", digit, text)
 
+        text = re.sub(r"\bg\s*m\b", "gm", text)
+        text = re.sub(r"\bplus\b", "+", text)
+        text = re.sub(r"\bminus\b", "-", text)
+        text = re.sub(r"\bgm\s+roll\b", "gmroll", text)
+        text = re.sub(r"\bmulti\s+roll\b", "multiroll", text)
+        text = re.sub(r"\s*d\s*", "d", text)
+
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")
             return bool(re.fullmatch(r"\d{2}", compact) or re.fullmatch(r"\d+d\d+(?:[+-]\d+)*", compact))
 
-        for prefix in ("!roll ", "/roll ", "roll "):
-            if text.startswith(prefix):
-                expr = text[len(prefix):].strip()
-                if looks_like_roll(expr):
-                    return f"!roll {expr.replace(' ', '')}", expr.replace(" ", "")
-                return message, None
+        command_match = re.match(
+            r"^(?:!|/)?(?P<command>gmroll|gm\s+roll|multiroll|multi\s+roll|attack|skill|roll)(?:\s+(?P<payload>.*))?$",
+            text,
+        )
+        if command_match:
+            command = command_match.group("command").replace(" ", "")
+            payload = (command_match.group("payload") or "").strip()
+
+            if command == "multiroll" and payload:
+                times_match = re.match(r"^(\d+)\s+(.*)$", payload)
+                if times_match:
+                    payload = f"{times_match.group(1)}x {times_match.group(2).strip()}"
+
+            if command in {"attack", "skill"} and not payload:
+                payload = "1d20" if command == "attack" else "2d6"
+
+            if command in {"roll", "gmroll"} and payload and looks_like_roll(payload):
+                compact = payload.replace(" ", "")
+                return f"!{command} {compact}", compact
+
+            if command == "multiroll" and payload:
+                return f"!multiroll {payload}", payload
+
+            if command in {"attack", "skill"} and payload:
+                compact = payload.replace(" ", "")
+                return f"!{command} {compact}", compact
+
+            return message, None
 
         if looks_like_roll(text):
             compact = text.replace(" ", "")
             return f"!roll {compact}", compact
 
         return message, None
+
+    def _build_voice_roll_response(self, command: str, expression: str, dice_service) -> str | None:
+        if not dice_service:
+            return "Error: dice service is unavailable."
+
+        command = command.lower().strip()
+        expression = (expression or "").strip()
+
+        if command == "multiroll":
+            times_match = re.match(r"^(\d+)x\s*(.+)$", expression)
+            if not times_match:
+                times_match = re.match(r"^(\d+)\s+(.*)$", expression)
+            if not times_match:
+                return "Error: say multi roll like `multi roll 3 2d6`."
+
+            times = int(times_match.group(1))
+            inner_expr = times_match.group(2).strip()
+            if times > 20:
+                return "Error: too many repeats. Max 20."
+
+            lines = []
+            for i in range(times):
+                total, details, err, _, _ = dice_service.parse_and_roll(inner_expr)
+                if err:
+                    return f"Error rolling `{inner_expr}`: {err}"
+                lines.append(f"-> Roll {i + 1}: {details} = **{total}**")
+
+            return "Multi Roll\n" + "\n".join(lines)
+
+        if command in {"attack", "skill"} and not expression:
+            expression = "1d20" if command == "attack" else "2d6"
+
+        total, details, err, repeats, _ = dice_service.parse_and_roll(expression)
+        if err:
+            return f"Error rolling `{expression}`: {err}"
+
+        if repeats > 1:
+            repeat_match = re.match(r"^(\d+)\s*[x#]\s*(.*)$", expression)
+            inner_expr = repeat_match.group(2).strip() if repeat_match else expression
+            lines = []
+            for i in range(repeats):
+                repeat_total, repeat_details, repeat_err, _, _ = dice_service.parse_and_roll(inner_expr)
+                if repeat_err:
+                    return f"Error rolling `{inner_expr}`: {repeat_err}"
+                lines.append(f"-> Roll {i + 1}: {repeat_details} = **{repeat_total}**")
+            return "Result\n" + "\n".join(lines)
+
+        titles = {
+            "roll": "Result",
+            "gmroll": "GM Roll",
+            "attack": "Attack Roll",
+            "skill": "Skill Check",
+        }
+        title = titles.get(command, "Result")
+        result = f"-> Result: {details} = **{total}**"
+        if command == "gmroll":
+            return f"{title}\n|| {result} ||\n_(Hidden voice roll.)_"
+        return f"{title}\n{result}"
 
     async def handle_theme(self, request):
         try:

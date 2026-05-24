@@ -234,8 +234,7 @@
                 if (cleanText.match(/^\d+d\d+/i) || cleanText.match(/^\d{2}$/i)) {
                     text = "!roll " + cleanText;
                 }
-
-                await fetch('/api/chat', {
+                const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -245,7 +244,12 @@
                         message: text
                     })
                 });
-                statusText.textContent = "Sent ✓";
+                const payload = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    statusText.textContent = `Error: ${payload.error || 'Send failed'}`;
+                    return;
+                }
+                statusText.textContent = "Sent OK";
             } catch(e) { statusText.textContent = "Error Sending"; }
         }
 
@@ -263,3 +267,4 @@
     </script>
 </body>
 </html>
+
