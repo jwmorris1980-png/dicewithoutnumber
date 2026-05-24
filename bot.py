@@ -394,10 +394,18 @@ class WithoutNumberBot(commands.Bot):
 
     async def _handle_debug_ping(self, message: discord.Message):
         """Tiny channel ping to verify the message event is reaching the bot."""
-        await message.channel.send(
+        reply = (
             f"✅ debug ping received in #{getattr(message.channel, 'name', 'unknown')} "
             f"from {message.author.display_name}"
         )
+        try:
+            await message.channel.send(reply)
+        except Exception as e:
+            logger.warning(f"Debug ping channel send failed: {e}")
+            try:
+                await message.author.send(reply)
+            except Exception as dm_error:
+                logger.warning(f"Debug ping DM fallback failed: {dm_error}")
 
     async def _handle_debug_roll(self, message: discord.Message):
         """Direct, command-router-free diagnostic for roll parsing and Discord send behavior."""
@@ -434,7 +442,15 @@ class WithoutNumberBot(commands.Bot):
                 "parse_end_index": end_idx,
             }
             logger.info(f"Debug roll payload: {json.dumps(payload, ensure_ascii=False)}")
-            await message.channel.send(f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```")
+            rendered = f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```"
+            try:
+                await message.channel.send(rendered)
+            except Exception as e:
+                logger.warning(f"Debug roll channel send failed: {e}")
+                try:
+                    await message.author.send(rendered)
+                except Exception as dm_error:
+                    logger.warning(f"Debug roll DM fallback failed: {dm_error}")
         except Exception as e:
             logger.error(f"Debug roll failed: {e}", exc_info=True)
             try:
@@ -485,7 +501,15 @@ class WithoutNumberBot(commands.Bot):
                 "bot_can_thread_reply": bool(bot_perms.send_messages_in_threads),
             }
             logger.info(f"Debug perm payload: {json.dumps(payload, ensure_ascii=False)}")
-            await message.channel.send(f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```")
+            rendered = f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```"
+            try:
+                await message.channel.send(rendered)
+            except Exception as e:
+                logger.warning(f"Debug perm channel send failed: {e}")
+                try:
+                    await message.author.send(rendered)
+                except Exception as dm_error:
+                    logger.warning(f"Debug perm DM fallback failed: {dm_error}")
         except Exception as e:
             logger.error(f"Debug perm failed: {e}", exc_info=True)
             try:
@@ -608,11 +632,18 @@ if __name__ == '__main__':
             "bot_can_read_history": bool(bot_perms.read_message_history),
             "bot_can_thread_reply": bool(bot_perms.send_messages_in_threads),
         }
+        rendered = f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```"
         logger.info(f"Debug perm slash: {json.dumps(payload, ensure_ascii=False)}")
-        await interaction.response.send_message(
-            f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```",
-            ephemeral=True,
-        )
+        try:
+            if not interaction.response.is_done():
+                await interaction.response.defer(ephemeral=True)
+            await interaction.followup.send(rendered, ephemeral=True)
+        except Exception as e:
+            logger.warning(f"Debug perm slash reply failed: {e}")
+            try:
+                await interaction.user.send(rendered)
+            except Exception as dm_error:
+                logger.warning(f"Debug perm slash DM fallback failed: {dm_error}")
 
     async def perform_health_check(target):
         is_int = isinstance(target, discord.Interaction)
