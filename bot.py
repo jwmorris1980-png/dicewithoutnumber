@@ -375,6 +375,10 @@ class WithoutNumberBot(commands.Bot):
             await self._handle_debug_ping(message)
             return
 
+        if message.content and message.content.lower().startswith("!debugperm"):
+            await self._handle_debug_perm(message)
+            return
+
         if message.content.startswith(self.command_prefix):
             await self.process_commands(message)
         elif self.user.mentioned_in(message):
@@ -435,6 +439,57 @@ class WithoutNumberBot(commands.Bot):
             logger.error(f"Debug roll failed: {e}", exc_info=True)
             try:
                 await message.channel.send(f"❌ Debug roll failed: `{e}`")
+            except Exception:
+                pass
+
+    async def _handle_debug_perm(self, message: discord.Message):
+        """Show the bot's actual permissions in the current channel."""
+        try:
+            if not message.guild:
+                await message.channel.send("❌ `!debugperm` only works in a server.")
+                return
+
+            guild = message.guild
+            me = guild.me or guild.get_member(self.user.id)
+            if not me:
+                me = await guild.fetch_member(self.user.id)
+
+            bot_perms = message.channel.permissions_for(me)
+            user_perms = message.channel.permissions_for(message.author)
+
+            relevant = [
+                "view_channel",
+                "send_messages",
+                "read_message_history",
+                "use_application_commands",
+                "send_messages_in_threads",
+            ]
+
+            def pack(perms):
+                return {
+                    name: getattr(perms, name, None)
+                    for name in relevant
+                }
+
+            payload = {
+                "guild": f"{guild.name} ({guild.id})",
+                "channel": f"#{getattr(message.channel, 'name', 'unknown')} ({message.channel.id})",
+                "channel_type": str(getattr(message.channel, 'type', 'unknown')),
+                "author": f"{message.author} ({message.author.id})",
+                "bot_member_found": bool(me),
+                "bot_permissions": pack(bot_perms),
+                "user_permissions": pack(user_perms),
+                "bot_can_reply": bool(bot_perms.view_channel and bot_perms.send_messages),
+                "bot_can_use_slash": bool(bot_perms.view_channel and bot_perms.use_application_commands),
+                "bot_can_read_history": bool(bot_perms.read_message_history),
+                "bot_can_thread_reply": bool(bot_perms.send_messages_in_threads),
+            }
+            logger.info(f"Debug perm payload: {json.dumps(payload, ensure_ascii=False)}")
+            await message.channel.send(f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```")
+        except Exception as e:
+            logger.error(f"Debug perm failed: {e}", exc_info=True)
+            try:
+                await message.channel.send(f"❌ Debug perm failed: `{e}`")
             except Exception:
                 pass
 
@@ -509,6 +564,51 @@ if __name__ == '__main__':
             "tree_commands": len(bot.tree.get_commands()),
         }
         logger.info(f"Debug status slash: {json.dumps(payload, ensure_ascii=False)}")
+        await interaction.response.send_message(
+            f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```",
+            ephemeral=True,
+        )
+
+    @bot.tree.command(name="debugperm", description="Show channel and permission diagnostics for this bot.")
+    async def debugperm_slash(interaction: discord.Interaction):
+        if not interaction.guild or not interaction.channel:
+            await interaction.response.send_message("❌ This command only works in a server channel.", ephemeral=True)
+            return
+
+        guild = interaction.guild
+        me = guild.me or guild.get_member(bot.user.id if bot.user else 0)
+        if not me and bot.user:
+            me = await guild.fetch_member(bot.user.id)
+
+        bot_perms = interaction.channel.permissions_for(me)
+        user_perms = interaction.channel.permissions_for(interaction.user)
+
+        relevant = [
+            "view_channel",
+            "send_messages",
+            "read_message_history",
+            "use_application_commands",
+            "send_messages_in_threads",
+        ]
+
+        def pack(perms):
+            return {name: getattr(perms, name, None) for name in relevant}
+
+        payload = {
+            "type": str(interaction.type),
+            "guild": f"{guild.name} ({guild.id})",
+            "channel": f"#{getattr(interaction.channel, 'name', 'unknown')} ({interaction.channel.id})",
+            "channel_type": str(getattr(interaction.channel, 'type', 'unknown')),
+            "author": f"{interaction.user} ({interaction.user.id})",
+            "bot_member_found": bool(me),
+            "bot_permissions": pack(bot_perms),
+            "user_permissions": pack(user_perms),
+            "bot_can_reply": bool(bot_perms.view_channel and bot_perms.send_messages),
+            "bot_can_use_slash": bool(bot_perms.view_channel and bot_perms.use_application_commands),
+            "bot_can_read_history": bool(bot_perms.read_message_history),
+            "bot_can_thread_reply": bool(bot_perms.send_messages_in_threads),
+        }
+        logger.info(f"Debug perm slash: {json.dumps(payload, ensure_ascii=False)}")
         await interaction.response.send_message(
             f"```json\n{json.dumps(payload, indent=2, ensure_ascii=False)}\n```",
             ephemeral=True,
