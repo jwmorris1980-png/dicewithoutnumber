@@ -131,6 +131,8 @@ class WebService:
             
         with open(path, 'r', encoding='utf-8') as f:
             html = f.read()
+        client_id = str(self.bot.user.id) if self.bot.user else "0"
+        html = html.replace('{{CLIENT_ID}}', client_id)
         return web.Response(text=html, content_type='text/html')
 
     async def handle_storyteller(self, request):
