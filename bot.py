@@ -397,6 +397,11 @@ class WithoutNumberBot(commands.Bot):
                     logger.warning(f"Direct help send failed: {e}")
                 return
 
+            if not message.content.startswith(self.command_prefix):
+                handled = await self._handle_natural_voice_command(message)
+                if handled:
+                    return
+
         if message.content.startswith(self.command_prefix):
             await self.process_commands(message)
         elif self.user.mentioned_in(message):
@@ -409,6 +414,32 @@ class WithoutNumberBot(commands.Bot):
             # or just use the display name which is usually the character name.
             logger.debug(f"Saving chat message from {author_name} in {message.channel.name}")
             self.db.save_chat_message(message.guild.id, message.channel.id, author_name, message.content)
+
+    async def _handle_natural_voice_command(self, message: discord.Message) -> bool:
+        """Handle clean speech-to-text commands typed directly into Discord."""
+        try:
+            normalized, _ = self.web_service._normalize_voice_roll_message(message.content)
+            if normalized == message.content or not normalized.startswith(("!roll ", "!gmroll ", "!multiroll ", "!attack ", "!skill ")):
+                return False
+
+            command, expr = normalized[1:].split(" ", 1)
+            roll_response = self.web_service._build_voice_roll_response(
+                command.lower(),
+                expr.strip(),
+                self.dice_service,
+            )
+            if not roll_response:
+                return False
+
+            await message.channel.send(f"Interpreted as `{normalized}`\n{roll_response}")
+            return True
+        except Exception as e:
+            logger.error(f"Natural voice command failed: {e}", exc_info=True)
+            try:
+                await message.channel.send(f"Error reading voice command: `{e}`")
+            except Exception:
+                pass
+            return True
 
     async def _handle_debug_ping(self, message: discord.Message):
         """Tiny channel ping to verify the message event is reaching the bot."""
