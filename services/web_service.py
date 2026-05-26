@@ -446,6 +446,7 @@ class WebService:
             if not channel:
                 return web.json_response({"error": "Channel not found"}, status=404)
 
+            original_message = message
             message, _voice_roll_expr = self._normalize_voice_roll_message(message)
 
             roll_response = None
@@ -485,18 +486,31 @@ class WebService:
             if roll_response:
                 self.bot.db.save_chat_message(guild_id, channel_id, self.bot.user.name, roll_response)
 
-            return web.json_response({"status": "ok"})
+            return web.json_response({
+                "status": "ok",
+                "original_message": original_message,
+                "normalized_message": message,
+                "roll_response": roll_response,
+            })
         except Exception as e:
             logger.exception("Voice chat post failed")
             return web.json_response({"error": str(e)}, status=400)
 
     def _normalize_voice_roll_message(self, message: str) -> tuple[str, str | None]:
         """Normalize common voice phrases into a roll-friendly message."""
-        text = re.sub(r"\s+", " ", str(message).strip().lower())
+        raw_message = str(message)
+        if "\n" in raw_message or "\r" in raw_message:
+            return message, None
+
+        text = re.sub(r"\s+", " ", raw_message.strip().lower())
         if not text:
             return message, None
 
+        text = re.sub(r"[.?!,;:]+$", "", text).strip()
+
         word_numbers = {
+            "a": "1",
+            "an": "1",
             "one": "1",
             "two": "2",
             "three": "3",
@@ -507,10 +521,16 @@ class WebService:
             "eight": "8",
             "nine": "9",
             "ten": "10",
+            "eleven": "11",
+            "twelve": "12",
+            "twenty": "20",
         }
         for word, digit in word_numbers.items():
             text = re.sub(rf"\b{word}\b", digit, text)
 
+        text = re.sub(r"\bdee\b", "d", text)
+        text = re.sub(r"\bdie\b", "d", text)
+        text = re.sub(r"\bdice\b", "d", text)
         text = re.sub(r"\bg\s*m\b", "gm", text)
         text = re.sub(r"\bplus\b", "+", text)
         text = re.sub(r"\bminus\b", "-", text)
@@ -520,7 +540,7 @@ class WebService:
 
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")
-            return bool(re.fullmatch(r"\d{2}", compact) or re.fullmatch(r"\d+d\d+(?:[+-]\d+)*", compact))
+            return bool(re.fullmatch(r"\d+d\d+(?:[+-]\d+)*", compact))
 
         command_match = re.match(
             r"^(?:!|/)?(?P<command>gmroll|gm\s+roll|multiroll|multi\s+roll|attack|skill|roll)(?:\s+(?P<payload>.*))?$",
@@ -550,10 +570,6 @@ class WebService:
                 return f"!{command} {compact}", compact
 
             return message, None
-
-        if looks_like_roll(text):
-            compact = text.replace(" ", "")
-            return f"!roll {compact}", compact
 
         return message, None
 

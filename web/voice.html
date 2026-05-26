@@ -208,32 +208,6 @@
             statusText.textContent = "Sending...";
             
             try {
-                // Formatting for common voice-to-text dice patterns
-                let cleanText = text.toLowerCase()
-                    .replace(/\bone\b/g, '1')
-                    .replace(/\btwo\b/g, '2')
-                    .replace(/\bthree\b/g, '3')
-                    .replace(/\bfour\b/g, '4')
-                    .replace(/\bfive\b/g, '5')
-                    .replace(/\bsix\b/g, '6')
-                    .replace(/\bseven\b/g, '7')
-                    .replace(/\beight\b/g, '8')
-                    .replace(/\bnine\b/g, '9')
-                    .replace(/\bten\b/g, '10')
-                    .replace(/to d/g, '2d')
-                    .replace(/too d/g, '2d')
-                    .replace(/for d/g, '4d')
-                    .replace(/four d/g, '4d')
-                    .replace(/three d/g, '3d')
-                    .replace(/ten d/g, '10d')
-                    .replace(/(\d+)\s*d\s*(\d+)/g, '$1d$2')
-                    .replace(/^roll\s+/g, '') // remove "roll" if they said "roll 2d6" or "roll 26"
-                    .trim();
-
-                // If it looks like a dice expression or a simple 2-digit roll, add !roll
-                if (cleanText.match(/^\d+d\d+/i) || cleanText.match(/^\d{2}$/i)) {
-                    text = "!roll " + cleanText;
-                }
                 const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
