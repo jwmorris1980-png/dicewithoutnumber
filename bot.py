@@ -418,6 +418,16 @@ class WithoutNumberBot(commands.Bot):
     async def _handle_natural_voice_command(self, message: discord.Message) -> bool:
         """Handle clean speech-to-text commands typed directly into Discord."""
         try:
+            catchup_count = self._parse_catchup_request(message.content)
+            if catchup_count is not None:
+                await self.send_catchup(message, catchup_count)
+                return True
+
+            channel_query = self._parse_channel_find_request(message.content)
+            if channel_query is not None:
+                await self.send_channel_finder(message, channel_query)
+                return True
+
             normalized, _ = self.web_service._normalize_voice_roll_message(message.content)
             if normalized == message.content or not normalized.startswith(("!roll ", "!gmroll ", "!multiroll ", "!attack ", "!skill ")):
                 return False
@@ -440,6 +450,130 @@ class WithoutNumberBot(commands.Bot):
             except Exception:
                 pass
             return True
+
+    def _parse_catchup_request(self, content: str) -> int | None:
+        text = " ".join(str(content).strip().lower().split())
+        word_numbers = {
+            "one": 1,
+            "two": 2,
+            "three": 3,
+            "four": 4,
+            "five": 5,
+            "six": 6,
+            "seven": 7,
+            "eight": 8,
+            "nine": 9,
+            "ten": 10,
+            "fifteen": 15,
+            "twenty": 20,
+        }
+        if text in {"catch up", "catchup", "read last", "what did i miss"}:
+            return 10
+        prefixes = ("catch up ", "catchup ", "read last ")
+        if not text.startswith(prefixes):
+            return None
+        last = text.split()[-1]
+        if last.isdigit():
+            return max(1, min(int(last), 20))
+        if last in word_numbers:
+            return word_numbers[last]
+        return None
+
+    def _parse_channel_find_request(self, content: str) -> str | None:
+        text = " ".join(str(content).strip().lower().split())
+        for prefix in ("find channel ", "open channel ", "show channel ", "channel "):
+            if text.startswith(prefix):
+                return text[len(prefix):].strip()
+        if text in {"find channel", "show channels", "channel list", "channels"}:
+            return ""
+        return None
+
+    async def send_channel_finder(self, target, query: str = ""):
+        is_interaction = isinstance(target, discord.Interaction)
+        guild = target.guild
+        if not guild:
+            response = "Channel finder only works inside a server."
+            if is_interaction:
+                await target.response.send_message(response, ephemeral=True)
+            else:
+                await target.channel.send(response)
+            return
+
+        query = (query or "").strip().lower()
+        channels = [
+            c for c in guild.text_channels
+            if c.permissions_for(guild.me).view_channel
+        ]
+        if query:
+            channels = [
+                c for c in channels
+                if query in c.name.lower() or query in (c.category.name.lower() if c.category else "")
+            ]
+
+        channels = sorted(channels, key=lambda c: ((c.category.name if c.category else ""), c.position))[:20]
+        if not channels:
+            response = f"No visible text channels matched `{query}`."
+        else:
+            title = f"Channels matching `{query}`:" if query else "Visible text channels:"
+            lines = [title]
+            for channel in channels:
+                category = f"{channel.category.name} / " if channel.category else ""
+                lines.append(f"- {category}{channel.mention}")
+            response = "\n".join(lines)
+
+        if is_interaction:
+            await target.response.send_message(response, ephemeral=True)
+        else:
+            await target.channel.send(response)
+
+    async def send_catchup(self, target, count: int = 10):
+        count = max(1, min(int(count or 10), 20))
+        is_interaction = isinstance(target, discord.Interaction)
+        channel = target.channel
+        requester = target.user if is_interaction else target.author
+        skip_id = None if is_interaction else target.id
+
+        try:
+            messages = []
+            async for item in channel.history(limit=count + 8, oldest_first=False):
+                if item.id == skip_id:
+                    continue
+                if item.author.bot and item.author == self.user:
+                    continue
+                content = item.clean_content.strip()
+                if not content and item.attachments:
+                    content = "[attachment]"
+                if not content:
+                    continue
+                messages.append(item)
+                if len(messages) >= count:
+                    break
+
+            if not messages:
+                response = "I could not find recent readable messages in this channel."
+            else:
+                lines = [f"Recent messages for {requester.display_name}:"]
+                for item in reversed(messages):
+                    content = item.clean_content.strip() or "[attachment]"
+                    content = content.replace("\n", " ")
+                    if len(content) > 180:
+                        content = content[:177] + "..."
+                    lines.append(f"- {item.author.display_name}: {content}")
+                response = "\n".join(lines)
+                if len(response) > 1900:
+                    response = response[:1897] + "..."
+
+            if is_interaction:
+                await target.response.send_message(response, ephemeral=True)
+            else:
+                await channel.send(response)
+        except Exception as e:
+            logger.error(f"Catchup failed: {e}", exc_info=True)
+            response = f"I could not read recent messages here: `{e}`"
+            if is_interaction:
+                await target.response.send_message(response, ephemeral=True)
+            else:
+                await channel.send(response)
 
     async def _handle_debug_ping(self, message: discord.Message):
         """Tiny channel ping to verify the message event is reaching the bot."""
@@ -650,6 +784,15 @@ if __name__ == '__main__':
     @bot.command(name="echo", help="Echo text back to you. Usage: !echo hello")
     async def echo_prefix(ctx, *, text: str):
         await ctx.send(text)
+
+    @bot.tree.command(name="findchannel", description="Find visible text channels and show clickable jump links.")
+    @app_commands.describe(query="Part of a channel or category name")
+    async def findchannel_slash(interaction: discord.Interaction, query: str = ""):
+        await interaction.client.send_channel_finder(interaction, query)
+
+    @bot.command(name="findchannel", aliases=["channels", "channel"])
+    async def findchannel_prefix(ctx, *, query: str = ""):
+        await ctx.bot.send_channel_finder(ctx, query)
 
     @bot.tree.command(name="debugperm", description="Show channel and permission diagnostics for this bot.")
     async def debugperm_slash(interaction: discord.Interaction):
