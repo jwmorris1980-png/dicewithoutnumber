@@ -379,6 +379,23 @@ class WithoutNumberBot(commands.Bot):
             await self._handle_debug_perm(message)
             return
 
+        if message.content:
+            first_token = message.content.strip().split(maxsplit=1)[0].lower()
+            if first_token in {"!help", "!wnhelp"}:
+                help_text = (
+                    "**DICEwithoutNumber Help**\n"
+                    "Sheets: `/importsheet`, `/importjson`, `!uploadsheet`, `!uploadjson`\n"
+                    "Dice: `!roll`, `!gmroll`, `!multiroll`, `/roll`, `/gmroll`, `/multiroll`\n"
+                    "Tools: `!attack`, `!skill`, `/attack`, `/skill`, `!tracker`, `!campaign`, `!faction`, `!map`\n"
+                    "Voice: `/voice`\n"
+                    "If you need the full list, check `commands.md` or the website."
+                )
+                try:
+                    await message.channel.send(help_text)
+                except Exception as e:
+                    logger.warning(f"Direct help send failed: {e}")
+                return
+
         if message.content.startswith(self.command_prefix):
             await self.process_commands(message)
         elif self.user.mentioned_in(message):
