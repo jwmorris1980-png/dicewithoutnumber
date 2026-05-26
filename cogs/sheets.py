@@ -94,11 +94,54 @@ class CharacterSheetCog(commands.Cog):
         except Exception as e:
             return None, f"Invalid JSON: {e}"
 
-        if 'name' not in data and 'character_name' not in data:
-            return None, "Invalid character JSON format."
+        return self._normalize_character_data(data)
+
+    def _coerce_int(self, value, default=0):
+        if value is None or value == "":
+            return default
+        if isinstance(value, int):
+            return value
+        match = re.search(r"-?\d+", str(value))
+        return int(match.group(0)) if match else default
+
+    def _normalize_character_data(self, data):
+        if not isinstance(data, dict):
+            return None, "Character data must be a JSON object."
+
         if 'character_name' in data and 'name' not in data:
             data['name'] = data['character_name']
-        return data, None
+        if 'Name' in data and 'name' not in data:
+            data['name'] = data['Name']
+
+        name = str(data.get('name') or "").strip()
+        if not name:
+            return None, "I could not find a character name. Add a `name` field or use the AWN character sheet template."
+
+        attributes = data.get('attributes') or data.get('stats') or {}
+        if not isinstance(attributes, dict):
+            attributes = {}
+
+        normalized = {
+            **data,
+            'name': name,
+            'level': self._coerce_int(data.get('level'), 1),
+            'class': data.get('class') or data.get('role') or data.get('background') or 'Hero',
+            'hp': self._coerce_int(data.get('hp') or data.get('hit_points'), 0),
+            'ac': self._coerce_int(data.get('ac') or data.get('armor_class'), 10),
+            'attack_bonus': self._coerce_int(data.get('attack_bonus') or data.get('attackBonus'), 0),
+            'attributes': {
+                'strength': self._coerce_int(attributes.get('strength') or attributes.get('str'), 0),
+                'dexterity': self._coerce_int(attributes.get('dexterity') or attributes.get('dex'), 0),
+                'constitution': self._coerce_int(attributes.get('constitution') or attributes.get('con'), 0),
+                'intelligence': self._coerce_int(attributes.get('intelligence') or attributes.get('int'), 0),
+                'wisdom': self._coerce_int(attributes.get('wisdom') or attributes.get('wis'), 0),
+                'charisma': self._coerce_int(attributes.get('charisma') or attributes.get('cha'), 0),
+            },
+            'skills': data.get('skills') if isinstance(data.get('skills'), dict) else {},
+            'weapons': data.get('weapons') if isinstance(data.get('weapons'), list) else [],
+            'system': data.get('system') or 'SWN',
+        }
+        return normalized, None
         
     async def get_active_character_data(self, ctx_or_int, allow_none=False):
         """Smart helper to get character data for a channel. 
@@ -143,11 +186,38 @@ class CharacterSheetCog(commands.Cog):
         return None
 
     def save_character(self, user_id, char_data, name_override=None, source_url=None):
+        char_data, error = self._normalize_character_data(char_data)
+        if error:
+            raise ValueError(error)
         char_name = name_override or char_data.get('name', 'Unknown')
-        safe_name = "".join([c for c in char_name if c.isalpha() or c.isdigit() or c==' ']).rstrip()
+        safe_name = "".join([c for c in char_name if c.isalpha() or c.isdigit() or c==' ']).strip()
+        if not safe_name:
+            safe_name = "Imported Character"
         is_update = self.bot.db.get_character(user_id, safe_name) is not None
         self.bot.db.save_character(user_id, safe_name, char_data.get('system', 'SWN'), char_data, source_url)
         return safe_name, is_update
+
+    async def _save_imported_character(self, target, char_data, source_url=None, source_name="sheet"):
+        is_int = isinstance(target, discord.Interaction)
+        user_id = target.user.id if is_int else target.author.id
+        try:
+            safe_name, is_update = self.save_character(user_id, char_data, source_url=source_url)
+        except ValueError as e:
+            msg = f"Error: {e}"
+            await (target.followup.send if is_int else target.send)(msg)
+            return
+
+        verb = "Updated" if is_update else "Imported"
+        channel = target.channel
+        category_id = getattr(channel, "category_id", None)
+        target_id = category_id or channel.id
+        target_type = "category" if category_id else "channel"
+        self.bot.db.bind_character(user_id, target_id, target_type, safe_name)
+        msg = (
+            f"{verb} **{safe_name}** from {source_name} and made them active for this {target_type}.\n"
+            f"Try `!sheet`, `!roll 1d20`, `!skill notice`, or `!bind {safe_name}` in this channel."
+        )
+        await (target.followup.send if is_int else target.send)(msg)
 
     @app_commands.command(name="sheet")
     async def sheet_slash(self, interaction: discord.Interaction, view: str = "combat"):
@@ -269,24 +339,20 @@ class CharacterSheetCog(commands.Cog):
         await interaction.response.defer()
         char_data, error, source_url = await self._load_sheet_source(url, file)
         if error:
-            await interaction.followup.send(f"? Error: {error}")
+            await interaction.followup.send(f"Error: {error}\nUse a public Google Sheet link, or attach an AWN CSV/TXT file or character JSON.")
             return
 
-        safe_name, is_update = self.save_character(interaction.user.id, char_data, source_url=source_url)
-        verb = "Updated" if is_update else "Imported"
-        await interaction.followup.send(f"? {verb} **{safe_name}** from Google Sheets!")
+        await self._save_imported_character(interaction, char_data, source_url=source_url, source_name="Google Sheets")
 
     @commands.command(name="importsheet", aliases=["uploadsheet", "sheetupload"])
     async def importsheet_prefix(self, ctx, url: str = None):
         attachment = ctx.message.attachments[0] if ctx.message.attachments else None
         char_data, error, source_url = await self._load_sheet_source(url, attachment)
         if error:
-            await ctx.send(f"? Error: {error}")
+            await ctx.send(f"Error: {error}\nUse a public Google Sheet link, or attach an AWN CSV/TXT file or character JSON.")
             return
 
-        safe_name, is_update = self.save_character(ctx.author.id, char_data, source_url=source_url)
-        verb = "Updated" if is_update else "Imported"
-        await ctx.send(f"? {verb} **{safe_name}** from Google Sheets!")
+        await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="Google Sheets")
 
     @app_commands.command(name="sync", description="Sync your active character from its Google Sheet source.")
     async def sync_slash(self, interaction: discord.Interaction):
@@ -333,24 +399,20 @@ class CharacterSheetCog(commands.Cog):
         await interaction.response.defer()
         char_data, error, source_url = await self._load_json_source(url, file)
         if error:
-            await interaction.followup.send(f"? Error: {error}")
+            await interaction.followup.send(f"Error: {error}\nAttach a character JSON file or provide a direct JSON URL with a character name.")
             return
 
-        safe_name, is_update = self.save_character(interaction.user.id, char_data, source_url=source_url)
-        verb = "Updated" if is_update else "Imported"
-        await interaction.followup.send(f"? {verb} **{safe_name}** from JSON source!")
+        await self._save_imported_character(interaction, char_data, source_url=source_url, source_name="JSON")
 
     @commands.command(name="importjson", aliases=["uploadjson"])
     async def importjson_prefix(self, ctx, url: str = None):
         attachment = ctx.message.attachments[0] if ctx.message.attachments else None
         char_data, error, source_url = await self._load_json_source(url, attachment)
         if error:
-            await ctx.send(f"? Error: {error}")
+            await ctx.send(f"Error: {error}\nAttach a character JSON file or provide a direct JSON URL with a character name.")
             return
 
-        safe_name, is_update = self.save_character(ctx.author.id, char_data, source_url=source_url)
-        verb = "Updated" if is_update else "Imported"
-        await ctx.send(f"? {verb} **{safe_name}** from JSON source!")
+        await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="JSON")
 
     async def fetch_json_character(self, url):
         try:
@@ -359,12 +421,7 @@ class CharacterSheetCog(commands.Cog):
                     if resp.status != 200:
                         return None, f"Failed to download JSON (Status {resp.status})."
                     data = await resp.json()
-                    # Basic validation: ensure name exists
-                    if 'name' not in data and 'character_name' not in data:
-                        return None, "Invalid character JSON format."
-                    if 'character_name' in data and 'name' not in data:
-                        data['name'] = data['character_name']
-                    return data, None
+                    return self._normalize_character_data(data)
         except Exception as e:
             return None, str(e)
 
@@ -451,7 +508,7 @@ class CharacterSheetCog(commands.Cog):
                         'damage': get_val(i, 23)
                     })
 
-            return char_data, None
+            return self._normalize_character_data(char_data)
         except Exception as e:
             return None, f"Parsing error: {str(e)}"
 
