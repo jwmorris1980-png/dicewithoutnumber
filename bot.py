@@ -382,16 +382,17 @@ class WithoutNumberBot(commands.Bot):
         if message.content:
             first_token = message.content.strip().split(maxsplit=1)[0].lower()
             if first_token in {"!help", "!wnhelp"}:
-                help_text = (
-                    "**DICEwithoutNumber Help**\n"
-                    "Sheets: `/importsheet`, `/importjson`, `!uploadsheet`, `!uploadjson`\n"
-                    "Dice: `!roll`, `!gmroll`, `!multiroll`, `/roll`, `/gmroll`, `/multiroll`\n"
-                    "Tools: `!attack`, `!skill`, `/attack`, `/skill`, `!tracker`, `!campaign`, `!faction`, `!map`\n"
-                    "Voice: `/voice`\n"
-                    "If you need the full list, check `commands.md` or the website."
-                )
                 try:
-                    await message.channel.send(help_text)
+                    from cogs.help import HELP_MESSAGES
+                    help_messages = HELP_MESSAGES
+                except Exception:
+                    help_messages = (
+                        "**DICEwithoutNumber Help**\n"
+                        "`!roll`, `!sheet`, `!importsheet`, `!tracker`, `!campaign`, `!faction`, `!map`",
+                    )
+                try:
+                    for help_text in help_messages:
+                        await message.channel.send(help_text)
                 except Exception as e:
                     logger.warning(f"Direct help send failed: {e}")
                 return

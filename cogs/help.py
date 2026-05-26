@@ -6,39 +6,79 @@ from discord.ext import commands
 
 logger = logging.getLogger(__name__)
 
+HELP_MESSAGES = (
+(
+    "**DICEwithoutNumber Command Directory**\n"
+    "**Sheets & Characters**\n"
+    "`/importsheet` `!importsheet` `!uploadsheet` - Import from URL or attached CSV/TXT/JSON\n"
+    "`/importjson` `!importjson` `!uploadjson` - Import JSON from URL or attachment\n"
+    "`/sheet` `!sheet` `!s` `!sc` `!sf` - Show active sheet\n"
+    "`/update` `!update` `!up` - Refresh active sheet\n"
+    "`/sync` `!sync` - Sync active character source\n"
+    "`/bind` `!bind` - Bind character to current channel\n"
+    "`/portrait` `!portrait` - Set character portrait\n"
+    "`/ship` `!ship` `/shiplist` `!shiplist` - Starship sheets\n"
+    "`/threshold_wizard` `/swn` `/wwn` `/cwn` `/threshold` - Character generation\n\n"
+    "**Dice & Combat**\n"
+    "`/roll` `!roll` `!r` - Roll dice, like `1d20+5` or `3x 2d6`\n"
+    "`/gmroll` `!gmroll` `!gr` - Hidden/private roll\n"
+    "`/multiroll` `!multiroll` - Roll one expression multiple times\n"
+    "`/skill` `!skill` - Skill check from active sheet\n"
+    "`/attack` `!attack` - Weapon attack from active sheet\n"
+    "`/combathelp` `/ship_combat` `!ship_combat` `/hack_help` `!hack_help` - Rule helpers\n\n"
+    "**Tracker & Map**\n"
+    "`/tracker add` `!tracker add` - Add enemies\n"
+    "`/tracker list` `!tracker list` - Show tracker\n"
+    "`/tracker damage` `!tracker damage` - Apply damage\n"
+    "`/tracker move` `!tracker move` - Move token\n"
+    "`/tracker next` `!tracker next` - Advance turn\n"
+    "`/tracker clear` `!tracker clear` - Clear tracker\n"
+    "`/tracker map` `!tracker map` `/tracker controller` `!tracker controller` - Tactical map\n"
+    "`/tracker ac/hide/condition/distance/grid/party` - More tracker tools\n"
+    "`/importmap` `/map` `!map` - Map upload/link\n\n"
+),
+(
+    "**World, Rules & Gear**\n"
+    "`/weapon` `!weapon` `/armor` `!armor` `/gear` `!gear` - Equipment lookup\n"
+    "`/shipinfo` `!shipinfo` `!si` `/foci` `!foci` `!focus` - Reference lookup\n"
+    "`/rule` `!rule` - Search rules\n"
+    "`/gen` `!gen` - Generate planet/NPC/corp/alien\n"
+    "`/reaction` `/morale` `/oracle` `/plot` `/loot` `/weather` `/encounter` `/hazard` - GM tools\n\n"
+    "**Campaign, Factions & Party**\n"
+    "`/campaign start/join/leave/info` `!campaign start/join/leave/info`\n"
+    "`/party info/set/add/split` `!party info/set/add/split`\n"
+    "`/faction create/list/edit/attack` `!faction create/list/edit/attack`\n\n"
+    "**Server Tools**\n"
+    "`/channel role` `/channel setup` `/channel reactionrole` - Channel/reaction roles\n"
+    "`!rr` `!role` `!lock` `/lock` - Prefix channel tools\n"
+    "`/avatar` `!avatar` `/rename` `!rename` `!sync guild` `!sync global`\n"
+    "`/backup` `/heartbeat` `!logs` `!payload` `!reload` - Owner/admin diagnostics\n\n"
+    "**Start Here**\n"
+    "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
+    "`/help` `!help` `!wnhelp` - This directory"
+)
+)
+
 
 class HelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     async def _send_help(self, ctx_or_interaction):
-        message = (
-            "**DICEwithoutNumber Help**\n"
-            "Character Sheets:\n"
-            "`/importsheet <url>` or attach `.csv`/`.txt`/`.json`\n"
-            "`/importjson <url>` or attach `.json`\n"
-            "`/sheet`, `/update`, `/sync`, `/bind`\n\n"
-            "Dice & Combat:\n"
-            "`/roll`, `/gmroll`, `/multiroll`\n"
-            "`/attack`, `/skill`\n"
-            "Prefix forms also work with `!`\n\n"
-            "Maps & Tools:\n"
-            "`/map`, `/tracker`, `/faction`, `/campaign`\n"
-            "`/voice` for the voice remote\n"
-            "`/avatar`, `/rename`, `!sync guild` for admin tasks\n\n"
-            "Full command list: `commands.md` or the website."
-        )
-
         try:
             if isinstance(ctx_or_interaction, discord.Interaction):
-                await ctx_or_interaction.response.send_message(message, ephemeral=True)
+                await ctx_or_interaction.response.send_message(HELP_MESSAGES[0], ephemeral=True)
+                for message in HELP_MESSAGES[1:]:
+                    await ctx_or_interaction.followup.send(message, ephemeral=True)
             else:
                 try:
-                    await ctx_or_interaction.author.send(message)
+                    for message in HELP_MESSAGES:
+                        await ctx_or_interaction.author.send(message)
                     if ctx_or_interaction.guild:
                         await ctx_or_interaction.send("I've sent the help menu to your DMs!")
                 except discord.Forbidden:
-                    await ctx_or_interaction.send(message)
+                    for message in HELP_MESSAGES:
+                        await ctx_or_interaction.send(message)
         except Exception as e:
             logger.exception("Help command failed")
             fallback = (
