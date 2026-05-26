@@ -1,73 +1,86 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+import logging
+
+logger = logging.getLogger(__name__)
 
 class HelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     async def _send_help(self, ctx_or_interaction):
-        # Determine locale
-        user_id = ctx_or_interaction.user.id if isinstance(ctx_or_interaction, discord.Interaction) else ctx_or_interaction.author.id
-        locale = self.bot.db.get_setting(user_id, "language", "en")
-        loc = self.bot.localizer
+        try:
+            user_id = ctx_or_interaction.user.id if isinstance(ctx_or_interaction, discord.Interaction) else ctx_or_interaction.author.id
+            locale = self.bot.db.get_setting(user_id, "language", "en")
+            loc = self.bot.localizer
 
-        embed = discord.Embed(
-            title=loc.translate("help.title", locale), 
-            description=loc.translate("help.description", locale),
-            color=discord.Color.blue()
-        )
-        
-        # Add sections
-        sections = [
-            ("help.char_imports_title", "help.char_imports_body"),
-            ("help.char_mgmt_title", "help.char_mgmt_body"),
-            ("help.rolling_title", "help.rolling_body"),
-            ("help.tools_title", "help.tools_body"),
-            ("help.sandbox_title", "help.sandbox_body"),
-            ("help.tracker_title", "help.tracker_body"),
-            ("help.faction_title", "help.faction_body"),
-            ("help.storyteller_title", "help.storyteller_body"),
-            ("help.party_title", "help.party_body"),
-            ("help.campaign_title", "help.campaign_body"),
-            ("help.voice_title", "help.voice_body"),
-            ("help.channel_role_title", "help.channel_role_body")
-        ]
-
-        for title_key, body_key in sections:
-            embed.add_field(
-                name=loc.translate(title_key, locale),
-                value=loc.translate(body_key, locale),
-                inline=False
+            embed = discord.Embed(
+                title=loc.translate("help.title", locale),
+                description=loc.translate("help.description", locale),
+                color=discord.Color.blue()
             )
 
-        # Server Admin section (not localized — always English)
-        embed.add_field(
-            name="🛡️ Server Admin",
-            value=(
-                "`/avatar` — Change the bot's picture. Type `/avatar`, click **image**, upload a file (PNG/JPG/GIF/WebP, max 8MB).\n"
-                "`!avatar` — Same thing via prefix: attach image to the `!avatar` message.\n"
-                "`/rename <server_id> <name>` — Change bot display name for this server.\n"
-                "`!sync guild` — Re-sync slash commands after any update."
-            ),
-            inline=False
-        )
+            sections = [
+                ("help.char_imports_title", "help.char_imports_body"),
+                ("help.char_mgmt_title", "help.char_mgmt_body"),
+                ("help.rolling_title", "help.rolling_body"),
+                ("help.tools_title", "help.tools_body"),
+                ("help.sandbox_title", "help.sandbox_body"),
+                ("help.tracker_title", "help.tracker_body"),
+                ("help.faction_title", "help.faction_body"),
+                ("help.storyteller_title", "help.storyteller_body"),
+                ("help.party_title", "help.party_body"),
+                ("help.campaign_title", "help.campaign_body"),
+                ("help.voice_title", "help.voice_body"),
+                ("help.channel_role_title", "help.channel_role_body"),
+            ]
 
-        if isinstance(ctx_or_interaction, discord.Interaction):
-            await ctx_or_interaction.response.send_message(embed=embed, ephemeral=True)
-        else:
-            try:
-                await ctx_or_interaction.author.send(embed=embed)
-                if ctx_or_interaction.guild:
-                    await ctx_or_interaction.send("📩 I've sent the help menu to your DMs!")
-            except discord.Forbidden:
-                await ctx_or_interaction.send("⚠️ I couldn't DM you the help menu! Please open your DMs or use `/help`.")
+            for title_key, body_key in sections:
+                embed.add_field(
+                    name=loc.translate(title_key, locale),
+                    value=loc.translate(body_key, locale),
+                    inline=False,
+                )
+
+            embed.add_field(
+                name="Server Admin",
+                value=(
+                    "`/avatar` - Change the bot's picture. Type `/avatar`, click image, upload a file.\n"
+                    "`!avatar` - Same thing via prefix: attach image to the `!avatar` message.\n"
+                    "`/rename <server_id> <name>` - Change bot display name for this server.\n"
+                    "`!sync guild` - Re-sync slash commands after any update."
+                ),
+                inline=False,
+            )
+
+            if isinstance(ctx_or_interaction, discord.Interaction):
+                await ctx_or_interaction.response.send_message(embed=embed, ephemeral=True)
+            else:
+                try:
+                    await ctx_or_interaction.author.send(embed=embed)
+                    if ctx_or_interaction.guild:
+                        await ctx_or_interaction.send("I've sent the help menu to your DMs!")
+                except discord.Forbidden:
+                    await ctx_or_interaction.send("I couldn't DM you the help menu. Please open your DMs or use `/help`.")
+        except Exception as e:
+            logger.exception("Help command failed")
+            fallback = (
+                "Help is available with `/help` or `!help`.\n"
+                "Character import: `/importsheet <url>` or `!importsheet <url>`.\n"
+                "You can also attach a `.csv` or `.json` file to import a character."
+            )
+            if isinstance(ctx_or_interaction, discord.Interaction):
+                target = ctx_or_interaction.followup if ctx_or_interaction.response.is_done() else ctx_or_interaction.response
+                await target.send(f"{fallback}\n\nError: `{e}`", ephemeral=True)
+            else:
+                await ctx_or_interaction.send(f"{fallback}\n\nError: `{e}`")
 
     @app_commands.command(name="help", description="Show how to use the Without Number bot.")
     async def help_slash(self, interaction: discord.Interaction):
         await self._send_help(interaction)
 
-    @commands.command(name="help", help="Show how to use the Without Number bot.")
+    @commands.command(name="help", aliases=["wnhelp"], help="Show how to use the Without Number bot.")
     async def help_text(self, ctx):
         await self._send_help(ctx)
 

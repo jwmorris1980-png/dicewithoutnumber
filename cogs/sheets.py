@@ -48,6 +48,57 @@ class CharacterSheetCog(commands.Cog):
         self.char_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'characters')
         os.makedirs(self.char_dir, exist_ok=True)
         self.awn_sheet_gid = "989086139" # Default GID for AWN Character Sheet tab
+
+    async def _read_attachment_text(self, attachment):
+        try:
+            raw = await attachment.read()
+            return raw.decode("utf-8-sig"), None
+        except Exception as e:
+            return None, str(e)
+
+    async def _load_sheet_source(self, url=None, attachment=None):
+        if attachment:
+            text, error = await self._read_attachment_text(attachment)
+            if error:
+                return None, error, None
+
+            filename = (attachment.filename or "").lower()
+            if filename.endswith(".json"):
+                data, error = self._parse_json_text(text)
+            else:
+                data, error = self.parse_awn_google_sheet(text)
+            return data, error, None
+
+        if not url:
+            return None, "Provide a Google Sheet URL or attach a .csv/.txt/.json file.", None
+
+        data, error = await self.fetch_and_parse_sheet(url)
+        return data, error, url
+
+    async def _load_json_source(self, url=None, attachment=None):
+        if attachment:
+            text, error = await self._read_attachment_text(attachment)
+            if error:
+                return None, error, None
+            return self._parse_json_text(text) + (None,)
+
+        if not url:
+            return None, "Provide a JSON URL or attach a .json file.", None
+
+        data, error = await self.fetch_json_character(url)
+        return data, error, url
+
+    def _parse_json_text(self, text):
+        try:
+            data = json.loads(text)
+        except Exception as e:
+            return None, f"Invalid JSON: {e}"
+
+        if 'name' not in data and 'character_name' not in data:
+            return None, "Invalid character JSON format."
+        if 'character_name' in data and 'name' not in data:
+            data['name'] = data['character_name']
+        return data, None
         
     async def get_active_character_data(self, ctx_or_int, allow_none=False):
         """Smart helper to get character data for a channel. 
@@ -213,28 +264,29 @@ class CharacterSheetCog(commands.Cog):
         await interaction.response.send_modal(ImportTextModal(self, system))
 
     @app_commands.command(name="importsheet", description="Import a character from a Google Sheet (AWN Template)")
-    @app_commands.describe(url="The Google Sheet URL")
-    async def importsheet_slash(self, interaction: discord.Interaction, url: str):
+    @app_commands.describe(url="The Google Sheet URL", file="Optional uploaded CSV/JSON file")
+    async def importsheet_slash(self, interaction: discord.Interaction, url: str = None, file: discord.Attachment = None):
         await interaction.response.defer()
-        char_data, error = await self.fetch_and_parse_sheet(url)
+        char_data, error, source_url = await self._load_sheet_source(url, file)
         if error:
-            await interaction.followup.send(f"❌ Error: {error}")
+            await interaction.followup.send(f"? Error: {error}")
             return
-            
-        safe_name, is_update = self.save_character(interaction.user.id, char_data, source_url=url)
-        verb = "Updated" if is_update else "Imported"
-        await interaction.followup.send(f"✅ {verb} **{safe_name}** from Google Sheets!")
 
-    @commands.command(name="importsheet")
-    async def importsheet_prefix(self, ctx, url: str):
-        char_data, error = await self.fetch_and_parse_sheet(url)
-        if error:
-            await ctx.send(f"❌ Error: {error}")
-            return
-            
-        safe_name, is_update = self.save_character(ctx.author.id, char_data, source_url=url)
+        safe_name, is_update = self.save_character(interaction.user.id, char_data, source_url=source_url)
         verb = "Updated" if is_update else "Imported"
-        await ctx.send(f"✅ {verb} **{safe_name}** from Google Sheets!")
+        await interaction.followup.send(f"? {verb} **{safe_name}** from Google Sheets!")
+
+    @commands.command(name="importsheet", aliases=["uploadsheet", "sheetupload"])
+    async def importsheet_prefix(self, ctx, url: str = None):
+        attachment = ctx.message.attachments[0] if ctx.message.attachments else None
+        char_data, error, source_url = await self._load_sheet_source(url, attachment)
+        if error:
+            await ctx.send(f"? Error: {error}")
+            return
+
+        safe_name, is_update = self.save_character(ctx.author.id, char_data, source_url=source_url)
+        verb = "Updated" if is_update else "Imported"
+        await ctx.send(f"? {verb} **{safe_name}** from Google Sheets!")
 
     @app_commands.command(name="sync", description="Sync your active character from its Google Sheet source.")
     async def sync_slash(self, interaction: discord.Interaction):
@@ -275,29 +327,30 @@ class CharacterSheetCog(commands.Cog):
         self.save_character(ctx.author.id, new_data, source_url=char_data['source_url'])
         await ctx.send(f"🔄 Synced **{char_data['name']}**!")
 
-    @app_commands.command(name="importjson", description="Import a character from a raw JSON URL.")
-    @app_commands.describe(url="The JSON URL")
-    async def importjson_slash(self, interaction: discord.Interaction, url: str):
+    @app_commands.command(name="importjson", description="Import a character from a raw JSON URL or uploaded file.")
+    @app_commands.describe(url="The JSON URL", file="Optional uploaded JSON file")
+    async def importjson_slash(self, interaction: discord.Interaction, url: str = None, file: discord.Attachment = None):
         await interaction.response.defer()
-        char_data, error = await self.fetch_json_character(url)
+        char_data, error, source_url = await self._load_json_source(url, file)
         if error:
-            await interaction.followup.send(f"❌ Error: {error}")
+            await interaction.followup.send(f"? Error: {error}")
             return
-            
-        safe_name, is_update = self.save_character(interaction.user.id, char_data, source_url=url)
-        verb = "Updated" if is_update else "Imported"
-        await interaction.followup.send(f"✅ {verb} **{safe_name}** from JSON source!")
 
-    @commands.command(name="importjson")
-    async def importjson_prefix(self, ctx, url: str):
-        char_data, error = await self.fetch_json_character(url)
-        if error:
-            await ctx.send(f"❌ Error: {error}")
-            return
-            
-        safe_name, is_update = self.save_character(ctx.author.id, char_data, source_url=url)
+        safe_name, is_update = self.save_character(interaction.user.id, char_data, source_url=source_url)
         verb = "Updated" if is_update else "Imported"
-        await ctx.send(f"✅ {verb} **{safe_name}** from JSON source!")
+        await interaction.followup.send(f"? {verb} **{safe_name}** from JSON source!")
+
+    @commands.command(name="importjson", aliases=["uploadjson"])
+    async def importjson_prefix(self, ctx, url: str = None):
+        attachment = ctx.message.attachments[0] if ctx.message.attachments else None
+        char_data, error, source_url = await self._load_json_source(url, attachment)
+        if error:
+            await ctx.send(f"? Error: {error}")
+            return
+
+        safe_name, is_update = self.save_character(ctx.author.id, char_data, source_url=source_url)
+        verb = "Updated" if is_update else "Imported"
+        await ctx.send(f"? {verb} **{safe_name}** from JSON source!")
 
     async def fetch_json_character(self, url):
         try:
@@ -318,8 +371,8 @@ class CharacterSheetCog(commands.Cog):
     async def fetch_and_parse_sheet(self, url):
         # Extract Sheet ID and GID
         if url.endswith('.json') or 'json' in url.lower():
-             return await self.fetch_json_character(url)
-             
+            return await self.fetch_json_character(url)
+
         match = re.search(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', url)
         if not match: return None, "Invalid Google Sheet URL."
         sheet_id = match.group(1)

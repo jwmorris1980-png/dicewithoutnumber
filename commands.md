@@ -5,13 +5,13 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 ## 1. Character Management
 | Command | Description |
 |---------|-------------|
-| `/importsheet <url>` | Import from Google Sheets (SWN/WWN/CWN) |
-| `/importjson <url>` | Import from raw JSON (characterswithoutnumber.app) |
+| `/importsheet <url>` | Import from Google Sheets (SWN/WWN/CWN). You can also attach a `.csv`, `.txt`, or `.json` file. |
+| `/importjson <url>` | Import from raw JSON (characterswithoutnumber.app). You can also attach a `.json` file. |
 | `/update` | Sync your active character with its stored source URL |
 | `/link <url>` | Connect a character to a persistent sheet URL for syncing |
 | `/threshold_wizard` | Interactive character creation |
 | `/language [EN|FR|ES|DE|PT|SV]` | Change bot language |
-| `/help` | Overview of all commands |
+| `/help` | Overview of all commands. Prefix alias: `!help` |
 | `/sheet` | View active character (Combat view: `/sc`, Full view: `/sf`) |
 | `/switchchar` | `!switchchar` <name> Swap between your imported characters. |
 | `/portrait` | `!portrait` [url] Set an image for any of your characters. Attach a file OR paste a URL. Shows as a thumbnail on `/sheet`! |
