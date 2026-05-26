@@ -434,22 +434,40 @@ class CharacterSheetCog(commands.Cog):
         if not match: return None, "Invalid Google Sheet URL."
         sheet_id = match.group(1)
         
-        gid = self.awn_sheet_gid
+        gid = None
         gid_match = re.search(r'gid=([0-9]+)', url)
         if gid_match: gid = gid_match.group(1)
         
         # AWN template specific: If user provides the Welcome tab GID, switch to Character Sheet GID
         if gid == "1671565117": gid = self.awn_sheet_gid
+
+        candidate_gids = []
+        if gid:
+            candidate_gids.append(gid)
+        else:
+            candidate_gids.append("0")
+        for fallback_gid in (self.awn_sheet_gid, "0"):
+            if fallback_gid not in candidate_gids:
+                candidate_gids.append(fallback_gid)
         
-        csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
-        
+        errors = []
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(csv_url) as resp:
-                    if resp.status != 200:
-                        return None, f"Failed to download sheet (Status {resp.status}). Is it shared as 'Anyone with the link can view'?"
-                    content = await resp.text()
-                    return self.parse_awn_google_sheet(content)
+                for candidate_gid in candidate_gids:
+                    csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={candidate_gid}"
+                    async with session.get(csv_url) as resp:
+                        if resp.status != 200:
+                            errors.append(f"gid {candidate_gid}: download status {resp.status}")
+                            continue
+                        content = await resp.text()
+                    data, error = self.parse_awn_google_sheet(content)
+                    if not error:
+                        return data, None
+                    errors.append(f"gid {candidate_gid}: {error}")
+
+                if errors:
+                    return None, "Could not parse any visible sheet tab. " + " | ".join(errors[:3])
+                return None, "Could not find a visible sheet tab to import."
         except Exception as e:
             return None, str(e)
 
@@ -457,7 +475,11 @@ class CharacterSheetCog(commands.Cog):
         try:
             f = io.StringIO(csv_text)
             reader = list(csv.reader(f))
-            
+
+            first_cell = (reader[0][0] if reader and reader[0] else "").lower()
+            if "cities without number" in first_cell:
+                return self.parse_cwn_google_sheet(reader)
+
             # Helper to get value safely
             def get_val(r, c, default=""):
                 try: return reader[r][c].strip()
@@ -511,6 +533,98 @@ class CharacterSheetCog(commands.Cog):
             return self._normalize_character_data(char_data)
         except Exception as e:
             return None, f"Parsing error: {str(e)}"
+
+    def parse_cwn_google_sheet(self, reader):
+        def get_val(r, c, default=""):
+            try: return reader[r][c].strip()
+            except: return default
+
+        def row_values(r):
+            try: return [str(cell).strip() for cell in reader[r]]
+            except: return []
+
+        def find_after(label, default=""):
+            label = label.lower()
+            for row in reader[:40]:
+                for i, cell in enumerate(row):
+                    text = str(cell).strip()
+                    lower = text.lower()
+                    if lower == label:
+                        for value in row[i + 1:]:
+                            value = str(value).strip()
+                            if value:
+                                return value
+                    if lower.startswith(label + " "):
+                        value = text[len(label):].strip()
+                        if value:
+                            return value
+            return default
+
+        attributes = {}
+        attr_labels = {
+            "strength": "strength",
+            "dexterity": "dexterity",
+            "constitution": "constitution",
+            "intelligence": "intelligence",
+            "wisdom": "wisdom",
+            "charisma": "charisma",
+        }
+        for r, row in enumerate(reader):
+            for i, cell in enumerate(row):
+                label = str(cell).strip().lower()
+                if label in attr_labels:
+                    modifier = get_val(r, i + 7) or get_val(r, i + 6) or "0"
+                    attributes[attr_labels[label]] = self._coerce_int(modifier, 0)
+
+        skills = {}
+        skill_start = None
+        for r, row in enumerate(reader):
+            if any(str(cell).strip().lower() == "skills" for cell in row):
+                skill_start = r + 1
+                break
+        if skill_start:
+            for r in range(skill_start, min(skill_start + 30, len(reader))):
+                name = get_val(r, 1).lower()
+                if not name or name in {"funds", "weapons"}:
+                    continue
+                value = None
+                for cell in row_values(r)[2:12]:
+                    if re.fullmatch(r"[+-]?\d+", cell):
+                        value = int(cell)
+                if value is not None:
+                    skills[name] = value
+
+        weapons = []
+        for r, row in enumerate(reader[:35]):
+            for i, cell in enumerate(row):
+                name = str(cell).strip()
+                if not name or name.lower() in {"ranged weapons", "melee weapons", "armour"}:
+                    continue
+                if re.fullmatch(r"[+-]?\d+(?:\.\d+)?", name):
+                    continue
+                if "/" in name or " ac" in name.lower():
+                    continue
+                damage = get_val(r, i + 5)
+                if re.search(r"\d+d\d+", damage):
+                    weapons.append({
+                        "name": name,
+                        "to_hit": self._coerce_int(get_val(r, i + 12), 0),
+                        "damage": damage,
+                    })
+
+        char_data = {
+            "name": find_after("name", "Unknown Operator"),
+            "level": self._coerce_int(find_after("level"), 1),
+            "class": find_after("background", "Operator"),
+            "hp": self._coerce_int(find_after("current hp") or find_after("hp"), 0),
+            "ac": self._coerce_int(find_after("ranged ac") or find_after("melee ac"), 10),
+            "attack_bonus": self._coerce_int(find_after("attack bonus"), 0),
+            "attributes": attributes,
+            "skills": skills,
+            "weapons": weapons,
+            "system": "CWN",
+        }
+        return self._normalize_character_data(char_data)
 
     def parse_cwn_app_text(self, text, system):
         lines = text.split('\n')
