@@ -541,6 +541,16 @@ class WebService:
         text = re.sub(r"\bg\s*m\b", "gm", text)
         text = re.sub(r"\bplus\b", "+", text)
         text = re.sub(r"\bminus\b", "-", text)
+        text = re.sub(
+            r"\btarget\s+(high|higher|over|above|low|lower|under|below)\s+(-?\d+)\b",
+            r"target \1 \2",
+            text,
+        )
+        text = re.sub(
+            r"\btarget\s+(-?\d+)\s+(high|higher|over|above|low|lower|under|below)\b",
+            r"target \1 \2",
+            text,
+        )
         text = re.sub(r"\btarget\s+(-?\d+)\b", r"target \1", text)
         text = re.sub(r"\bgm\s+roll\b", "gmroll", text)
         text = re.sub(r"\bmulti\s+roll\b", "multiroll", text)
@@ -548,7 +558,7 @@ class WebService:
 
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")
-            return bool(re.fullmatch(r"\d*d\d+(?:[+-]\d+)*(?:target-?\d+)?", compact))
+            return bool(re.fullmatch(r"\d*d\d+(?:[+-]\d+)*(?:target(?:high|higher|over|above|low|lower|under|below)?-?\d+(?:high|higher|over|above|low|lower|under|below)?)?", compact))
 
         command_match = re.match(
             r"^(?:!|/)?(?P<command>gmroll|gm\s+roll|multiroll|multi\s+roll|attack|skill|roll)(?:\s+(?P<payload>.*))?$",
@@ -568,6 +578,8 @@ class WebService:
 
             if command in {"roll", "gmroll"} and payload and looks_like_roll(payload):
                 compact = payload.replace(" ", "").replace("target", " target ")
+                for word in ("higher", "above", "over", "high", "lower", "under", "below", "low"):
+                    compact = compact.replace(word, f" {word} ")
                 compact = re.sub(r"\s+", " ", compact).strip()
                 return f"!{command} {compact}", compact
 
@@ -588,8 +600,14 @@ class WebService:
 
         command = command.lower().strip()
         expression = (expression or "").strip()
-        target_match = re.search(r"\btarget\s+(-?\d+)\b", expression, flags=re.IGNORECASE)
-        target_number = int(target_match.group(1)) if target_match else None
+        target_match = re.search(
+            r"\btarget\s+(?:(?P<direction1>high|higher|over|above|low|lower|under|below)\s+)?(?P<number>-?\d+)(?:\s+(?P<direction2>high|higher|over|above|low|lower|under|below))?\b",
+            expression,
+            flags=re.IGNORECASE,
+        )
+        target_number = int(target_match.group("number")) if target_match else None
+        direction_word = (target_match.group("direction1") or target_match.group("direction2") or "high").lower() if target_match else "high"
+        target_direction = "low" if direction_word in {"low", "lower", "under", "below"} else "high"
         if target_match:
             expression = (expression[:target_match.start()] + expression[target_match.end():]).strip()
             expression = re.sub(r"\s{2,}", " ", expression)
@@ -597,8 +615,10 @@ class WebService:
         def target_text(total):
             if target_number is None:
                 return ""
-            outcome = "Success" if total >= target_number else "Failure"
-            return f" vs target **{target_number}**: **{outcome}**"
+            success = total <= target_number if target_direction == "low" else total >= target_number
+            label = "low target" if target_direction == "low" else "target"
+            outcome = "Success" if success else "Failure"
+            return f" vs {label} **{target_number}**: **{outcome}**"
 
         if command == "multiroll":
             times_match = re.match(r"^(\d+)x\s*(.+)$", expression)

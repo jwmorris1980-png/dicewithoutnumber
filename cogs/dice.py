@@ -44,19 +44,27 @@ class DiceCog(commands.Cog):
         self.bot = bot
 
     def _extract_target(self, expression):
-        match = re.search(r"\btarget\s+(-?\d+)\b", expression, flags=re.IGNORECASE)
+        match = re.search(
+            r"\btarget\s+(?:(?P<direction1>high|higher|over|above|low|lower|under|below)\s+)?(?P<number>-?\d+)(?:\s+(?P<direction2>high|higher|over|above|low|lower|under|below))?\b",
+            expression,
+            flags=re.IGNORECASE,
+        )
         if not match:
-            return expression, None
-        target = int(match.group(1))
+            return expression, None, "high"
+        target = int(match.group("number"))
+        direction_word = (match.group("direction1") or match.group("direction2") or "high").lower()
+        direction = "low" if direction_word in {"low", "lower", "under", "below"} else "high"
         cleaned = (expression[:match.start()] + expression[match.end():]).strip()
         cleaned = re.sub(r"\s{2,}", " ", cleaned)
-        return cleaned, target
+        return cleaned, target, direction
 
-    def _format_target_result(self, total, target):
+    def _format_target_result(self, total, target, direction="high"):
         if target is None:
             return ""
-        outcome = "Success" if total >= target else "Failure"
-        return f" vs target **{target}**: **{outcome}**"
+        success = total <= target if direction == "low" else total >= target
+        label = "low target" if direction == "low" else "target"
+        outcome = "Success" if success else "Failure"
+        return f" vs {label} **{target}**: **{outcome}**"
 
     @app_commands.command(name="roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
@@ -83,7 +91,7 @@ class DiceCog(commands.Cog):
     async def _perform_roll(self, target, expression, comment, multiplier, is_hidden=False):
         is_int = isinstance(target, discord.Interaction)
         user = target.user if is_int else target.author
-        expression, target_number = self._extract_target(expression)
+        expression, target_number, target_direction = self._extract_target(expression)
         
         # Support comma-separated multi-rolls: !roll 1d20+5 Attack, 1d8+2 Damage
         sub_expressions = [s.strip() for s in expression.split(',')]
@@ -124,7 +132,7 @@ class DiceCog(commands.Cog):
                 total, details, _, _, _ = self.bot.dice_service.parse_and_roll(sub_expr)
                 line = f"↳ Roll {i+1}: {details} = **{total}**\n" if total_executions > 1 else f"↳ Result: {details} = **{total}**\n"
                 if target_number is not None:
-                    line = line.rstrip() + self._format_target_result(total, target_number) + "\n"
+                    line = line.rstrip() + self._format_target_result(total, target_number, target_direction) + "\n"
                 msg += line
                 total_sum += total
                 
