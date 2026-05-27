@@ -25,6 +25,7 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | Command | Description |
 |---------|-------------|
 | `/roll <expression>` | Complex rolls: `1d20+1d4+5`, `4d6kh3`, `2d6-1d4`. Use `3x` for multiples! Use commas for mixed rolls (e.g., `!roll ⚔️ 1d20+5, 💥 1d8+2`) |
+| `/roll <expression> target N` | Add a target number and the bot reports success/failure, e.g. `!roll d20 target 13` or `/roll d20 target 13`. |
 | `/multiroll <num> <exp>`| Roll same expression multiple times |
 | `/gmroll <exp>` | Hidden roll (private/ephemeral, use `!gmroll` for prefix) |
 | `/attack [weapon]` | Roll attack using sheet modifiers |
