@@ -523,6 +523,13 @@ class WebService:
             "ten": "10",
             "eleven": "11",
             "twelve": "12",
+            "thirteen": "13",
+            "fourteen": "14",
+            "fifteen": "15",
+            "sixteen": "16",
+            "seventeen": "17",
+            "eighteen": "18",
+            "nineteen": "19",
             "twenty": "20",
         }
         for word, digit in word_numbers.items():
@@ -534,13 +541,14 @@ class WebService:
         text = re.sub(r"\bg\s*m\b", "gm", text)
         text = re.sub(r"\bplus\b", "+", text)
         text = re.sub(r"\bminus\b", "-", text)
+        text = re.sub(r"\btarget\s+(-?\d+)\b", r"target \1", text)
         text = re.sub(r"\bgm\s+roll\b", "gmroll", text)
         text = re.sub(r"\bmulti\s+roll\b", "multiroll", text)
         text = re.sub(r"(\d+)\s*d\s*(\d+)", r"\1d\2", text)
 
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")
-            return bool(re.fullmatch(r"\d+d\d+(?:[+-]\d+)*", compact))
+            return bool(re.fullmatch(r"\d*d\d+(?:[+-]\d+)*(?:target-?\d+)?", compact))
 
         command_match = re.match(
             r"^(?:!|/)?(?P<command>gmroll|gm\s+roll|multiroll|multi\s+roll|attack|skill|roll)(?:\s+(?P<payload>.*))?$",
@@ -559,7 +567,8 @@ class WebService:
                 payload = "1d20" if command == "attack" else "2d6"
 
             if command in {"roll", "gmroll"} and payload and looks_like_roll(payload):
-                compact = payload.replace(" ", "")
+                compact = payload.replace(" ", "").replace("target", " target ")
+                compact = re.sub(r"\s+", " ", compact).strip()
                 return f"!{command} {compact}", compact
 
             if command == "multiroll" and payload:
@@ -579,6 +588,17 @@ class WebService:
 
         command = command.lower().strip()
         expression = (expression or "").strip()
+        target_match = re.search(r"\btarget\s+(-?\d+)\b", expression, flags=re.IGNORECASE)
+        target_number = int(target_match.group(1)) if target_match else None
+        if target_match:
+            expression = (expression[:target_match.start()] + expression[target_match.end():]).strip()
+            expression = re.sub(r"\s{2,}", " ", expression)
+
+        def target_text(total):
+            if target_number is None:
+                return ""
+            outcome = "Success" if total >= target_number else "Failure"
+            return f" vs target **{target_number}**: **{outcome}**"
 
         if command == "multiroll":
             times_match = re.match(r"^(\d+)x\s*(.+)$", expression)
@@ -597,7 +617,7 @@ class WebService:
                 total, details, err, _, _ = dice_service.parse_and_roll(inner_expr)
                 if err:
                     return f"Error rolling `{inner_expr}`: {err}"
-                lines.append(f"-> Roll {i + 1}: {details} = **{total}**")
+                lines.append(f"-> Roll {i + 1}: {details} = **{total}**{target_text(total)}")
 
             return "Multi Roll\n" + "\n".join(lines)
 
@@ -616,7 +636,7 @@ class WebService:
                 repeat_total, repeat_details, repeat_err, _, _ = dice_service.parse_and_roll(inner_expr)
                 if repeat_err:
                     return f"Error rolling `{inner_expr}`: {repeat_err}"
-                lines.append(f"-> Roll {i + 1}: {repeat_details} = **{repeat_total}**")
+                lines.append(f"-> Roll {i + 1}: {repeat_details} = **{repeat_total}**{target_text(repeat_total)}")
             return "Result\n" + "\n".join(lines)
 
         titles = {
@@ -626,7 +646,7 @@ class WebService:
             "skill": "Skill Check",
         }
         title = titles.get(command, "Result")
-        result = f"-> Result: {details} = **{total}**"
+        result = f"-> Result: {details} = **{total}**{target_text(total)}"
         if command == "gmroll":
             return f"{title}\n|| {result} ||\n_(Hidden voice roll.)_"
         return f"{title}\n{result}"

@@ -43,6 +43,21 @@ class DiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def _extract_target(self, expression):
+        match = re.search(r"\btarget\s+(-?\d+)\b", expression, flags=re.IGNORECASE)
+        if not match:
+            return expression, None
+        target = int(match.group(1))
+        cleaned = (expression[:match.start()] + expression[match.end():]).strip()
+        cleaned = re.sub(r"\s{2,}", " ", cleaned)
+        return cleaned, target
+
+    def _format_target_result(self, total, target):
+        if target is None:
+            return ""
+        outcome = "Success" if total >= target else "Failure"
+        return f" vs target **{target}**: **{outcome}**"
+
     @app_commands.command(name="roll", description="Roll a dice expression (e.g. 1d20+5, 2d6+1d4, 4d6kh3)")
     @app_commands.describe(expression="Dice expression", comment="Optional comment", multiplier="Repeat roll")
     @app_commands.autocomplete(expression=dice_autocomplete_handler)
@@ -68,6 +83,7 @@ class DiceCog(commands.Cog):
     async def _perform_roll(self, target, expression, comment, multiplier, is_hidden=False):
         is_int = isinstance(target, discord.Interaction)
         user = target.user if is_int else target.author
+        expression, target_number = self._extract_target(expression)
         
         # Support comma-separated multi-rolls: !roll 1d20+5 Attack, 1d8+2 Damage
         sub_expressions = [s.strip() for s in expression.split(',')]
@@ -107,6 +123,8 @@ class DiceCog(commands.Cog):
             for i in range(total_executions):
                 total, details, _, _, _ = self.bot.dice_service.parse_and_roll(sub_expr)
                 line = f"↳ Roll {i+1}: {details} = **{total}**\n" if total_executions > 1 else f"↳ Result: {details} = **{total}**\n"
+                if target_number is not None:
+                    line = line.rstrip() + self._format_target_result(total, target_number) + "\n"
                 msg += line
                 total_sum += total
                 
