@@ -120,6 +120,11 @@ class CharacterSheetCog(commands.Cog):
         attributes = data.get('attributes') or data.get('stats') or {}
         if not isinstance(attributes, dict):
             attributes = {}
+        stress = data.get('stress') or {}
+        if isinstance(stress, str):
+            stress = {'general': stress}
+        if not isinstance(stress, dict):
+            stress = {}
 
         normalized = {
             **data,
@@ -139,6 +144,8 @@ class CharacterSheetCog(commands.Cog):
             },
             'skills': data.get('skills') if isinstance(data.get('skills'), dict) else {},
             'weapons': data.get('weapons') if isinstance(data.get('weapons'), list) else [],
+            'strain': data.get('strain') or data.get('system_strain') or data.get('systemStrain'),
+            'stress': stress,
             'system': data.get('system') or 'SWN',
         }
         return normalized, None
@@ -242,7 +249,19 @@ class CharacterSheetCog(commands.Cog):
         embed.set_author(name=f"Level {char_data['level']} {char_data.get('class', 'Hero')} ({system_display})")
         if char_data.get('portrait_url'): embed.set_thumbnail(url=char_data['portrait_url'])
         
-        embed.add_field(name="Combat", value=f"**HP:** {char_data['hp']}  |  **AC:** {char_data['ac']}  |  **Attack Bonus:** +{char_data['attack_bonus']}", inline=False)
+        combat_parts = [
+            f"**HP:** {char_data['hp']}",
+            f"**AC:** {char_data['ac']}",
+            f"**Attack Bonus:** +{char_data['attack_bonus']}",
+        ]
+        if char_data.get('strain'):
+            combat_parts.append(f"**Strain:** {char_data['strain']}")
+        stress = char_data.get('stress') or {}
+        if stress:
+            stress_text = ", ".join([f"{str(k).title()} {v}" for k, v in stress.items() if v not in (None, "")])
+            if stress_text:
+                combat_parts.append(f"**Stress:** {stress_text}")
+        embed.add_field(name="Combat", value="  |  ".join(combat_parts), inline=False)
         embed.add_field(name="Attributes", value=", ".join([f"**{k.upper()}**: {v:+d}" for k, v in char_data['attributes'].items()]), inline=False)
         
         trained = {k: v for k, v in char_data.get('skills', {}).items() if v >= 0}
@@ -251,6 +270,25 @@ class CharacterSheetCog(commands.Cog):
         if char_data.get('weapons'):
             embed.add_field(name="Weapons", value="\n".join([f"• **{w['name']}**: To Hit {w['to_hit']:+d}, Dmg {w['damage']}" for w in char_data['weapons']]), inline=False)
             
+        if char_data.get('weapons'):
+            weapon_details = []
+            for weapon in char_data['weapons']:
+                detail_parts = []
+                if weapon.get('range'):
+                    detail_parts.append(f"Range {weapon['range']}")
+                if weapon.get('shock'):
+                    detail_parts.append(f"Shock {weapon['shock']}")
+                if weapon.get('trauma_die'):
+                    detail_parts.append(f"Trauma Die {weapon['trauma_die']}")
+                if weapon.get('trauma_rating'):
+                    detail_parts.append(f"Trauma Rating {weapon['trauma_rating']}")
+                if weapon.get('trauma'):
+                    detail_parts.append(f"Trauma {weapon['trauma']}")
+                if detail_parts:
+                    weapon_details.append(f"**{weapon.get('name', 'Weapon')}**: " + ", ".join(detail_parts))
+            if weapon_details:
+                embed.add_field(name="Weapon Details", value="\n".join(weapon_details)[:1024], inline=False)
+
         if view == "full":
             if char_data.get('foci'): embed.add_field(name="Foci", value=", ".join(char_data['foci']), inline=False)
             if char_data.get('equipment'):
@@ -560,6 +598,21 @@ class CharacterSheetCog(commands.Cog):
                             return value
             return default
 
+        def find_resource(label):
+            label = label.lower()
+            for row in reader[:40]:
+                for i, cell in enumerate(row):
+                    if str(cell).strip().lower() != label:
+                        continue
+                    values = [str(v).strip() for v in row[i + 1:i + 12] if str(v).strip()]
+                    numbers = [self._coerce_int(v, None) for v in values]
+                    numbers = [n for n in numbers if n is not None]
+                    if len(numbers) >= 2:
+                        return f"{numbers[0]}/{numbers[-1]}"
+                    if len(numbers) == 1:
+                        return str(numbers[0])
+            return ""
+
         attributes = {}
         attr_labels = {
             "strength": "strength",
@@ -606,10 +659,17 @@ class CharacterSheetCog(commands.Cog):
                     continue
                 damage = get_val(r, i + 5)
                 if re.search(r"\d+d\d+", damage):
+                    trauma = get_val(r, i + 14)
+                    trauma_parts = [part.strip() for part in re.split(r"[;；]", trauma) if part.strip()]
                     weapons.append({
                         "name": name,
                         "to_hit": self._coerce_int(get_val(r, i + 12), 0),
                         "damage": damage,
+                        "range": get_val(r, i + 7),
+                        "trauma_die": trauma_parts[0] if trauma_parts else "",
+                        "trauma_rating": trauma_parts[1] if len(trauma_parts) > 1 else "",
+                        "trauma": trauma if len(trauma_parts) <= 1 else "",
+                        "shock": get_val(r, i + 3) if "shock" in " ".join(row_values(max(r - 1, 0))).lower() else "",
                     })
 
         char_data = {
@@ -622,6 +682,11 @@ class CharacterSheetCog(commands.Cog):
             "attributes": attributes,
             "skills": skills,
             "weapons": weapons,
+            "strain": find_resource("system strain"),
+            "stress": {
+                "mental": find_resource("mental"),
+                "physical": find_resource("physical"),
+            },
             "system": "CWN",
         }
         return self._normalize_character_data(char_data)
