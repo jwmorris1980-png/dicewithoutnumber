@@ -67,6 +67,13 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | `/party info` | View shared party funds and ship status |
 | `/party split <amount>` | Calculate even credit distribution |
 
+## 5a. Polls
+| Command | Description |
+|---------|-------------|
+| `/poll question:<text>` | Create a SimplePoll-style Yes/No poll with reactions. |
+| `/poll question:<text> answer1:<choice> answer2:<choice>` | Create a multiple-choice reaction poll. Supports up to 10 choices. |
+| `!poll "Question?" "Choice A" "Choice B"` | Prefix version using quoted question and choices. Leave choices off for Yes/No. |
+
 ## 6. Server Admin (Manage Server required)
 | Command | Description |
 |---------|-------------|
