@@ -7,11 +7,11 @@ class ChannelMgmt(commands.GroupCog, group_name="channel", description="Manage c
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="rr", help="Super simple reaction role: !rr #channel @role 🚀")
+    @commands.command(name="rrrole", aliases=["reactionrole"], help="Super simple reaction role: !rrrole #channel @role 🚀")
     @commands.has_permissions(manage_guild=True)
     async def simple_rr_prefix(self, ctx, *args):
         """
-        Easy prefix command: !rr [#channel] @role emoji
+        Easy prefix command: !rrrole [#channel] @role emoji
         """
         channel = None
         role = None
@@ -35,7 +35,7 @@ class ChannelMgmt(commands.GroupCog, group_name="channel", description="Manage c
                 emoji = arg
 
         if not role or not emoji:
-            await ctx.send("❌ Usage: `!rr @Role 🚀` or `!rr #channel @Role 🚀`")
+            await ctx.send("❌ Usage: `!rrrole @Role 🚀` or `!rrrole #channel @Role 🚀`")
             return
 
         target_channel = ctx.channel

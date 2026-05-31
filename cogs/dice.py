@@ -189,7 +189,7 @@ class DiceCog(commands.Cog):
         if not interaction.response.is_done(): await interaction.response.defer()
         await self._perform_roll(interaction, expression, comment, times)
 
-    @commands.command(name="multiroll")
+    @commands.command(name="multiroll", aliases=["rr"])
     async def multiroll_prefix(self, ctx, times: int, expression: str, *, comment: str = None):
         await self._perform_roll(ctx, expression, comment, times)
 
