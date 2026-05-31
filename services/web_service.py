@@ -558,7 +558,22 @@ class WebService:
 
         def looks_like_roll(expr: str) -> bool:
             compact = expr.replace(" ", "")
-            return bool(re.fullmatch(r"\d*d\d+(?:[+-]\d+)*(?:target(?:high|higher|over|above|low|lower|under|below)?-?\d+(?:high|higher|over|above|low|lower|under|below)?)?", compact))
+            return bool(re.fullmatch(r"(?:\d+x)?\d*d\d+(?:[+-]\d+)*(?:target(?:high|higher|over|above|low|lower|under|below)?-?\d+(?:high|higher|over|above|low|lower|under|below)?)?", compact))
+
+        def normalize_iterations(expr: str) -> str:
+            suffix_match = re.match(
+                r"^(?P<expr>.+?)\s+(?P<count>\d+)\s+times?(?P<rest>\s+target\b.*)?$",
+                expr,
+            )
+            if suffix_match:
+                rest = suffix_match.group("rest") or ""
+                return f"{suffix_match.group('count')}x {suffix_match.group('expr')}{rest}"
+
+            prefix_match = re.match(r"^(?P<count>\d+)\s+times?\s+(?P<expr>.+)$", expr)
+            if prefix_match:
+                return f"{prefix_match.group('count')}x {prefix_match.group('expr')}"
+
+            return expr
 
         command_match = re.match(
             r"^(?:!|/)?(?P<command>gmroll|gm\s+roll|multiroll|multi\s+roll|attack|skill|roll)(?:\s+(?P<payload>.*))?$",
@@ -567,6 +582,9 @@ class WebService:
         if command_match:
             command = command_match.group("command").replace(" ", "")
             payload = (command_match.group("payload") or "").strip()
+
+            if command in {"roll", "gmroll"}:
+                payload = normalize_iterations(payload)
 
             if command == "multiroll" and payload:
                 times_match = re.match(r"^(\d+)\s+(.*)$", payload)

@@ -43,6 +43,26 @@ class DiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def _normalize_iterations(self, expression):
+        suffix_match = re.match(
+            r"^(?P<expr>.+?)\s+(?P<count>\d+)\s+times?(?P<rest>\s+target\b.*)?$",
+            expression,
+            flags=re.IGNORECASE,
+        )
+        if suffix_match:
+            rest = suffix_match.group("rest") or ""
+            return f"{suffix_match.group('count')}x {suffix_match.group('expr')}{rest}"
+
+        prefix_match = re.match(
+            r"^(?P<count>\d+)\s+times?\s+(?P<expr>.+)$",
+            expression,
+            flags=re.IGNORECASE,
+        )
+        if prefix_match:
+            return f"{prefix_match.group('count')}x {prefix_match.group('expr')}"
+
+        return expression
+
     def _extract_target(self, expression):
         match = re.search(
             r"\btarget\s+(?:(?P<direction1>high|higher|over|above|low|lower|under|below)\s+)?(?P<number>-?\d+)(?:\s+(?P<direction2>high|higher|over|above|low|lower|under|below))?\b",
@@ -91,6 +111,7 @@ class DiceCog(commands.Cog):
     async def _perform_roll(self, target, expression, comment, multiplier, is_hidden=False):
         is_int = isinstance(target, discord.Interaction)
         user = target.user if is_int else target.author
+        expression = self._normalize_iterations(expression)
         expression, target_number, target_direction = self._extract_target(expression)
         
         # Support comma-separated multi-rolls: !roll 1d20+5 Attack, 1d8+2 Damage
@@ -110,10 +131,13 @@ class DiceCog(commands.Cog):
                 all_results_msg += f"❌ `{sub_expr}`: {err}\n"
                 continue
 
+            repeat_match = re.match(r"^(?P<prefix>\d+\s*[x#]\s*)(?P<inner>.*)$", sub_expr)
+            display_expr = repeat_match.group("inner") if repeat_match else sub_expr
+
             # Extract comment if not provided
             actual_comment = comment
             if not actual_comment:
-                raw_comment = sub_expr[end_idx:].strip()
+                raw_comment = display_expr[end_idx:].strip()
                 if raw_comment:
                     actual_comment = raw_comment
 
@@ -122,7 +146,9 @@ class DiceCog(commands.Cog):
                 all_results_msg += f"❌ `{sub_expr}`: Too many repeats!\n"
                 continue
 
-            dice_part = sub_expr[:end_idx].strip()
+            dice_part = display_expr[:end_idx].strip()
+            if repeat_match:
+                dice_part = f"{in_string_repeats}x {dice_part}"
             header = f"🎲 **{dice_part}**"
             if actual_comment: header += f" *({actual_comment})*"
             

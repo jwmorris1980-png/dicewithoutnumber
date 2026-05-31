@@ -21,6 +21,7 @@ HELP_MESSAGES = (
     "`/threshold_wizard` `/swn` `/wwn` `/cwn` `/threshold` - Character generation\n\n"
     "**Dice & Combat**\n"
     "`/roll` `!roll` `!r` - Roll dice, like `1d20+5` or `3x 2d6`\n"
+    "`7x d20` or `d20 7 times` - Show repeated rolls vertically in order\n"
     "`target N` or `target low N` - Success check, like `!roll d20 target low 13`\n"
     "`/gmroll` `!gmroll` `!gr` - Hidden/private roll\n"
     "`/multiroll` `!multiroll` - Roll one expression multiple times\n"
