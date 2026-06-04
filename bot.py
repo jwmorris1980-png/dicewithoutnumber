@@ -231,7 +231,8 @@ class WithoutNumberBot(commands.Bot):
             'cogs.help', 'cogs.tracker', 'cogs.rules_specific', 'cogs.sandbox',
             'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
             'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
-            'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls'
+            'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
+            'cogs.voice_access'
         ]
         for cog in cogs:
             try:

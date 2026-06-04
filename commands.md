@@ -34,6 +34,16 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | `/initiative` | Roll initiative |
 | `/3d6kh` / `/4d6kh` | Specialized rolls (Keep High) |
 
+## 2a. Voice Access & User Install
+| Command | Description |
+|---------|-------------|
+| `/voicehelp` | Show the easiest commands to say with voice tools. |
+| `/up` | Show recent messages above this point so you do not need to scroll. |
+| `/down` | Show the latest messages in this channel. |
+| `/catchup <count>` | Show the last 1-20 readable messages in a compact list. |
+| `/roll` and `/multiroll` | Best dice commands when the app is installed for you but not installed on the server. |
+| `!commands` | Require the bot to be installed on the server; Discord does not send normal messages to user-installed apps. |
+
 ## 3. GM Tracker & Tactical Map
 | Command | Description |
 |---------|-------------|
