@@ -157,7 +157,7 @@ class Maintenance(commands.Cog):
         """Get the latest sync payload info. Use !payload <name> to search."""
         payload_file = "sync_payload.json"
         if not os.path.exists(payload_file):
-            await ctx.send("Payload file not found. Run !sync global first.")
+            await ctx.send("Payload file not found. Run !botsync global first.")
             return
             
         try:
@@ -178,7 +178,7 @@ class Maintenance(commands.Cog):
         except Exception as e:
             await ctx.send(f"Error reading payload: {e}")
 
-    @commands.command(name="sync")
+    @commands.command(name="botsync", aliases=["synccommands"])
     @commands.is_owner()
     async def sync_guild(self, ctx, scope: str = "guild"):
         """Sync slash commands logic."""

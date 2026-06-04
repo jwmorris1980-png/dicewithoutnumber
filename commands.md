@@ -45,7 +45,7 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | `/tracker move <id> <c>` | Move token to coordinates (e.g., `A1`) |
 | `/tracker next` | Advance to the next turn |
 | `/tracker damage <id> <n>`| Deal damage to a combatant |
-| `!sync` | **IMPORTANT**: Use `!sync` (current server) or `!sync global` if commands look wrong! |
+| `!botsync` | **IMPORTANT**: Owner command. Use `!botsync guild` (current server) or `!botsync global` if slash commands look wrong. |
 
 ## 4. World Building & Factions
 | Command | Description |
@@ -80,8 +80,8 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 |---------|-------------|
 | `/avatar` | 🖼️ **Change the bot's avatar.** Slash: type `/avatar`, then click the `image` field and upload your file. Prefix: type `!avatar` with an image attached to the same message. PNG/JPG/GIF/WebP, max 8 MB. |
 | `/rename <server_id> <name>` | Change the bot's display name for this server. Use `clear` as name to reset. |
-| `!sync guild` | Re-register slash commands for this server (use after updates). |
-| `!sync global` | Sync commands globally (takes ~1 hour to propagate). |
+| `!botsync guild` | Re-register slash commands for this server (use after updates). |
+| `!botsync global` | Sync commands globally (takes up to 1 hour to propagate). |
 ## 7. Channel Management (Manage Server required)
 | Command | Description |
 |---------|-------------|

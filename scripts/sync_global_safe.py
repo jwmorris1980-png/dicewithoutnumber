@@ -2,6 +2,11 @@ import aiohttp
 import asyncio
 import os
 import sys
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -13,8 +18,14 @@ from services.secret_loader import load_project_env
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("sync_safe")
 
-# Ensure we can find the cogs
-sys.path.append(os.getcwd())
+# Keep this in the same order as the live bot startup.
+COGS = [
+    'cogs.dice', 'cogs.compendium', 'cogs.chargen', 'cogs.sheets',
+    'cogs.help', 'cogs.tracker', 'cogs.rules_specific', 'cogs.sandbox',
+    'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
+    'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
+    'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls'
+]
 
 def get_token():
     load_project_env()
@@ -49,20 +60,18 @@ async def safe_global_sync():
         logger.info("Gathering commands from cogs...")
         bot = MockBot(app_id=app_id)
         
-        cog_dir = os.path.join(os.getcwd(), "cogs")
+        cog_dir = os.path.join(PROJECT_ROOT, "cogs")
         if not os.path.exists(cog_dir):
             logger.error(f"Cog directory '{cog_dir}' not found.")
             sys.exit(1)
 
         loaded_cogs = []
-        for filename in os.listdir(cog_dir):
-            if filename.endswith(".py") and not filename.startswith("__"):
-                module = f"cogs.{filename[:-3]}"
-                try:
-                    await bot.load_extension(module)
-                    loaded_cogs.append(module)
-                except Exception as e:
-                    logger.warning(f"Failed to load {module}: {e}")
+        for module in COGS:
+            try:
+                await bot.load_extension(module)
+                loaded_cogs.append(module)
+            except Exception as e:
+                logger.warning(f"Failed to load {module}: {e}")
 
         logger.info(f"Successfully loaded {len(loaded_cogs)} cogs.")
 

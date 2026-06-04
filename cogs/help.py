@@ -56,7 +56,7 @@ HELP_MESSAGES = (
     "**Server Tools**\n"
     "`/channel role` `/channel setup` `/channel reactionrole` - Channel/reaction roles\n"
     "`!rrrole` `!role` `!lock` `/lock` - Prefix channel tools\n"
-    "`/avatar` `!avatar` `/rename` `!rename` `!sync guild` `!sync global`\n"
+    "`/avatar` `!avatar` `/rename` `!rename` `!botsync guild` `!botsync global`\n"
     "`/backup` `/heartbeat` `!logs` `!payload` `!reload` - Owner/admin diagnostics\n\n"
     "**Start Here**\n"
     "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
