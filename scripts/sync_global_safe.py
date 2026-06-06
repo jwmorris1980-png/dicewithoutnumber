@@ -39,6 +39,15 @@ class MockBot(commands.Bot):
         intents = discord.Intents.default()
         # Use a dummy app_id for the tree
         super().__init__(command_prefix="!", intents=intents, help_command=None, application_id=app_id)
+        self.tree.allowed_contexts = discord.app_commands.AppCommandContext(
+            guild=True,
+            dm_channel=True,
+            private_channel=True,
+        )
+        self.tree.integration_types = discord.app_commands.AppInstallationType(
+            guild=True,
+            user=True,
+        )
 
 async def safe_global_sync():
     if not TOKEN:

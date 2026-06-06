@@ -37,6 +37,7 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 ## 2a. Voice Access & User Install
 | Command | Description |
 |---------|-------------|
+| `/voice <phrase>` | Dictate natural commands through your personal install, such as `roll one d6`, `roll d20 seven times`, `oracle`, `weather`, or `plot`. |
 | `/voicehelp` | Show the easiest commands to say with voice tools. |
 | `/up` | Show recent messages above this point so you do not need to scroll. |
 | `/down` | Show the latest messages in this channel. |

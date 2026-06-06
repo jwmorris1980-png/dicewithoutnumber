@@ -587,6 +587,9 @@ class WebService:
                 payload = normalize_iterations(payload)
 
             if command == "multiroll" and payload:
+                compact_dice_match = re.match(r"^(\d+)d(\d+)$", payload)
+                if compact_dice_match:
+                    payload = f"{compact_dice_match.group(1)}x d{compact_dice_match.group(2)}"
                 times_match = re.match(r"^(\d+)\s+(.*)$", payload)
                 if times_match:
                     payload = f"{times_match.group(1)}x {times_match.group(2).strip()}"
