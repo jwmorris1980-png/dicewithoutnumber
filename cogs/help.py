@@ -66,7 +66,7 @@ HELP_MESSAGES = (
     "**Start Here**\n"
     "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
     "`/help` `!help` `!wnhelp` - This directory\n"
-    "`/ticket` `!ticket` - Report a problem directly to the bot owner"
+    "`/ticket` `!ticket` - Report a problem, like `!ticket /sheet did not respond`"
 )
 )
 
