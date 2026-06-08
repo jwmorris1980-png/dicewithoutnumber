@@ -65,7 +65,8 @@ HELP_MESSAGES = (
     "`/backup` `/heartbeat` `!logs` `!payload` `!reload` - Owner/admin diagnostics\n\n"
     "**Start Here**\n"
     "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
-    "`/help` `!help` `!wnhelp` - This directory"
+    "`/help` `!help` `!wnhelp` - This directory\n"
+    "`/ticket` `!ticket` - Report a problem directly to the bot owner"
 )
 )
 

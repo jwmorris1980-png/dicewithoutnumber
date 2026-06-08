@@ -127,7 +127,8 @@ class WithoutNumberBot(commands.Bot):
         is_user_error = isinstance(error, (app_commands.CheckFailure, app_commands.CommandNotFound))
         
         if not is_user_error or is_roll_cmd:
-            await self.alert_owner(f"🚨 **Roll/Feature Issue!**\nCommand: `/{interaction.command.name if interaction.command else 'Unknown'}`\nUser: `{interaction.user}`\nError: `{error}`")
+            issue_label = "Roll/Feature Issue" if is_roll_cmd else "Feature Issue"
+            await self.alert_owner(f"🚨 **{issue_label}!**\nCommand: `/{interaction.command.name if interaction.command else 'Unknown'}`\nUser: `{interaction.user}`\nError: `{error}`")
 
         try:
             if not interaction.response.is_done():
@@ -232,7 +233,7 @@ class WithoutNumberBot(commands.Bot):
             'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
             'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
             'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
-            'cogs.voice_access'
+            'cogs.voice_access', 'cogs.tickets'
         ]
         for cog in cogs:
             try:
@@ -319,7 +320,8 @@ class WithoutNumberBot(commands.Bot):
         is_user_error = isinstance(error, (commands.CheckFailure, commands.UserInputError))
         
         if not is_user_error or is_roll_cmd:
-             await self.alert_owner(f"🚨 **Roll/Feature Issue!**\nCommand: `!{ctx.command}`\nUser: `{ctx.author}`\nError: `{error}`")
+             issue_label = "Roll/Feature Issue" if is_roll_cmd else "Feature Issue"
+             await self.alert_owner(f"🚨 **{issue_label}!**\nCommand: `!{ctx.command}`\nUser: `{ctx.author}`\nError: `{error}`")
 
         if ctx.command:
             await ctx.send(f"An error occurred: `{error}`")

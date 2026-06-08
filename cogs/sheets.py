@@ -49,6 +49,19 @@ class CharacterSheetCog(commands.Cog):
         os.makedirs(self.char_dir, exist_ok=True)
         self.awn_sheet_gid = "989086139" # Default GID for AWN Character Sheet tab
 
+    async def _send_target(self, target, content=None, *, embed=None, view=None, ephemeral=False):
+        if not isinstance(target, discord.Interaction):
+            return await target.send(content, embed=embed, view=view)
+
+        kwargs = {"embed": embed, "view": view, "ephemeral": ephemeral}
+        try:
+            if not target.response.is_done():
+                return await target.response.send_message(content, **kwargs)
+            return await target.followup.send(content, **kwargs)
+        except discord.NotFound:
+            # Interaction webhooks expire; preserve the result by sending it privately.
+            return await target.user.send(content, embed=embed, view=view)
+
     async def _read_attachment_text(self, attachment):
         try:
             raw = await attachment.read()
@@ -165,8 +178,7 @@ class CharacterSheetCog(commands.Cog):
             if allow_none: return None
             
             msg = "❌ You have no characters! Use `/importtext` or drag-and-drop a JSON to load one."
-            if is_int: await (ctx_or_int.followup.send if ctx_or_int.response.is_done() else ctx_or_int.response.send_message)(msg, ephemeral=True)
-            else: await ctx_or_int.send(msg)
+            await self._send_target(ctx_or_int, msg, ephemeral=is_int)
             return None
 
         if char_data: return char_data
@@ -180,8 +192,7 @@ class CharacterSheetCog(commands.Cog):
         view = CharacterSelectorView(user_id, char_names, has_category=bool(category_id))
         prompt = f"🎭 Which character are you playing in **{channel.category.name if category_id else channel.name}**?"
         if is_int:
-            if not ctx_or_int.response.is_done(): await ctx_or_int.response.send_message(prompt, view=view, ephemeral=True)
-            else: await ctx_or_int.followup.send(prompt, view=view, ephemeral=True)
+            await self._send_target(ctx_or_int, prompt, view=view, ephemeral=True)
         else:
             await ctx_or_int.send(prompt, view=view)
 
@@ -295,8 +306,7 @@ class CharacterSheetCog(commands.Cog):
                 eq_text = ", ".join(char_data['equipment'])
                 embed.add_field(name="Equipment", value=eq_text[:1020] + "..." if len(eq_text)>1024 else eq_text, inline=False)
 
-        send = target.followup.send if is_int else target.send
-        await send(embed=embed)
+        await self._send_target(target, embed=embed)
 
     @app_commands.command(name="portrait")
     async def portrait_slash(self, interaction: discord.Interaction, url: str = None, name: str = None):
@@ -324,16 +334,14 @@ class CharacterSheetCog(commands.Cog):
         image_url = url or (target.message.attachments[0].url if not is_int and target.message.attachments else None)
         if not image_url:
             msg = "❌ Provide a URL or attach an image."
-            send = target.followup.send if is_int else target.send
-            await send(msg)
+            await self._send_target(target, msg, ephemeral=is_int)
             return
         char_data = self.bot.db.get_character(target.user.id if is_int else target.author.id, char_name)
         char_data['portrait_url'] = image_url
         self.bot.db.save_character(target.user.id if is_int else target.author.id, char_name, char_data.get('system', 'SWN'), char_data)
         embed = discord.Embed(title=f"✅ Portrait Set for {char_name}", color=discord.Color.green())
         embed.set_thumbnail(url=image_url)
-        send = target.followup.send if is_int else target.send
-        await send(embed=embed)
+        await self._send_target(target, embed=embed)
 
     @app_commands.command(name="bind")
     async def bind_slash(self, interaction: discord.Interaction, name: str = None, scope: str = "category"):
@@ -349,15 +357,13 @@ class CharacterSheetCog(commands.Cog):
         char_names = self.bot.db.get_user_characters(user.id)
         if not char_names:
             msg = "❌ No characters found."
-            send = target.followup.send if is_int else target.send
-            await send(msg)
+            await self._send_target(target, msg, ephemeral=is_int)
             return
         target_char = name
         if not target_char:
             view = CharacterSelectorView(user.id, char_names, has_category=True)
             prompt = "🎭 Bind which character?"
-            send = target.response.send_message if is_int and not target.response.is_done() else target.send
-            await (send(prompt, view=view, ephemeral=True) if is_int else send(prompt, view=view))
+            await self._send_target(target, prompt, view=view, ephemeral=is_int)
             await view.wait()
             if not view.selected_value: return
             target_char, scope = view.selected_value, view.selected_scope
@@ -365,7 +371,10 @@ class CharacterSheetCog(commands.Cog):
         target_id = target.channel.id if not scope=="category" else (target.channel.category_id or target.channel.id)
         real_scope = scope if (scope=="category" and target.channel.category_id) else "channel"
         self.bot.db.bind_character(user.id, target_id, real_scope, target_char)
-        await (target.followup.send if is_int else target.send)(f"✅ Bound **{target_char}** to {real_scope}.")
+        if is_int:
+            await self._send_target(target, f"Bound **{target_char}** to {real_scope}.", ephemeral=True)
+            return
+        await target.send(f"✅ Bound **{target_char}** to {real_scope}.")
 
     @app_commands.command(name="importtext")
     async def importtext(self, interaction: discord.Interaction, system: str = "SWN"):
