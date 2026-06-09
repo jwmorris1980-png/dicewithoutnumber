@@ -31,6 +31,59 @@ WORD_NUMBERS = {
 }
 
 
+class GameMasterSetupModal(discord.ui.Modal, title="Private Game Master Setup"):
+    players = discord.ui.TextInput(
+        label="How many players?",
+        placeholder="Example: 4",
+        max_length=2,
+    )
+    map_theme = discord.ui.TextInput(
+        label="Existing map",
+        placeholder="space, forest, cave, desert, or custom",
+        max_length=20,
+    )
+    enemies = discord.ui.TextInput(
+        label="Enemies: name, count, HP, AC",
+        placeholder="guard, 3, 10, 12; boss, 1, 40, 16",
+        style=discord.TextStyle.paragraph,
+        required=False,
+        max_length=500,
+    )
+    initiative = discord.ui.TextInput(
+        label="Roll initiative?",
+        placeholder="yes or no",
+        max_length=10,
+    )
+
+    def __init__(self, cog, guild_id, channel_id, user_id):
+        super().__init__()
+        self.cog = cog
+        self.guild_id = guild_id
+        self.channel_id = channel_id
+        self.user_id = user_id
+
+    async def on_submit(self, interaction):
+        error, session = self.cog._parse_modal_setup(
+            self.guild_id,
+            self.channel_id,
+            self.user_id,
+            str(self.players),
+            str(self.map_theme),
+            str(self.enemies),
+            str(self.initiative),
+        )
+        if error:
+            await interaction.response.send_message(error, ephemeral=True)
+            return
+
+        await interaction.response.defer(ephemeral=True)
+        await self.cog._finish(session)
+        await interaction.followup.send(
+            "Encounter posted. Your setup answers remained hidden.",
+            ephemeral=True,
+        )
+
+
 class GameMasterModeCog(commands.Cog):
     """Private, deterministic, voice-first encounter setup."""
 
@@ -67,6 +120,56 @@ class GameMasterModeCog(commands.Cog):
         gm_role_id = self.bot.db.get_setting(channel.id, "gm_role") if channel else None
         return bool(gm_role_id and guild and guild.get_role(int(gm_role_id)) in getattr(user, "roles", []))
 
+    def _parse_modal_setup(self, guild_id, channel_id, user_id, players, map_theme, enemies, initiative):
+        player_count = self._number(players, 1, 20)
+        if player_count is None:
+            return "Players must be a number from 1 to 20.", None
+
+        normalized_theme = self._normalize(map_theme)
+        theme = THEMES.get(normalized_theme)
+        if not theme:
+            return "Map must be `space`, `forest`, `cave`, `desert`, or `custom`.", None
+
+        tracker = self.bot.get_cog("TrackerCog")
+        current = tracker.get_guild_tracker(guild_id, channel_id)
+        if theme == "custom" and not current.get("background_url"):
+            return "This channel does not have an uploaded custom map.", None
+
+        campaign = self.bot.db.get_campaign(guild_id) or {}
+        joined = campaign.get("players", {})
+        if len(joined) < player_count:
+            return (
+                f"I found **{len(joined)}** joined character sheet(s), but you entered **{player_count}** players. "
+                "Have players import their sheets and use `/campaign join`, then run `/gmmode` again."
+            ), None
+
+        enemy_groups = []
+        for raw_group in filter(None, (group.strip() for group in enemies.split(";"))):
+            parts = [part.strip() for part in raw_group.split(",")]
+            if len(parts) != 4:
+                return "Each enemy must use `name, count, HP, AC`, separated from other enemies with `;`.", None
+            name = parts[0][:50]
+            count = self._number(parts[1], 1, 50)
+            hp = self._number(parts[2], 1, 10000)
+            ac = self._number(parts[3], 0, 100)
+            if not name or count is None or hp is None or ac is None:
+                return f"Invalid enemy entry: `{raw_group}`. Use `name, count, HP, AC`.", None
+            enemy_groups.append({"name": name, "count": count, "hp": hp, "ac": ac})
+
+        roll_initiative = self._yes_no(initiative)
+        if roll_initiative is None:
+            return "Roll initiative must be `yes` or `no`.", None
+
+        return None, {
+            "guild_id": guild_id,
+            "channel_id": channel_id,
+            "user_id": user_id,
+            "player_count": player_count,
+            "theme": theme,
+            "enemy_groups": enemy_groups,
+            "initiative": roll_initiative,
+        }
+
     async def _reply_start(self, target, message):
         if isinstance(target, discord.Interaction):
             await target.response.send_message(message, ephemeral=True)
@@ -89,28 +192,14 @@ class GameMasterModeCog(commands.Cog):
             await self._reply_start(target, "You need GM, Manage Server, or Administrator permission to start Game Master Mode.")
             return
 
-        try:
-            dm = await user.create_dm()
-            await dm.send(
-                "**Private Game Master Mode started.** Your setup answers stay here in DMs. "
-                "Only the finished encounter and optional initiative order will appear in the server.\n\n"
-                "How many players are in this encounter? Say a number from 1 to 20.\n"
-                "Each player should first import their sheet and use `/campaign join` in the server.\n"
-                "Say `cancel game master mode` at any time."
+        if not interaction:
+            await self._reply_start(
+                target,
+                "Use `/gmmode` for hidden setup. Discord cannot hide ordinary spoken or typed server messages.",
             )
-        except discord.Forbidden:
-            await self._reply_start(target, "I could not DM you. Enable direct messages from server members, then start Game Master Mode again.")
             return
 
-        self.sessions[int(user.id)] = {
-            "step": "players",
-            "guild_id": guild.id,
-            "channel_id": channel.id,
-            "user_id": user.id,
-            "started_at": datetime.datetime.now(datetime.timezone.utc),
-            "enemy_groups": [],
-        }
-        await self._reply_start(target, "Game Master Mode moved to your DMs so the players cannot see your setup answers.")
+        await interaction.response.send_modal(GameMasterSetupModal(self, guild.id, channel.id, user.id))
 
     async def handle_message(self, message):
         session = self.sessions.get(int(message.author.id))
