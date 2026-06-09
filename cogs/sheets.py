@@ -45,6 +45,16 @@ class ImportTextModal(discord.ui.Modal, title='Import from characterswithoutnumb
 class CharacterSheetCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    def _sheet_import_error(self, error):
+        return (
+            f"**Character import could not finish:** {error}\n"
+            "**Try these checks:**\n"
+            "1. In Google Sheets, set General access to **Anyone with the link - Viewer**.\n"
+            "2. Send the full Google Sheets URL, not a shortened or Drive-folder link.\n"
+            "3. Use an AWN-compatible sheet, or attach a CSV/TXT/character JSON file.\n"
+            "4. If it still fails, send `ticket importsheet failed` and include the link."
+        )
         self.char_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'characters')
         os.makedirs(self.char_dir, exist_ok=True)
         self.awn_sheet_gid = "989086139" # Default GID for AWN Character Sheet tab
@@ -386,7 +396,7 @@ class CharacterSheetCog(commands.Cog):
         await interaction.response.defer()
         char_data, error, source_url = await self._load_sheet_source(url, file)
         if error:
-            await interaction.followup.send(f"Error: {error}\nUse a public Google Sheet link, or attach an AWN CSV/TXT file or character JSON.")
+            await interaction.followup.send(self._sheet_import_error(error))
             return
 
         await self._save_imported_character(interaction, char_data, source_url=source_url, source_name="Google Sheets")
@@ -396,7 +406,7 @@ class CharacterSheetCog(commands.Cog):
         attachment = ctx.message.attachments[0] if ctx.message.attachments else None
         char_data, error, source_url = await self._load_sheet_source(url, attachment)
         if error:
-            await ctx.send(f"Error: {error}\nUse a public Google Sheet link, or attach an AWN CSV/TXT file or character JSON.")
+            await ctx.send(self._sheet_import_error(error))
             return
 
         await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="Google Sheets")

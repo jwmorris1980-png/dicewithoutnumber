@@ -1,6 +1,8 @@
 # 🎲 Without Number Bot - Command List
 
-All commands work with both `/` (Slash) and `!` (Prefix).
+DICEwithoutNumber is a free, open-source, accessibility-focused Discord bot for Without Number games and other tabletop RPGs. It provides voice-friendly commands, multilingual tools, character sheets, rules references, polls, campaigns, support tickets, combat tracking, and interactive tactical maps.
+
+Commands work with `/`, `!`, or no prefix when the bot is installed in the server. No-prefix commands must begin with an exact command name and stay on one line.
 
 ## 1. Character Management
 | Command | Description |
@@ -12,9 +14,13 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | `/threshold_wizard` | Interactive character creation |
 | `/language [EN|FR|ES|DE|PT|SV]` | Change bot language |
 | `/help` | Overview of all commands. Prefix alias: `!help` |
+| `/tutorial` or `tutorial` | Learn rolls, sheets, maps, help, and tickets with a short walkthrough. |
+| `/setupguide` or `setupguide` | Recommended server permissions, testing, campaign, map, backup, and diagnostic steps. |
+| `/accessibility [mode]` or `accessibility [mode]` | Choose standard, simple/screen-reader-friendly, or private response preferences. |
+| `/menu`, `menu`, or `open menu` | Open a button-based menu for dice, characters, maps, help, and support. |
 | `/ticket details:<problem> command:</sheet>` or `!ticket <problem>` | Open a support ticket. Also works from a personal app install. |
 | `/ticket details:<follow-up> ticket_id:<number>` | Add more information to an existing open ticket. |
-| `/tickets`, `/ticketview`, `/ticketreply`, `/ticketclose` | Owner tools to review, reply to, and close support tickets. |
+| `/tickets`, `/ticketview`, `/ticketreply`, `/ticketclose` | Owner tools to review, reply to, close, or reopen tickets. Ticket views include buttons. |
 | `/sheet` | View active character (Combat view: `/sc`, Full view: `/sf`) |
 | `/switchchar` | `!switchchar` <name> Swap between your imported characters. |
 | `/portrait` | `!portrait` [url] Set an image for any of your characters. Attach a file OR paste a URL. Shows as a thumbnail on `/sheet`! |

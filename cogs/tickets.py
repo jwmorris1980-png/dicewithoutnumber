@@ -6,6 +6,44 @@ from discord import app_commands
 from discord.ext import commands
 
 
+class TicketReplyModal(discord.ui.Modal, title="Reply to support ticket"):
+    message = discord.ui.TextInput(label="Message", style=discord.TextStyle.paragraph, max_length=1200)
+
+    def __init__(self, cog, ticket_id):
+        super().__init__()
+        self.cog = cog
+        self.ticket_id = ticket_id
+
+    async def on_submit(self, interaction):
+        await self.cog._owner_reply(interaction, self.ticket_id, str(self.message))
+
+
+class TicketOwnerView(discord.ui.View):
+    def __init__(self, cog, ticket_id):
+        super().__init__(timeout=900)
+        self.cog = cog
+        self.ticket_id = ticket_id
+
+    async def interaction_check(self, interaction):
+        if await self.cog._is_owner(interaction.user):
+            return True
+        await interaction.response.send_message("These ticket controls are restricted to the bot owner.", ephemeral=True)
+        return False
+
+    @discord.ui.button(label="Reply", style=discord.ButtonStyle.primary)
+    async def reply(self, interaction, button):
+        await interaction.response.send_modal(TicketReplyModal(self.cog, self.ticket_id))
+
+    @discord.ui.button(label="Close as fixed", style=discord.ButtonStyle.success)
+    async def close(self, interaction, button):
+        await self.cog._owner_reply(interaction, self.ticket_id, "This issue has been fixed.", close=True)
+
+    @discord.ui.button(label="Reopen", style=discord.ButtonStyle.secondary)
+    async def reopen(self, interaction, button):
+        self.cog.bot.db.set_support_ticket_status(self.ticket_id, "open")
+        await self.cog._respond(interaction, f"Ticket **{self.ticket_id}** reopened.")
+
+
 class TicketCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -188,13 +226,23 @@ class TicketCog(commands.Cog):
             await self._respond(interaction, "This command is restricted to the bot owner.")
             return
         ticket = self.bot.db.get_support_ticket(ticket_id)
-        await self._respond(interaction, self._render_ticket(ticket) if ticket else f"Ticket `{ticket_id}` was not found.")
+        if not ticket:
+            await self._respond(interaction, f"Ticket `{ticket_id}` was not found.")
+            return
+        await interaction.followup.send(
+            self._render_ticket(ticket),
+            view=TicketOwnerView(self, ticket_id),
+            ephemeral=True,
+        )
 
     @commands.command(name="ticketview")
     @commands.is_owner()
     async def ticketview_prefix(self, ctx, ticket_id: str):
         ticket = self.bot.db.get_support_ticket(ticket_id)
-        await ctx.send(self._render_ticket(ticket) if ticket else f"Ticket `{ticket_id}` was not found.")
+        await ctx.send(
+            self._render_ticket(ticket) if ticket else f"Ticket `{ticket_id}` was not found.",
+            view=TicketOwnerView(self, ticket_id) if ticket else None,
+        )
 
     @app_commands.command(name="ticketreply", description="Owner: reply to a support ticket.")
     @app_commands.allowed_installs(guilds=True, users=True)

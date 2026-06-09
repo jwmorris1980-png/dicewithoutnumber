@@ -7,6 +7,7 @@ import datetime
 import asyncio
 import json
 import copy
+import difflib
 from services.database import DatabaseService
 from services.web_service import WebService
 from services.localization_service import LocalizationService
@@ -234,7 +235,7 @@ class WithoutNumberBot(commands.Bot):
             'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
             'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
             'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
-            'cogs.voice_access', 'cogs.tickets'
+            'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility'
         ]
         for cog in cogs:
             try:
@@ -355,6 +356,17 @@ class WithoutNumberBot(commands.Bot):
     async def on_message(self, message: discord.Message):
         # Ignore messages from the bot itself
         if message.author == self.user:
+            attempted = (ctx.invoked_with or "").lower()
+            names = sorted({
+                name
+                for command in self.commands
+                for name in [command.name, *command.aliases]
+                if not command.hidden
+            })
+            matches = difflib.get_close_matches(attempted, names, n=3, cutoff=0.55)
+            if matches:
+                suggestions = ", ".join(f"`{name}`" for name in matches)
+                await ctx.send(f"I could not find `{attempted}`. Did you mean {suggestions}?")
             return
             
         # Ignore regular bots to prevent loops, but ALLOW webhooks (Tupperbox)
@@ -422,6 +434,22 @@ class WithoutNumberBot(commands.Bot):
     async def _handle_natural_voice_command(self, message: discord.Message) -> bool:
         """Handle clean speech-to-text commands typed directly into Discord."""
         try:
+            spoken_shortcuts = {
+                "show my sheet": "!sheet",
+                "show character sheet": "!sheet",
+                "show map": "!map",
+                "open map": "!map",
+                "i need help": "!help",
+                "show commands": "!help",
+                "open menu": "!menu",
+            }
+            shortcut = spoken_shortcuts.get(" ".join(message.content.strip().lower().split()))
+            if shortcut:
+                command_message = copy.copy(message)
+                command_message.content = shortcut
+                await self.process_commands(command_message)
+                return True
+
             catchup_count = self._parse_catchup_request(message.content)
             if catchup_count is not None:
                 await self.send_catchup(message, catchup_count)
@@ -461,6 +489,17 @@ class WithoutNumberBot(commands.Bot):
 
         command_name = content.split(maxsplit=1)[0].lower()
         if not self.get_command(command_name):
+            names = sorted({
+                name
+                for command in self.commands
+                for name in [command.name, *command.aliases]
+                if not command.hidden
+            })
+            matches = difflib.get_close_matches(command_name, names, n=3, cutoff=0.82)
+            if matches:
+                suggestions = ", ".join(f"`{name}`" for name in matches)
+                await message.channel.send(f"I could not find `{command_name}`. Did you mean {suggestions}?")
+                return True
             return False
 
         # A shallow copy preserves attachments, author, channel, and permissions

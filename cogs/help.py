@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 HELP_MESSAGES = (
 (
     "**DICEwithoutNumber Command Directory**\n"
+    "Free, open-source, accessibility-focused play tools with multilingual support and tactical maps.\n"
     "**Sheets & Characters**\n"
     "`/importsheet` `!importsheet` `!uploadsheet` - Import from URL or attached CSV/TXT/JSON\n"
     "`/importjson` `!importjson` `!uploadjson` - Import JSON from URL or attachment\n"
@@ -52,6 +53,10 @@ HELP_MESSAGES = (
     "**Voice Access**\n"
     "`roll one d6`, `sheet`, `help`, and other commands work without `/` or `!`\n"
     "A no-prefix command must start with an exact command name and stay on one line\n"
+    "`accessibility` - Standard, simple, or private responses\n"
+    "`menu` `open menu` - Button-based quick menu\n"
+    "`tutorial` - Guided walkthrough\n"
+    "`setupguide` - Server setup checklist\n"
     "`/voice roll one d6` - Natural spoken commands with a personal install\n"
     "`/voicehelp` - Voice-friendly usage tips and supported phrases\n"
     "`/up` `/down` `/catchup` - Show recent messages without scrolling\n"
@@ -69,7 +74,7 @@ HELP_MESSAGES = (
     "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
     "`/help` `!help` `!wnhelp` - This directory\n"
     "`/ticket` `!ticket` - Open or follow up on a support ticket\n"
-    "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` - Owner ticket tools"
+    "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` - Owner ticket tools with buttons"
 )
 )
 
