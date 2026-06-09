@@ -235,7 +235,7 @@ class WithoutNumberBot(commands.Bot):
             'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
             'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
             'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
-            'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility'
+            'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility', 'cogs.gm_mode'
         ]
         for cog in cogs:
             try:
@@ -396,6 +396,11 @@ class WithoutNumberBot(commands.Bot):
             return
 
         if message.content:
+            gm_mode = self.get_cog("GameMasterModeCog")
+            if gm_mode and not message.content.startswith(self.command_prefix):
+                if await gm_mode.handle_message(message):
+                    return
+
             first_token = message.content.strip().split(maxsplit=1)[0].lower()
             if first_token in {"!help", "!wnhelp"}:
                 try:
@@ -442,6 +447,9 @@ class WithoutNumberBot(commands.Bot):
                 "i need help": "!help",
                 "show commands": "!help",
                 "open menu": "!menu",
+                "game master mode": "!gmmode",
+                "start game master mode": "!gmmode",
+                "start gm mode": "!gmmode",
             }
             shortcut = spoken_shortcuts.get(" ".join(message.content.strip().lower().split()))
             if shortcut:

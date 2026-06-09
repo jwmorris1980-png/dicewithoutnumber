@@ -59,6 +59,7 @@ When the bot is installed in a server, any registered command can be sent withou
 ## 3. GM Tracker & Tactical Map
 | Command | Description |
 |---------|-------------|
+| `game master mode` or `/gmmode` | Start a deterministic voice-first wizard. It asks for player pieces, an existing map theme, and optional fixed-stat enemies, then posts the interactive encounter. |
 | `/tracker add <name> <hp> <ac> [qty]`| Add enemy with Name, HP, AC, and optional Quantity. |
 | `/tracker party` | Add all Campaign players to tracker |
 | `/tracker map` | Show Tactical Map with interactive movement |
