@@ -30,7 +30,7 @@ HELP_MESSAGES = (
     "`/attack` `!attack` - Weapon attack from active sheet\n"
     "`/combathelp` `/ship_combat` `!ship_combat` `/hack_help` `!hack_help` - Rule helpers\n\n"
     "**Tracker & Map**\n"
-    "`game master mode` `/gmmode` - Voice-first guided encounter and map setup\n"
+    "`game master mode` `/gmmode` - Private voice-first map, enemies, sheets, and initiative setup\n"
     "`/tracker add` `!tracker add` - Add enemies\n"
     "`/tracker list` `!tracker list` - Show tracker\n"
     "`/tracker damage` `!tracker damage` - Apply damage\n"

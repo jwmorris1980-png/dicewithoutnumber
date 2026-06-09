@@ -1,4 +1,5 @@
 import datetime
+import random
 import re
 
 import discord
@@ -21,15 +22,8 @@ THEMES = {
     "custom": "custom",
 }
 
-ENEMY_PRESETS = {
-    "minion": {"hp": 5, "ac": 10},
-    "soldier": {"hp": 10, "ac": 12},
-    "elite": {"hp": 20, "ac": 14},
-    "boss": {"hp": 40, "ac": 16},
-}
-
 WORD_NUMBERS = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
     "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
     "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
     "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
@@ -38,33 +32,28 @@ WORD_NUMBERS = {
 
 
 class GameMasterModeCog(commands.Cog):
-    """Deterministic voice-first encounter setup using existing map themes."""
+    """Private, deterministic, voice-first encounter setup."""
 
     def __init__(self, bot):
         self.bot = bot
         self.sessions = {}
 
-    def _key(self, user_id, channel_id):
-        return int(user_id), int(channel_id)
-
     def _normalize(self, text):
         return " ".join(re.sub(r"[^\w\s]", " ", str(text).lower()).split())
 
-    def _number(self, text, minimum=0, maximum=20):
+    def _number(self, text, minimum=0, maximum=1000):
         normalized = self._normalize(text)
         match = re.search(r"\b(\d+)\b", normalized)
         value = int(match.group(1)) if match else WORD_NUMBERS.get(normalized)
         if value is None:
             value = next((number for word, number in WORD_NUMBERS.items() if re.search(rf"\b{word}\b", normalized)), None)
-        if value is None or not minimum <= value <= maximum:
-            return None
-        return value
+        return value if value is not None and minimum <= value <= maximum else None
 
     def _yes_no(self, text):
         normalized = self._normalize(text)
-        if re.search(r"\b(yes|yeah|yep|sure)\b", normalized) or normalized in {"add enemies", "with enemies"}:
+        if re.search(r"\b(yes|yeah|yep|sure)\b", normalized):
             return True
-        if re.search(r"\b(no|nope|none)\b", normalized) or normalized == "without enemies":
+        if re.search(r"\b(no|nope|none)\b", normalized):
             return False
         return None
 
@@ -78,70 +67,99 @@ class GameMasterModeCog(commands.Cog):
         gm_role_id = self.bot.db.get_setting(channel.id, "gm_role") if channel else None
         return bool(gm_role_id and guild and guild.get_role(int(gm_role_id)) in getattr(user, "roles", []))
 
+    async def _reply_start(self, target, message):
+        if isinstance(target, discord.Interaction):
+            await target.response.send_message(message, ephemeral=True)
+        else:
+            try:
+                await target.message.delete()
+            except Exception:
+                pass
+            await target.send(message, delete_after=12)
+
     async def _start(self, target):
         interaction = isinstance(target, discord.Interaction)
         user = target.user if interaction else target.author
         guild = target.guild
         channel = target.channel
         if not guild:
-            message = "Game Master Mode must be started inside a server channel."
-            if interaction:
-                await target.response.send_message(message, ephemeral=True)
-            else:
-                await target.send(message)
+            await self._reply_start(target, "Game Master Mode must be started inside a server channel.")
             return
         if not self._can_start(user, guild, channel):
-            message = "You need GM, Manage Server, or Administrator permission to start Game Master Mode."
-            if interaction:
-                await target.response.send_message(message, ephemeral=True)
-            else:
-                await target.send(message)
+            await self._reply_start(target, "You need GM, Manage Server, or Administrator permission to start Game Master Mode.")
             return
 
-        self.sessions[self._key(user.id, channel.id)] = {
-            "step": "pieces",
+        try:
+            dm = await user.create_dm()
+            await dm.send(
+                "**Private Game Master Mode started.** Your setup answers stay here in DMs. "
+                "Only the finished encounter and optional initiative order will appear in the server.\n\n"
+                "How many players are in this encounter? Say a number from 1 to 20.\n"
+                "Each player should first import their sheet and use `/campaign join` in the server.\n"
+                "Say `cancel game master mode` at any time."
+            )
+        except discord.Forbidden:
+            await self._reply_start(target, "I could not DM you. Enable direct messages from server members, then start Game Master Mode again.")
+            return
+
+        self.sessions[int(user.id)] = {
+            "step": "players",
             "guild_id": guild.id,
             "channel_id": channel.id,
             "user_id": user.id,
             "started_at": datetime.datetime.now(datetime.timezone.utc),
+            "enemy_groups": [],
         }
-        prompt = (
-            "**Game Master Mode started.** I will only use fixed choices and existing maps.\n"
-            "How many player pieces do you have? Say a number from 1 to 20.\n"
-            "Say `cancel game master mode` at any time."
-        )
-        if interaction:
-            await target.response.send_message(prompt)
-        else:
-            await target.send(prompt)
+        await self._reply_start(target, "Game Master Mode moved to your DMs so the players cannot see your setup answers.")
 
     async def handle_message(self, message):
-        key = self._key(message.author.id, message.channel.id)
-        session = self.sessions.get(key)
-        if not session:
+        session = self.sessions.get(int(message.author.id))
+        if not session or message.guild is not None:
             return False
 
         age = datetime.datetime.now(datetime.timezone.utc) - session["started_at"]
-        if age.total_seconds() > 900:
-            self.sessions.pop(key, None)
-            await message.channel.send("Game Master Mode timed out. Say `game master mode` to start again.")
+        if age.total_seconds() > 1800:
+            self.sessions.pop(int(message.author.id), None)
+            await message.channel.send("Game Master Mode timed out. Start it again in the server channel.")
             return True
 
         text = self._normalize(message.content)
         if text in {"cancel", "cancel game master mode", "stop game master mode", "stop"}:
-            self.sessions.pop(key, None)
+            self.sessions.pop(int(message.author.id), None)
             await message.channel.send("Game Master Mode cancelled.")
             return True
 
         step = session["step"]
-        if step == "pieces":
-            pieces = self._number(text, 1, 20)
-            if pieces is None:
-                await message.channel.send("Please say the number of player pieces, from 1 to 20.")
+        if step == "players":
+            count = self._number(text, 1, 20)
+            if count is None:
+                await message.channel.send("Please say the number of players, from 1 to 20.")
                 return True
-            session["pieces"] = pieces
+            session["player_count"] = count
+            campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
+            joined = campaign.get("players", {})
+            if len(joined) < count:
+                await message.channel.send(
+                    f"I found **{len(joined)}** joined character sheet(s), but you said **{count}** players.\n"
+                    "Have the remaining players import their sheets and use `/campaign join`, then say `ready`."
+                )
+                session["step"] = "players_ready"
+                return True
             session["step"] = "map"
-            await message.channel.send("What kind of map do you want? Say `space`, `forest`, `cave`, `desert`, or `custom`.")
+            await message.channel.send("What map do you want? Say `space`, `forest`, `cave`, `desert`, or `custom`.")
+            return True
+
+        if step == "players_ready":
+            if text != "ready":
+                await message.channel.send("Say `ready` after the players have imported their sheets and used `/campaign join`.")
+                return True
+            campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
+            joined = campaign.get("players", {})
+            if len(joined) < session["player_count"]:
+                await message.channel.send(f"I still found only **{len(joined)}** joined sheet(s).")
+                return True
+            session["step"] = "map"
+            await message.channel.send("What map do you want? Say `space`, `forest`, `cave`, `desert`, or `custom`.")
             return True
 
         if step == "map":
@@ -152,7 +170,7 @@ class GameMasterModeCog(commands.Cog):
             tracker = self.bot.get_cog("TrackerCog")
             current = tracker.get_guild_tracker(session["guild_id"], session["channel_id"])
             if theme == "custom" and not current.get("background_url"):
-                await message.channel.send("This channel has no uploaded custom map. Choose `space`, `forest`, `cave`, or `desert`.")
+                await message.channel.send("That channel has no uploaded custom map. Choose another map.")
                 return True
             session["theme"] = theme
             session["step"] = "enemies"
@@ -165,63 +183,122 @@ class GameMasterModeCog(commands.Cog):
                 await message.channel.send("Please say `yes` or `no`.")
                 return True
             if not answer:
-                session["enemy_count"] = 0
-                await self._finish(message, session)
+                session["step"] = "initiative"
+                await message.channel.send("Should I roll and track initiative? Say `yes` or `no`.")
                 return True
+            session["step"] = "enemy_name"
+            await message.channel.send("What is this enemy called? For example, `guard` or `space pirate`.")
+            return True
+
+        if step == "enemy_name":
+            if not text or len(text) > 50:
+                await message.channel.send("Please give the enemy a short name.")
+                return True
+            session["pending_enemy"] = {"name": message.content.strip()[:50]}
             session["step"] = "enemy_count"
-            await message.channel.send("How many enemies do you want? Say a number from 1 to 20.")
+            await message.channel.send("How many of this enemy?")
             return True
 
         if step == "enemy_count":
-            count = self._number(text, 1, 20)
+            count = self._number(text, 1, 50)
             if count is None:
-                await message.channel.send("Please say the number of enemies, from 1 to 20.")
+                await message.channel.send("Please say an enemy count from 1 to 50.")
                 return True
-            session["enemy_count"] = count
-            session["step"] = "enemy_type"
-            await message.channel.send("What kind of enemies? Say `minion`, `soldier`, `elite`, or `boss`.")
+            session["pending_enemy"]["count"] = count
+            session["step"] = "enemy_hp"
+            await message.channel.send("How many hit points does each one have?")
             return True
 
-        if step == "enemy_type":
-            enemy_type = next((name for name in ENEMY_PRESETS if re.search(rf"\b{name}s?\b", text)), None)
-            if not enemy_type:
-                await message.channel.send("Please choose `minion`, `soldier`, `elite`, or `boss`.")
+        if step == "enemy_hp":
+            hp = self._number(text, 1, 10000)
+            if hp is None:
+                await message.channel.send("Please say their hit points as a number.")
                 return True
-            session["enemy_type"] = enemy_type
-            await self._finish(message, session)
+            session["pending_enemy"]["hp"] = hp
+            session["step"] = "enemy_ac"
+            await message.channel.send("What is their AC?")
+            return True
+
+        if step == "enemy_ac":
+            ac = self._number(text, 0, 100)
+            if ac is None:
+                await message.channel.send("Please say their AC as a number.")
+                return True
+            session["pending_enemy"]["ac"] = ac
+            session["enemy_groups"].append(session.pop("pending_enemy"))
+            session["step"] = "more_enemies"
+            await message.channel.send("Do you want to add another kind of enemy? Say `yes` or `no`.")
+            return True
+
+        if step == "more_enemies":
+            answer = self._yes_no(text)
+            if answer is None:
+                await message.channel.send("Please say `yes` or `no`.")
+                return True
+            if answer:
+                session["step"] = "enemy_name"
+                await message.channel.send("What is the next enemy called?")
+                return True
+            session["step"] = "initiative"
+            await message.channel.send("Should I roll and track initiative? Say `yes` or `no`.")
+            return True
+
+        if step == "initiative":
+            answer = self._yes_no(text)
+            if answer is None:
+                await message.channel.send("Please say `yes` or `no`.")
+                return True
+            session["initiative"] = answer
+            await message.channel.send("Setup complete. Posting the encounter in the server channel now.")
+            await self._finish(session)
             return True
 
         return False
 
     def _combatant(self, token_id, name, hp, ac, x, y, enemy):
         return {
-            "id": token_id,
-            "name": name,
-            "max_hp": hp,
-            "current_hp": hp,
-            "ac": ac,
-            "hidden": False,
-            "conditions": [],
-            "distance": "",
-            "x": x,
-            "y": y,
+            "id": token_id, "name": name, "max_hp": hp, "current_hp": hp, "ac": ac,
+            "hidden": False, "conditions": [], "distance": "", "x": x, "y": y,
             "is_enemy": enemy,
         }
 
-    async def _finish(self, message, session):
+    def _player_combatants(self, session):
+        campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
+        players = list(campaign.get("players", {}).items())[:session["player_count"]]
+        result = []
+        for index, (user_id, player) in enumerate(players):
+            sheet = self.bot.db.get_active_character(user_id) or {}
+            hp = sheet.get("max_hp", sheet.get("hp", player.get("max_hp", 1)))
+            ac = sheet.get("ac", player.get("ac", 10))
+            name = sheet.get("name", player.get("char_name", f"Player {index + 1}"))
+            result.append(self._combatant(index + 1, name, int(hp or 1), int(ac or 10), index % 5, index // 5, False))
+        return result
+
+    async def _finish(self, session):
         tracker = self.bot.get_cog("TrackerCog")
         current = tracker.get_guild_tracker(session["guild_id"], session["channel_id"])
-        combatants = []
-        token_id = 1
-        for index in range(session["pieces"]):
-            combatants.append(self._combatant(token_id, f"Player Piece {index + 1}", 10, 10, index % 5, index // 5, False))
-            token_id += 1
+        combatants = self._player_combatants(session)
+        token_id = len(combatants) + 1
+        enemy_index = 0
+        for group in session["enemy_groups"]:
+            for number in range(group["count"]):
+                enemy_index += 1
+                name = group["name"] if group["count"] == 1 else f"{group['name']} {number + 1}"
+                combatants.append(self._combatant(
+                    token_id, name, group["hp"], group["ac"],
+                    9 - (enemy_index - 1) % 5, 9 - (enemy_index - 1) // 5, True,
+                ))
+                token_id += 1
 
-        enemy_type = session.get("enemy_type", "minion")
-        preset = ENEMY_PRESETS[enemy_type]
-        for index in range(session.get("enemy_count", 0)):
-            combatants.append(self._combatant(token_id, f"{enemy_type.title()} {index + 1}", preset["hp"], preset["ac"], 9 - (index % 5), 9 - (index // 5), True))
-            token_id += 1
+        initiative_lines = []
+        if session.get("initiative"):
+            for combatant in combatants:
+                combatant["initiative"] = random.randint(1, 20)
+            combatants.sort(key=lambda item: item["initiative"], reverse=True)
+            initiative_lines = [
+                f"{index}. **{combatant['name']}** - {combatant['initiative']}"
+                for index, combatant in enumerate(combatants, 1)
+            ]
 
         current.update({
             "combatants": combatants,
@@ -232,36 +309,33 @@ class GameMasterModeCog(commands.Cog):
         if session["theme"] != "custom":
             current["background_url"] = None
         tracker.save_guild_tracker(session["guild_id"], current, session["channel_id"])
-        self.sessions.pop(self._key(session["user_id"], session["channel_id"]), None)
+        self.sessions.pop(int(session["user_id"]), None)
 
+        channel = self.bot.get_channel(int(session["channel_id"])) or await self.bot.fetch_channel(int(session["channel_id"]))
         background_path = tracker._get_background_path(current)
         image = tracker.map_renderer.render_map(
-            current["combatants"],
-            theme_name=current["theme"],
-            background_path=background_path,
+            combatants, theme_name=current["theme"], background_path=background_path,
             grid_type=current.get("grid_type", "square"),
         )
         file = discord.File(fp=image, filename="gm-mode-map.png")
         map_url = f"https://dicewithoutnumber.duckdns.org/map?guild_id={session['guild_id']}&channel_id={session['channel_id']}"
+        enemy_total = sum(group["count"] for group in session["enemy_groups"])
         embed = discord.Embed(
             title="Game Master Mode Encounter",
             description=(
                 f"Map: **{session['theme'].title()}**\n"
-                f"Player pieces: **{session['pieces']}**\n"
-                f"Enemies: **{session.get('enemy_count', 0)}**"
-                + (f" {enemy_type.title()}" if session.get("enemy_count", 0) else "")
-                + f"\n[Open interactive map]({map_url})"
+                f"Players from character sheets: **{session['player_count']}**\n"
+                f"Enemies: **{enemy_total}**\n"
+                f"[Open interactive map]({map_url})"
             ),
             color=discord.Color.blue(),
         )
         embed.set_image(url="attachment://gm-mode-map.png")
-        await message.channel.send(
-            embed=embed,
-            file=file,
-            view=MapMovementView(tracker, session["guild_id"], session["channel_id"], combatants),
-        )
+        await channel.send(embed=embed, file=file, view=MapMovementView(tracker, session["guild_id"], session["channel_id"], combatants))
+        if initiative_lines:
+            await channel.send("**Initiative Order**\n" + "\n".join(initiative_lines) + "\nUse `tracker next` to advance turns.")
 
-    @app_commands.command(name="gmmode", description="Start deterministic voice-first Game Master encounter setup.")
+    @app_commands.command(name="gmmode", description="Start private voice-first Game Master encounter setup.")
     async def gm_mode_slash(self, interaction: discord.Interaction):
         await self._start(interaction)
 
