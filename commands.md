@@ -12,7 +12,9 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | `/threshold_wizard` | Interactive character creation |
 | `/language [EN|FR|ES|DE|PT|SV]` | Change bot language |
 | `/help` | Overview of all commands. Prefix alias: `!help` |
-| `/ticket details:<problem> command:</sheet>` or `!ticket <problem>` | Report a problem directly to the bot owner. Example: `!ticket /sheet did not respond`. Also works from a personal app install. |
+| `/ticket details:<problem> command:</sheet>` or `!ticket <problem>` | Open a support ticket. Also works from a personal app install. |
+| `/ticket details:<follow-up> ticket_id:<number>` | Add more information to an existing open ticket. |
+| `/tickets`, `/ticketview`, `/ticketreply`, `/ticketclose` | Owner tools to review, reply to, and close support tickets. |
 | `/sheet` | View active character (Combat view: `/sc`, Full view: `/sf`) |
 | `/switchchar` | `!switchchar` <name> Swap between your imported characters. |
 | `/portrait` | `!portrait` [url] Set an image for any of your characters. Attach a file OR paste a URL. Shows as a thumbnail on `/sheet`! |

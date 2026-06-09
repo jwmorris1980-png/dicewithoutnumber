@@ -66,7 +66,8 @@ HELP_MESSAGES = (
     "**Start Here**\n"
     "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
     "`/help` `!help` `!wnhelp` - This directory\n"
-    "`/ticket` `!ticket` - Report a problem, like `!ticket /sheet did not respond`"
+    "`/ticket` `!ticket` - Open or follow up on a support ticket\n"
+    "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` - Owner ticket tools"
 )
 )
 

@@ -148,8 +148,113 @@ class DatabaseService:
                     PRIMARY KEY (message_id, emoji)
                 )
             ''')
+
+            # Persistent support tickets and their conversation history.
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS support_tickets (
+                    ticket_id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    user_name TEXT,
+                    guild_id TEXT,
+                    guild_name TEXT,
+                    channel_id TEXT,
+                    channel_name TEXT,
+                    command_name TEXT,
+                    status TEXT DEFAULT 'open',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS support_ticket_messages (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ticket_id TEXT NOT NULL,
+                    author_id TEXT,
+                    author_name TEXT,
+                    author_role TEXT,
+                    content TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
             
             conn.commit()
+
+    # Support Ticket Operations
+    def create_support_ticket(self, ticket_id, user_id, user_name, guild_id, guild_name, channel_id, channel_name, command_name, details):
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO support_tickets (
+                    ticket_id, user_id, user_name, guild_id, guild_name,
+                    channel_id, channel_name, command_name
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                str(ticket_id), str(user_id), user_name,
+                str(guild_id) if guild_id else None, guild_name,
+                str(channel_id) if channel_id else None, channel_name, command_name,
+            ))
+            cursor.execute('''
+                INSERT INTO support_ticket_messages (
+                    ticket_id, author_id, author_name, author_role, content
+                ) VALUES (?, ?, ?, 'reporter', ?)
+            ''', (str(ticket_id), str(user_id), user_name, details))
+            conn.commit()
+
+    def add_support_ticket_message(self, ticket_id, author_id, author_name, author_role, content):
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO support_ticket_messages (
+                    ticket_id, author_id, author_name, author_role, content
+                ) VALUES (?, ?, ?, ?, ?)
+            ''', (str(ticket_id), str(author_id), author_name, author_role, content))
+            cursor.execute(
+                "UPDATE support_tickets SET updated_at = CURRENT_TIMESTAMP WHERE ticket_id = ?",
+                (str(ticket_id),),
+            )
+            conn.commit()
+
+    def get_support_ticket(self, ticket_id):
+        with self._get_connection() as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM support_tickets WHERE ticket_id = ?", (str(ticket_id),))
+            ticket = cursor.fetchone()
+            if not ticket:
+                return None
+            cursor.execute(
+                "SELECT * FROM support_ticket_messages WHERE ticket_id = ? ORDER BY id",
+                (str(ticket_id),),
+            )
+            result = dict(ticket)
+            result["messages"] = [dict(row) for row in cursor.fetchall()]
+            return result
+
+    def list_support_tickets(self, status="open", limit=20):
+        with self._get_connection() as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            if status == "all":
+                cursor.execute(
+                    "SELECT * FROM support_tickets ORDER BY updated_at DESC LIMIT ?",
+                    (int(limit),),
+                )
+            else:
+                cursor.execute(
+                    "SELECT * FROM support_tickets WHERE status = ? ORDER BY updated_at DESC LIMIT ?",
+                    (status, int(limit)),
+                )
+            return [dict(row) for row in cursor.fetchall()]
+
+    def set_support_ticket_status(self, ticket_id, status):
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE support_tickets SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE ticket_id = ?",
+                (status, str(ticket_id)),
+            )
+            conn.commit()
+            return cursor.rowcount > 0
 
     # Reaction Role Operations
     def add_reaction_role(self, guild_id, message_id, emoji, role_id):
