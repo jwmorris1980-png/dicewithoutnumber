@@ -155,6 +155,9 @@ class GameMasterModeCog(commands.Cog):
             return False
         return None
 
+    def _is_skip(self, text):
+        return self._normalize(text) in {"skip", "skip it", "skip this", "next"}
+
     def _can_start(self, user, guild, channel):
         permissions = getattr(user, "guild_permissions", None)
         if permissions and (permissions.administrator or permissions.manage_guild):
@@ -242,7 +245,11 @@ class GameMasterModeCog(commands.Cog):
                 "started_at": datetime.datetime.now(datetime.timezone.utc),
                 "enemy_groups": [],
             }
-            await self._reply_start(target, "**Game Master Mode is starting.** How many players are in this encounter?")
+            await self._reply_start(
+                target,
+                "**Game Master Mode is starting.** How many players are in this encounter? "
+                "Say `skip` at any question you do not need.",
+            )
             return
 
         await interaction.response.send_modal(GameMasterSetupModal(self, guild.id, channel.id, user.id))
@@ -271,6 +278,16 @@ class GameMasterModeCog(commands.Cog):
 
         step = session["step"]
         if step == "players":
+            if self._is_skip(text):
+                campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
+                joined_count = len(campaign.get("players", {}))
+                session["player_count"] = joined_count
+                session["step"] = "map"
+                await message.channel.send(
+                    f"Using all **{joined_count}** joined character sheet(s). "
+                    "What map do you want? Say `space`, `forest`, `cave`, `desert`, `custom`, or `skip`."
+                )
+                return True
             count = self._number(text, 1, 20)
             if count is None:
                 await message.channel.send("Please say the number of players, from 1 to 20.")
@@ -290,6 +307,12 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "players_ready":
+            if self._is_skip(text):
+                campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
+                session["player_count"] = len(campaign.get("players", {}))
+                session["step"] = "map"
+                await message.channel.send("Continuing with the joined sheets. What map do you want, or say `skip`?")
+                return True
             if text != "ready":
                 await message.channel.send("Say `ready` after the players have imported their sheets and used `/campaign join`.")
                 return True
@@ -303,6 +326,11 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "map":
+            if self._is_skip(text):
+                session["theme"] = "default"
+                session["step"] = "enemies"
+                await message.channel.send("Using the default space map. Do you want enemies? Say `yes`, `no`, or `skip`.")
+                return True
             theme = next((value for word, value in THEMES.items() if re.search(rf"\b{word}\b", text)), None)
             if not theme:
                 await message.channel.send("Please choose `space`, `forest`, `cave`, `desert`, or `custom`.")
@@ -318,6 +346,10 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "enemies":
+            if self._is_skip(text):
+                session["step"] = "initiative"
+                await message.channel.send("Skipping enemies. Should I roll and track initiative? Say `yes`, `no`, or `skip`.")
+                return True
             answer = self._yes_no(text)
             if answer is None:
                 await message.channel.send("Please say `yes` or `no`.")
@@ -331,6 +363,10 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "enemy_name":
+            if self._is_skip(text):
+                session["step"] = "initiative"
+                await message.channel.send("Skipping enemies. Should I roll and track initiative? Say `yes`, `no`, or `skip`.")
+                return True
             if not text or len(text) > 50:
                 await message.channel.send("Please give the enemy a short name.")
                 return True
@@ -340,6 +376,11 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "enemy_count":
+            if self._is_skip(text):
+                session.pop("pending_enemy", None)
+                session["step"] = "more_enemies"
+                await message.channel.send("Skipped that enemy. Add another kind of enemy? Say `yes`, `no`, or `skip`.")
+                return True
             count = self._number(text, 1, 50)
             if count is None:
                 await message.channel.send("Please say an enemy count from 1 to 50.")
@@ -353,10 +394,19 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "enemy_stats":
+            if self._is_skip(text):
+                session.pop("pending_enemy", None)
+                session["step"] = "more_enemies"
+                await message.channel.send("Skipped that enemy. Add another kind of enemy? Say `yes`, `no`, or `skip`.")
+                return True
             await message.channel.send("Use the **Enter Enemy HP & AC Privately** button above so players cannot see those values.")
             return True
 
         if step == "more_enemies":
+            if self._is_skip(text):
+                session["step"] = "initiative"
+                await message.channel.send("Should I roll and track initiative? Say `yes`, `no`, or `skip`.")
+                return True
             answer = self._yes_no(text)
             if answer is None:
                 await message.channel.send("Please say `yes` or `no`.")
@@ -370,6 +420,11 @@ class GameMasterModeCog(commands.Cog):
             return True
 
         if step == "initiative":
+            if self._is_skip(text):
+                session["initiative"] = False
+                await message.channel.send("Skipping initiative. Posting the encounter now.")
+                await self._finish(session)
+                return True
             answer = self._yes_no(text)
             if answer is None:
                 await message.channel.send("Please say `yes` or `no`.")
