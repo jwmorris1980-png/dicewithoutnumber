@@ -84,6 +84,51 @@ class GameMasterSetupModal(discord.ui.Modal, title="Private Game Master Setup"):
         )
 
 
+class EnemyStatsModal(discord.ui.Modal, title="Private Enemy Stats"):
+    hp = discord.ui.TextInput(label="Hit points for each enemy", placeholder="Example: 12", max_length=5)
+    ac = discord.ui.TextInput(label="Armor Class (AC)", placeholder="Example: 14", max_length=3)
+
+    def __init__(self, cog, user_id):
+        super().__init__()
+        self.cog = cog
+        self.user_id = int(user_id)
+
+    async def on_submit(self, interaction):
+        session = self.cog.sessions.get(self.user_id)
+        if not session or interaction.user.id != self.user_id:
+            await interaction.response.send_message("This GM Mode session is no longer active.", ephemeral=True)
+            return
+
+        hp = self.cog._number(str(self.hp), 1, 10000)
+        ac = self.cog._number(str(self.ac), 0, 100)
+        if hp is None or ac is None:
+            await interaction.response.send_message("HP and AC must be numbers.", ephemeral=True)
+            return
+
+        session["pending_enemy"]["hp"] = hp
+        session["pending_enemy"]["ac"] = ac
+        session["enemy_groups"].append(session.pop("pending_enemy"))
+        session["step"] = "more_enemies"
+        await interaction.response.send_message("Enemy HP and AC saved privately.", ephemeral=True)
+
+        channel = self.cog.bot.get_channel(session["channel_id"]) or await self.cog.bot.fetch_channel(session["channel_id"])
+        await channel.send("Enemy stats saved privately. Do you want to add another kind of enemy? Say `yes` or `no`.")
+
+
+class EnemyStatsView(discord.ui.View):
+    def __init__(self, cog, user_id):
+        super().__init__(timeout=900)
+        self.cog = cog
+        self.user_id = int(user_id)
+
+    @discord.ui.button(label="Enter Enemy HP & AC Privately", style=discord.ButtonStyle.primary)
+    async def enter_stats(self, interaction, button):
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("Only the GM who started this setup can enter these stats.", ephemeral=True)
+            return
+        await interaction.response.send_modal(EnemyStatsModal(self.cog, self.user_id))
+
+
 class GameMasterModeCog(commands.Cog):
     """Private, deterministic, voice-first encounter setup."""
 
@@ -189,17 +234,27 @@ class GameMasterModeCog(commands.Cog):
             return
 
         if not interaction:
-            await self._reply_start(
-                target,
-                "**Game Master Mode is starting.** Use `/gmmode` to enter enemy HP and AC privately.",
-            )
+            self.sessions[int(user.id)] = {
+                "step": "players",
+                "guild_id": guild.id,
+                "channel_id": channel.id,
+                "user_id": user.id,
+                "started_at": datetime.datetime.now(datetime.timezone.utc),
+                "enemy_groups": [],
+            }
+            await self._reply_start(target, "**Game Master Mode is starting.** How many players are in this encounter?")
             return
 
         await interaction.response.send_modal(GameMasterSetupModal(self, guild.id, channel.id, user.id))
 
     async def handle_message(self, message):
         session = self.sessions.get(int(message.author.id))
-        if not session or message.guild is not None:
+        if not session:
+            return False
+        if message.guild is not None and (
+            int(message.guild.id) != int(session["guild_id"])
+            or int(message.channel.id) != int(session["channel_id"])
+        ):
             return False
 
         age = datetime.datetime.now(datetime.timezone.utc) - session["started_at"]
@@ -290,29 +345,15 @@ class GameMasterModeCog(commands.Cog):
                 await message.channel.send("Please say an enemy count from 1 to 50.")
                 return True
             session["pending_enemy"]["count"] = count
-            session["step"] = "enemy_hp"
-            await message.channel.send("How many hit points does each one have?")
+            session["step"] = "enemy_stats"
+            await message.channel.send(
+                "Enter this enemy's HP and AC privately using the button below.",
+                view=EnemyStatsView(self, message.author.id),
+            )
             return True
 
-        if step == "enemy_hp":
-            hp = self._number(text, 1, 10000)
-            if hp is None:
-                await message.channel.send("Please say their hit points as a number.")
-                return True
-            session["pending_enemy"]["hp"] = hp
-            session["step"] = "enemy_ac"
-            await message.channel.send("What is their AC?")
-            return True
-
-        if step == "enemy_ac":
-            ac = self._number(text, 0, 100)
-            if ac is None:
-                await message.channel.send("Please say their AC as a number.")
-                return True
-            session["pending_enemy"]["ac"] = ac
-            session["enemy_groups"].append(session.pop("pending_enemy"))
-            session["step"] = "more_enemies"
-            await message.channel.send("Do you want to add another kind of enemy? Say `yes` or `no`.")
+        if step == "enemy_stats":
+            await message.channel.send("Use the **Enter Enemy HP & AC Privately** button above so players cannot see those values.")
             return True
 
         if step == "more_enemies":
