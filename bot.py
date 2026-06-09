@@ -6,6 +6,7 @@ import logging
 import datetime
 import asyncio
 import json
+import copy
 from services.database import DatabaseService
 from services.web_service import WebService
 from services.localization_service import LocalizationService
@@ -432,20 +433,18 @@ class WithoutNumberBot(commands.Bot):
                 return True
 
             normalized, _ = self.web_service._normalize_voice_roll_message(message.content)
-            if normalized == message.content or not normalized.startswith(("!roll ", "!gmroll ", "!multiroll ", "!attack ", "!skill ")):
-                return False
+            if normalized != message.content and normalized.startswith(("!roll ", "!gmroll ", "!multiroll ", "!attack ", "!skill ")):
+                command, expr = normalized[1:].split(" ", 1)
+                roll_response = self.web_service._build_voice_roll_response(
+                    command.lower(),
+                    expr.strip(),
+                    self.dice_service,
+                )
+                if roll_response:
+                    await message.channel.send(f"Interpreted as `{normalized}`\n{roll_response}")
+                    return True
 
-            command, expr = normalized[1:].split(" ", 1)
-            roll_response = self.web_service._build_voice_roll_response(
-                command.lower(),
-                expr.strip(),
-                self.dice_service,
-            )
-            if not roll_response:
-                return False
-
-            await message.channel.send(f"Interpreted as `{normalized}`\n{roll_response}")
-            return True
+            return await self._handle_bare_command(message)
         except Exception as e:
             logger.error(f"Natural voice command failed: {e}", exc_info=True)
             try:
@@ -453,6 +452,24 @@ class WithoutNumberBot(commands.Bot):
             except Exception:
                 pass
             return True
+
+    async def _handle_bare_command(self, message: discord.Message) -> bool:
+        """Run a single-line registered command without requiring ! or /."""
+        content = " ".join(str(message.content).strip().split())
+        if not content or "\n" in str(message.content) or "\r" in str(message.content):
+            return False
+
+        command_name = content.split(maxsplit=1)[0].lower()
+        if not self.get_command(command_name):
+            return False
+
+        # A shallow copy preserves attachments, author, channel, and permissions
+        # while allowing discord.py's normal command parser to see a prefix.
+        command_message = copy.copy(message)
+        command_message.content = f"!{content}"
+        logger.info(f"Bare command interpreted as: {command_message.content} from {message.author}")
+        await self.process_commands(command_message)
+        return True
 
     def _parse_catchup_request(self, content: str) -> int | None:
         text = " ".join(str(content).strip().lower().split())

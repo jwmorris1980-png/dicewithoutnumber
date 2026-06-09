@@ -38,6 +38,8 @@ All commands work with both `/` (Slash) and `!` (Prefix).
 | `/3d6kh` / `/4d6kh` | Specialized rolls (Keep High) |
 
 ## 2a. Voice Access & User Install
+When the bot is installed in a server, any registered command can be sent without `/` or `!`, such as `roll one d6`, `sheet`, or `help`. The command must start with its exact name or alias and stay on one line.
+
 | Command | Description |
 |---------|-------------|
 | `/voice <phrase>` | Dictate natural commands through your personal install, such as `roll one d6`, `roll d20 seven times`, `oracle`, `weather`, or `plot`. |

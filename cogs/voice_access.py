@@ -12,6 +12,9 @@ class VoiceAccessCog(commands.Cog):
     async def _send_voice_help(self, interaction: discord.Interaction):
         text = (
             "**Voice-friendly commands**\n"
+            "`roll one d6`, `sheet`, `help`, and other commands can be sent without `/` or `!` "
+            "when the bot is installed in the server.\n"
+            "The message must begin with an exact command name and stay on one line.\n"
             "`/voice phrase: roll one d6` - Natural dice command with a personal install.\n"
             "`/voice phrase: roll d20 seven times` - Repeated rolls in order.\n"
             "`/voice phrase: oracle` - Ask the Oracle.\n"

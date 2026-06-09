@@ -50,6 +50,8 @@ HELP_MESSAGES = (
     "`/poll` `!poll` - SimplePoll-style yes/no or choice polls\n"
     "`!poll \"Question?\" \"Choice A\" \"Choice B\"` - Quote choices for prefix polls\n\n"
     "**Voice Access**\n"
+    "`roll one d6`, `sheet`, `help`, and other commands work without `/` or `!`\n"
+    "A no-prefix command must start with an exact command name and stay on one line\n"
     "`/voice roll one d6` - Natural spoken commands with a personal install\n"
     "`/voicehelp` - Voice-friendly usage tips and supported phrases\n"
     "`/up` `/down` `/catchup` - Show recent messages without scrolling\n"
