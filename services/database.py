@@ -176,10 +176,47 @@ class DatabaseService:
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS runtime_errors (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    source TEXT,
+                    command_name TEXT,
+                    user_id TEXT,
+                    user_name TEXT,
+                    guild_id TEXT,
+                    channel_id TEXT,
+                    error TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
             
             conn.commit()
 
     # Support Ticket Operations
+    def log_runtime_error(self, source, error, command_name=None, user_id=None, user_name=None, guild_id=None, channel_id=None):
+        with self._get_connection() as conn:
+            conn.execute('''
+                INSERT INTO runtime_errors (
+                    source, command_name, user_id, user_name, guild_id, channel_id, error
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                str(source), str(command_name) if command_name else None,
+                str(user_id) if user_id else None, user_name,
+                str(guild_id) if guild_id else None,
+                str(channel_id) if channel_id else None,
+                str(error)[:4000],
+            ))
+            conn.commit()
+
+    def list_runtime_errors(self, limit=10):
+        with self._get_connection() as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT * FROM runtime_errors ORDER BY id DESC LIMIT ?",
+                (int(limit),),
+            ).fetchall()
+            return [dict(row) for row in rows]
+
     def create_support_ticket(self, ticket_id, user_id, user_name, guild_id, guild_name, channel_id, channel_name, command_name, details):
         with self._get_connection() as conn:
             cursor = conn.cursor()

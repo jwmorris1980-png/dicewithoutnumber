@@ -119,6 +119,15 @@ class WithoutNumberBot(commands.Bot):
 
     async def on_tree_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
         logger.error(f"Slash command error: {error}", exc_info=True)
+        self.db.log_runtime_error(
+            "slash_command",
+            str(error),
+            command_name=interaction.command.name if interaction.command else "unknown",
+            user_id=interaction.user.id,
+            user_name=str(interaction.user),
+            guild_id=interaction.guild_id,
+            channel_id=getattr(interaction.channel, "id", None),
+        )
         
         # 1. Alert Log Channel
         await self.send_alert(f"❌ **Slash Command Error: {interaction.command.name if interaction.command else 'Unknown'}**\nUser: {interaction.user}\nError: `{error}`")
@@ -305,6 +314,7 @@ class WithoutNumberBot(commands.Bot):
 
     async def on_error(self, event, *args, **kwargs):
         logger.error(f"Error in event {event}:", exc_info=True)
+        self.db.log_runtime_error("event", f"{event}: {args}")
         await self.send_alert(f"⚠️ **System Error in {event}**\n```python\n{args}\n```")
 
     async def on_command_error(self, ctx, error):
@@ -315,6 +325,15 @@ class WithoutNumberBot(commands.Bot):
             return
         
         logger.error(f"Command error: {error}", exc_info=True)
+        self.db.log_runtime_error(
+            "prefix_command",
+            str(error),
+            command_name=str(ctx.command or ctx.invoked_with or "unknown"),
+            user_id=ctx.author.id,
+            user_name=str(ctx.author),
+            guild_id=getattr(ctx.guild, "id", None),
+            channel_id=getattr(ctx.channel, "id", None),
+        )
         await self.send_alert(f"❌ **Command Error: {ctx.command}**\nUser: {ctx.author}\nError: `{error}`")
         
         # Alert Owner for non-user errors OR common roll failures
@@ -356,17 +375,6 @@ class WithoutNumberBot(commands.Bot):
     async def on_message(self, message: discord.Message):
         # Ignore messages from the bot itself
         if message.author == self.user:
-            attempted = (ctx.invoked_with or "").lower()
-            names = sorted({
-                name
-                for command in self.commands
-                for name in [command.name, *command.aliases]
-                if not command.hidden
-            })
-            matches = difflib.get_close_matches(attempted, names, n=3, cutoff=0.55)
-            if matches:
-                suggestions = ", ".join(f"`{name}`" for name in matches)
-                await ctx.send(f"I could not find `{attempted}`. Did you mean {suggestions}?")
             return
             
         # Ignore regular bots to prevent loops, but ALLOW webhooks (Tupperbox)

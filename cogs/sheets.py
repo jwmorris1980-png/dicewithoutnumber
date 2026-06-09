@@ -45,6 +45,9 @@ class ImportTextModal(discord.ui.Modal, title='Import from characterswithoutnumb
 class CharacterSheetCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.char_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'characters')
+        os.makedirs(self.char_dir, exist_ok=True)
+        self.awn_sheet_gid = "989086139" # Default GID for AWN Character Sheet tab
 
     def _sheet_import_error(self, error):
         return (
@@ -55,9 +58,6 @@ class CharacterSheetCog(commands.Cog):
             "3. Use an AWN-compatible sheet, or attach a CSV/TXT/character JSON file.\n"
             "4. If it still fails, send `ticket importsheet failed` and include the link."
         )
-        self.char_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'characters')
-        os.makedirs(self.char_dir, exist_ok=True)
-        self.awn_sheet_gid = "989086139" # Default GID for AWN Character Sheet tab
 
     async def _send_target(self, target, content=None, *, embed=None, view=None, ephemeral=False):
         if not isinstance(target, discord.Interaction):

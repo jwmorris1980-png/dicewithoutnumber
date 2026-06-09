@@ -266,6 +266,34 @@ class TicketCog(commands.Cog):
     async def ticketclose_prefix(self, ctx, ticket_id: str, *, message: str = "This issue has been fixed."):
         await self._owner_reply(ctx, ticket_id, message, close=True)
 
+    def _render_errors(self):
+        errors = self.bot.db.list_runtime_errors(10)
+        if not errors:
+            return "No persisted runtime errors."
+        lines = ["**Recent Runtime Errors**"]
+        for item in errors:
+            location = f"{item.get('guild_id') or 'DM'}/{item.get('channel_id') or '-'}"
+            error = " ".join(str(item.get("error") or "").split())[:220]
+            lines.append(
+                f"- `{item['id']}` {item['created_at']} **{item.get('source')}** "
+                f"`{item.get('command_name') or '-'}` at `{location}`: {error}"
+            )
+        return "\n".join(lines)[:1950]
+
+    @app_commands.command(name="errors", description="Owner: show recently persisted runtime errors.")
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    async def errors_slash(self, interaction: discord.Interaction):
+        if not await self._is_owner(interaction.user):
+            await interaction.response.send_message("This command is restricted to the bot owner.", ephemeral=True)
+            return
+        await interaction.response.send_message(self._render_errors(), ephemeral=True)
+
+    @commands.command(name="errors")
+    @commands.is_owner()
+    async def errors_prefix(self, ctx):
+        await ctx.send(self._render_errors())
+
 
 async def setup(bot):
     await bot.add_cog(TicketCog(bot))

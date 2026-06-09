@@ -77,7 +77,8 @@ HELP_MESSAGES = (
     "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
     "`/help` `!help` `!wnhelp` - This directory\n"
     "`/ticket` `!ticket` - Open or follow up on a support ticket\n"
-    "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` - Owner ticket tools with buttons"
+    "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` - Owner ticket tools with buttons\n"
+    "`/errors` - Owner view of persisted runtime errors"
 )
 )
 
