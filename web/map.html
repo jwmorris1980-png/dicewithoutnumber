@@ -2031,7 +2031,7 @@
                         
                         const info = document.createElement('div');
                         info.className = 'token-info';
-                        info.textContent = `${c.name} (AC ${c.ac})`;
+                        info.textContent = c.ac == null ? `${c.name} (AC Hidden)` : `${c.name} (AC ${c.ac})`;
                         token.appendChild(info);
                         
                         const hpBar = document.createElement('div');
@@ -2097,7 +2097,7 @@
                     
                     const hpFill = token.querySelector('.hp-fill');
                     if (hpFill) {
-                        const hpPercent = (c.current_hp / c.max_hp) * 100;
+                        const hpPercent = c.current_hp == null || c.max_hp == null ? 100 : (c.current_hp / c.max_hp) * 100;
                         hpFill.style.width = `${hpPercent}%`;
                         hpFill.style.background = hpPercent < 30 ? '#ed4245' : (hpPercent < 70 ? '#faa61a' : '#3ba55c');
                     }
@@ -2722,6 +2722,10 @@
         }
 
         function openEditModal(c) {
+            if (c.hidden && c.is_enemy) {
+                showStatus("Enemy HP and AC are hidden. Use Discord tracker commands to manage this enemy.", "error");
+                return;
+            }
             document.getElementById('edit-id').value = c.id;
             document.getElementById('edit-name').value = c.name;
             document.getElementById('edit-hp-curr').value = c.current_hp;

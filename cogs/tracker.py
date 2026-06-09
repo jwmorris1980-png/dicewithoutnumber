@@ -397,7 +397,10 @@ class TrackerCog(commands.GroupCog, group_name="tracker", description="Manage co
         channel_id = interaction.channel.id if 'interaction' in locals() else ctx.channel.id
         data = self.get_guild_tracker(guild_id, channel_id)
         choices = [
-            app_commands.Choice(name=f"{c['name']} (HP: {c['current_hp']}/{c['max_hp']})", value=c['name'])
+            app_commands.Choice(
+                name=c["name"] if c.get("hidden") and c.get("is_enemy") else f"{c['name']} (HP: {c['current_hp']}/{c['max_hp']})",
+                value=c["name"],
+            )
             for c in data["combatants"] if current.lower() in c['name'].lower()
         ]
         return choices[:25]
@@ -812,9 +815,10 @@ class TrackerCog(commands.GroupCog, group_name="tracker", description="Manage co
         
         desc = ""
         for c in data["combatants"]:
-            status = self._get_status(c["current_hp"], c["max_hp"])
+            is_hidden_enemy = c.get("hidden") and c.get("is_enemy")
+            status = "**Hidden enemy stats**" if is_hidden_enemy else self._get_status(c["current_hp"], c["max_hp"])
             hidden_str = " 👁️‍🗨️" if c.get("hidden") else ""
-            ac_str = f" 🛡️`{c.get('ac', 10)}`"
+            ac_str = "" if is_hidden_enemy else f" 🛡️`{c.get('ac', 10)}`"
             conds = c.get("conditions", [])
             cond_str = f" *[{', '.join(conds)}]*" if conds else ""
             dist = c.get("distance", "")
@@ -851,10 +855,14 @@ class TrackerCog(commands.GroupCog, group_name="tracker", description="Manage co
         self.save_guild_tracker(guild_id, data, channel_id)
         current = data["combatants"][data["current_turn_index"]]
         
-        status = self._get_status(current["current_hp"], current["max_hp"])
         conds = current.get("conditions", [])
         cond_str = f" *[{', '.join(conds)}]*" if conds else ""
-        await interaction.response.send_message(f"▶️ **Next Turn:** It is now **{current['name']}**'s turn! (HP: {current['current_hp']}/{current['max_hp']} {status}){cond_str}")
+        if current.get("hidden") and current.get("is_enemy"):
+            turn_details = ""
+        else:
+            status = self._get_status(current["current_hp"], current["max_hp"])
+            turn_details = f" (HP: {current['current_hp']}/{current['max_hp']} {status})"
+        await interaction.response.send_message(f"▶️ **Next Turn:** It is now **{current['name']}**'s turn!{turn_details}{cond_str}")
 
     @app_commands.command(name="party", description="Add all players from the active Campaign to the tracker.")
     async def add_party(self, interaction: discord.Interaction):
@@ -1179,9 +1187,10 @@ class TrackerCog(commands.GroupCog, group_name="tracker", description="Manage co
         embed = discord.Embed(title="⚔️ Combat Tracker", color=discord.Color.dark_purple())
         desc = ""
         for c in data["combatants"]:
-            status = self._get_status(c["current_hp"], c["max_hp"])
+            is_hidden_enemy = c.get("hidden") and c.get("is_enemy")
+            status = "**Hidden enemy stats**" if is_hidden_enemy else self._get_status(c["current_hp"], c["max_hp"])
             hidden_str = " 👁️‍🗨️" if c.get("hidden") else ""
-            ac_str = f" 🛡️`{c.get('ac', 10)}`"
+            ac_str = "" if is_hidden_enemy else f" 🛡️`{c.get('ac', 10)}`"
             conds = c.get("conditions", [])
             cond_str = f" *[{', '.join(conds)}]*" if conds else ""
             dist = c.get("distance", "")
@@ -1231,10 +1240,10 @@ class TrackerCog(commands.GroupCog, group_name="tracker", description="Manage co
             
         self.save_guild_tracker(guild_id, data, channel_id)
         current = data["combatants"][data["current_turn_index"]]
-        status = self._get_status(current["current_hp"], current["max_hp"])
         conds = current.get("conditions", [])
         cond_str = f" *[{', '.join(conds)}]*" if conds else ""
-        await ctx.send(f"▶️ **Next Turn:** It is now **{current['name']}**'s turn! ({status}){cond_str}")
+        status = "" if current.get("hidden") and current.get("is_enemy") else f" ({self._get_status(current['current_hp'], current['max_hp'])})"
+        await ctx.send(f"▶️ **Next Turn:** It is now **{current['name']}**'s turn!{status}{cond_str}")
 
     @tracker_text.command(name="party", help="Import all players from the campaign into the tracker.")
     async def tracker_party(self, ctx):

@@ -59,7 +59,7 @@ When the bot is installed in a server, any registered command can be sent withou
 ## 3. GM Tracker & Tactical Map
 | Command | Description |
 |---------|-------------|
-| `/gmmode` | Open a hidden setup form visible only to the GM. Players import sheets and join the campaign; the GM chooses an existing map, enters enemies as `name, count, HP, AC`, and optionally rolls initiative before the encounter is posted. Plain server messages cannot be hidden by Discord. |
+| `game master mode` or `/gmmode` | Starting GM Mode may be visible, but enemy HP and AC remain private. `/gmmode` opens the hidden setup form; public tracker lists, turn notices, and the web map redact hidden enemy stats. |
 | `/tracker add <name> <hp> <ac> [qty]`| Add enemy with Name, HP, AC, and optional Quantity. |
 | `/tracker party` | Add all Campaign players to tracker |
 | `/tracker map` | Show Tactical Map with interactive movement |

@@ -174,11 +174,7 @@ class GameMasterModeCog(commands.Cog):
         if isinstance(target, discord.Interaction):
             await target.response.send_message(message, ephemeral=True)
         else:
-            try:
-                await target.message.delete()
-            except Exception:
-                pass
-            await target.send(message, delete_after=12)
+            await target.send(message)
 
     async def _start(self, target):
         interaction = isinstance(target, discord.Interaction)
@@ -195,7 +191,7 @@ class GameMasterModeCog(commands.Cog):
         if not interaction:
             await self._reply_start(
                 target,
-                "Use `/gmmode` for hidden setup. Discord cannot hide ordinary spoken or typed server messages.",
+                "**Game Master Mode is starting.** Use `/gmmode` to enter enemy HP and AC privately.",
             )
             return
 
@@ -347,7 +343,7 @@ class GameMasterModeCog(commands.Cog):
     def _combatant(self, token_id, name, hp, ac, x, y, enemy):
         return {
             "id": token_id, "name": name, "max_hp": hp, "current_hp": hp, "ac": ac,
-            "hidden": False, "conditions": [], "distance": "", "x": x, "y": y,
+            "hidden": enemy, "conditions": [], "distance": "", "x": x, "y": y,
             "is_enemy": enemy,
         }
 

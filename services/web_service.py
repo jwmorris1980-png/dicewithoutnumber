@@ -181,6 +181,14 @@ class WebService:
         data = self.bot.db.get_tracker(guild_id, map_channel_id)
         if not data:
             data = {"combatants": []}
+        else:
+            # The map is player-accessible, so never expose hidden enemy stats.
+            data = json.loads(json.dumps(data))
+            for combatant in data.get("combatants", []):
+                if combatant.get("hidden") and combatant.get("is_enemy"):
+                    combatant["current_hp"] = None
+                    combatant["max_hp"] = None
+                    combatant["ac"] = None
             
         if channel_id:
             data["recent_chat"] = self.bot.db.get_recent_chat(guild_id, channel_id)
@@ -375,9 +383,10 @@ class WebService:
                 return web.json_response({"error": "Token not found"}, status=404)
                 
             if "name" in body: target["name"] = body["name"]
-            if "max_hp" in body: target["max_hp"] = int(body["max_hp"])
-            if "current_hp" in body: target["current_hp"] = int(body["current_hp"])
-            if "ac" in body: target["ac"] = int(body["ac"])
+            hidden_enemy = target.get("hidden") and target.get("is_enemy")
+            if "max_hp" in body and not hidden_enemy: target["max_hp"] = int(body["max_hp"])
+            if "current_hp" in body and not hidden_enemy: target["current_hp"] = int(body["current_hp"])
+            if "ac" in body and not hidden_enemy: target["ac"] = int(body["ac"])
             if "image_url" in body: target["image_url"] = body["image_url"]
             if "size" in body: target["size"] = body["size"]
             
