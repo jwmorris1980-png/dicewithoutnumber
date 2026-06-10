@@ -33,6 +33,7 @@ class ImportTextModal(discord.ui.Modal, title='Import from characterswithoutnumb
             return
             
         safe_name, is_update = self.cog.save_character(interaction.user.id, char_data)
+        self.cog.bot.db.register_server_character(interaction.guild_id, interaction.user.id, safe_name)
         verb = "Updated" if is_update else "Imported"
         embed = discord.Embed(title=f"✅ Character {verb}: {safe_name}", color=discord.Color.green())
         embed.description = f"Level {char_data['level']} {char_data['class']} ({self.system})"
@@ -241,6 +242,7 @@ class CharacterSheetCog(commands.Cog):
         target_id = category_id or channel.id
         target_type = "category" if category_id else "channel"
         self.bot.db.bind_character(user_id, target_id, target_type, safe_name)
+        self.bot.db.register_server_character(getattr(getattr(target, "guild", None), "id", None), user_id, safe_name)
         msg = (
             f"{verb} **{safe_name}** from {source_name} and made them active for this {target_type}.\n"
             f"Try `!sheet`, `!roll 1d20`, `!skill notice`, or `!bind {safe_name}` in this channel."

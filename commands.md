@@ -60,7 +60,7 @@ When the bot is installed in a server, any registered command can be sent withou
 ## 3. GM Tracker & Tactical Map
 | Command | Description |
 |---------|-------------|
-| `game master mode` | Start a conversational setup in regular chat. The bot asks questions publicly, then provides a private button for entering enemy HP and AC. Say `skip` at any question to leave out that section. |
+| `game master mode` | Start a conversational setup in regular chat. Players only need to import their sheets in the server; no campaign join is required. Enemy HP and AC use a private button. Say `skip` at any question. |
 | `/gmmode` | Open the fully hidden one-form setup. Public tracker lists, turn notices, and the web map redact hidden enemy stats. |
 | `/tracker add <name> <hp> <ac> [qty]`| Add enemy with Name, HP, AC, and optional Quantity. |
 | `/tracker party` | Add all Campaign players to tracker |

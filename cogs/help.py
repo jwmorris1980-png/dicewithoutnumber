@@ -30,7 +30,7 @@ HELP_MESSAGES = (
     "`/attack` `!attack` - Weapon attack from active sheet\n"
     "`/combathelp` `/ship_combat` `!ship_combat` `/hack_help` `!hack_help` - Rule helpers\n\n"
     "**Tracker & Map**\n"
-    "`game master mode` - Conversational setup with a private enemy HP/AC button\n"
+    "`game master mode` - Uses sheets imported in this server; no campaign join needed\n"
     "Say `skip` during Game Master Mode to leave out any section\n"
     "`/gmmode` - Fully hidden one-form setup\n"
     "`/tracker add` `!tracker add` - Add enemies\n"

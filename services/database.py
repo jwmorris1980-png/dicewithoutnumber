@@ -148,6 +148,15 @@ class DatabaseService:
                     PRIMARY KEY (message_id, emoji)
                 )
             ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS server_characters (
+                    guild_id TEXT,
+                    user_id TEXT,
+                    character_name TEXT,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (guild_id, user_id)
+                )
+            ''')
 
             # Persistent support tickets and their conversation history.
             cursor.execute('''
@@ -370,6 +379,41 @@ class DatabaseService:
             return default
 
     # Character Operations
+    def register_server_character(self, guild_id, user_id, character_name):
+        if not guild_id:
+            return
+        with self._get_connection() as conn:
+            conn.execute('''
+                INSERT OR REPLACE INTO server_characters (
+                    guild_id, user_id, character_name, updated_at
+                ) VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+            ''', (str(guild_id), str(user_id), str(character_name)))
+            conn.commit()
+
+    def list_server_characters(self, guild_id):
+        with self._get_connection() as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute('''
+                SELECT sc.user_id, sc.character_name, sc.updated_at, c.data, c.system, c.source_url
+                FROM server_characters sc
+                JOIN characters c
+                  ON c.user_id = sc.user_id AND c.character_name = sc.character_name
+                WHERE sc.guild_id = ?
+                ORDER BY sc.updated_at DESC
+            ''', (str(guild_id),)).fetchall()
+            result = []
+            for row in rows:
+                item = json.loads(row["data"])
+                item.update({
+                    "user_id": row["user_id"],
+                    "name": row["character_name"],
+                    "system": row["system"],
+                    "source_url": row["source_url"],
+                    "registered_at": row["updated_at"],
+                })
+                result.append(item)
+            return result
+
     def save_character(self, user_id, char_name, system, char_data, source_url=None):
         user_id = str(user_id)
         with self._get_connection() as conn:

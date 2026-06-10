@@ -183,12 +183,11 @@ class GameMasterModeCog(commands.Cog):
         if theme == "custom" and not current.get("background_url"):
             return "This channel does not have an uploaded custom map.", None
 
-        campaign = self.bot.db.get_campaign(guild_id) or {}
-        joined = campaign.get("players", {})
-        if len(joined) < player_count:
+        sheets = self.bot.db.list_server_characters(guild_id)
+        if len(sheets) < player_count:
             return (
-                f"I found **{len(joined)}** joined character sheet(s), but you entered **{player_count}** players. "
-                "Have players import their sheets and use `/campaign join`, then run `/gmmode` again."
+                f"I found **{len(sheets)}** imported character sheet(s) in this server, but you entered **{player_count}** players. "
+                "Have the remaining players import their sheets in this server, then run `/gmmode` again."
             ), None
 
         enemy_groups = []
@@ -213,6 +212,7 @@ class GameMasterModeCog(commands.Cog):
             "channel_id": channel_id,
             "user_id": user_id,
             "player_count": player_count,
+            "player_sheets": sheets[:player_count],
             "theme": theme,
             "enemy_groups": enemy_groups,
             "initiative": roll_initiative,
@@ -279,12 +279,12 @@ class GameMasterModeCog(commands.Cog):
         step = session["step"]
         if step == "players":
             if self._is_skip(text):
-                campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
-                joined_count = len(campaign.get("players", {}))
-                session["player_count"] = joined_count
+                sheets = self.bot.db.list_server_characters(session["guild_id"])
+                session["player_count"] = len(sheets)
+                session["player_sheets"] = sheets
                 session["step"] = "map"
                 await message.channel.send(
-                    f"Using all **{joined_count}** joined character sheet(s). "
+                    f"Using all **{len(sheets)}** imported character sheet(s). "
                     "What map do you want? Say `space`, `forest`, `cave`, `desert`, `custom`, or `skip`."
                 )
                 return True
@@ -293,34 +293,35 @@ class GameMasterModeCog(commands.Cog):
                 await message.channel.send("Please say the number of players, from 1 to 20.")
                 return True
             session["player_count"] = count
-            campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
-            joined = campaign.get("players", {})
-            if len(joined) < count:
+            sheets = self.bot.db.list_server_characters(session["guild_id"])
+            if len(sheets) < count:
                 await message.channel.send(
-                    f"I found **{len(joined)}** joined character sheet(s), but you said **{count}** players.\n"
-                    "Have the remaining players import their sheets and use `/campaign join`, then say `ready`."
+                    f"I found **{len(sheets)}** imported character sheet(s), but you said **{count}** players.\n"
+                    "Have the remaining players import their sheets in this server, then say `ready`."
                 )
                 session["step"] = "players_ready"
                 return True
+            session["player_sheets"] = sheets[:count]
             session["step"] = "map"
             await message.channel.send("What map do you want? Say `space`, `forest`, `cave`, `desert`, or `custom`.")
             return True
 
         if step == "players_ready":
             if self._is_skip(text):
-                campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
-                session["player_count"] = len(campaign.get("players", {}))
+                sheets = self.bot.db.list_server_characters(session["guild_id"])
+                session["player_count"] = len(sheets)
+                session["player_sheets"] = sheets
                 session["step"] = "map"
-                await message.channel.send("Continuing with the joined sheets. What map do you want, or say `skip`?")
+                await message.channel.send("Continuing with the imported sheets. What map do you want, or say `skip`?")
                 return True
             if text != "ready":
-                await message.channel.send("Say `ready` after the players have imported their sheets and used `/campaign join`.")
+                await message.channel.send("Say `ready` after the players have imported their sheets in this server.")
                 return True
-            campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
-            joined = campaign.get("players", {})
-            if len(joined) < session["player_count"]:
-                await message.channel.send(f"I still found only **{len(joined)}** joined sheet(s).")
+            sheets = self.bot.db.list_server_characters(session["guild_id"])
+            if len(sheets) < session["player_count"]:
+                await message.channel.send(f"I still found only **{len(sheets)}** imported sheet(s).")
                 return True
+            session["player_sheets"] = sheets[:session["player_count"]]
             session["step"] = "map"
             await message.channel.send("What map do you want? Say `space`, `forest`, `cave`, `desert`, or `custom`.")
             return True
@@ -444,14 +445,12 @@ class GameMasterModeCog(commands.Cog):
         }
 
     def _player_combatants(self, session):
-        campaign = self.bot.db.get_campaign(session["guild_id"]) or {}
-        players = list(campaign.get("players", {}).items())[:session["player_count"]]
         result = []
-        for index, (user_id, player) in enumerate(players):
-            sheet = self.bot.db.get_active_character(user_id) or {}
-            hp = sheet.get("max_hp", sheet.get("hp", player.get("max_hp", 1)))
-            ac = sheet.get("ac", player.get("ac", 10))
-            name = sheet.get("name", player.get("char_name", f"Player {index + 1}"))
+        sheets = session.get("player_sheets") or self.bot.db.list_server_characters(session["guild_id"])[:session["player_count"]]
+        for index, sheet in enumerate(sheets):
+            hp = sheet.get("max_hp", sheet.get("hp", 1))
+            ac = sheet.get("ac", 10)
+            name = sheet.get("name", f"Player {index + 1}")
             result.append(self._combatant(index + 1, name, int(hp or 1), int(ac or 10), index % 5, index // 5, False))
         return result
 
