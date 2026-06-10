@@ -7,7 +7,6 @@ import datetime
 import asyncio
 import json
 import copy
-import difflib
 import re
 from services.database import DatabaseService
 from services.web_service import WebService
@@ -546,17 +545,6 @@ class WithoutNumberBot(commands.Bot):
 
         command_name = content.split(maxsplit=1)[0].lower()
         if not self.get_command(command_name):
-            names = sorted({
-                name
-                for command in self.commands
-                for name in [command.name, *command.aliases]
-                if not command.hidden
-            })
-            matches = difflib.get_close_matches(command_name, names, n=3, cutoff=0.82)
-            if matches:
-                suggestions = ", ".join(f"`{name}`" for name in matches)
-                await message.channel.send(f"I could not find `{command_name}`. Did you mean {suggestions}?")
-                return True
             return False
 
         # A shallow copy preserves attachments, author, channel, and permissions
