@@ -544,8 +544,16 @@ class WithoutNumberBot(commands.Bot):
             return False
 
         command_name = content.split(maxsplit=1)[0].lower()
-        if not self.get_command(command_name):
+        command = self.get_command(command_name)
+        if not command:
             return False
+
+        # Do not treat ordinary one-word chat as an incomplete command.
+        if " " not in content:
+            if isinstance(command, commands.Group):
+                return False
+            if any(getattr(parameter, "required", False) for parameter in command.clean_params.values()):
+                return False
 
         # A shallow copy preserves attachments, author, channel, and permissions
         # while allowing discord.py's normal command parser to see a prefix.
