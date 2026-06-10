@@ -8,6 +8,7 @@ import asyncio
 import json
 import copy
 import difflib
+import re
 from services.database import DatabaseService
 from services.web_service import WebService
 from services.localization_service import LocalizationService
@@ -447,6 +448,9 @@ class WithoutNumberBot(commands.Bot):
     async def _handle_natural_voice_command(self, message: discord.Message) -> bool:
         """Handle clean speech-to-text commands typed directly into Discord."""
         try:
+            if await self._handle_character_sheet_drop(message):
+                return True
+
             spoken_shortcuts = {
                 "show my sheet": "!sheet",
                 "show character sheet": "!sheet",
@@ -496,6 +500,43 @@ class WithoutNumberBot(commands.Bot):
             except Exception:
                 pass
             return True
+
+    async def _handle_character_sheet_drop(self, message: discord.Message) -> bool:
+        """Automatically import a character when a player simply drops their sheet."""
+        sheet_cog = self.get_cog("CharacterSheetCog")
+        if not sheet_cog or not message.guild:
+            return False
+
+        content = str(message.content or "").strip()
+        google_match = re.search(
+            r"https://docs\.google\.com/spreadsheets/d/[A-Za-z0-9_-]+[^\s]*",
+            content,
+            re.IGNORECASE,
+        )
+        attachment = None
+        if len(getattr(message, "attachments", [])) == 1:
+            candidate = message.attachments[0]
+            if str(candidate.filename or "").lower().endswith((".csv", ".txt", ".json")):
+                attachment = candidate
+
+        # Only treat an attachment as a sheet drop when there is no unrelated message text.
+        if not google_match and not (attachment and not content):
+            return False
+
+        await message.channel.send("Character sheet detected. Importing it now...")
+        url = google_match.group(0) if google_match else None
+        char_data, error, source_url = await sheet_cog._load_sheet_source(url, attachment)
+        if error:
+            await message.channel.send(sheet_cog._sheet_import_error(error))
+            return True
+
+        await sheet_cog._save_imported_character(
+            message,
+            char_data,
+            source_url=source_url,
+            source_name="dropped character sheet",
+        )
+        return True
 
     async def _handle_bare_command(self, message: discord.Message) -> bool:
         """Run a single-line registered command without requiring ! or /."""

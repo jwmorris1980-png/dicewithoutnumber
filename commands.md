@@ -7,7 +7,8 @@ Commands work with `/`, `!`, or no prefix when the bot is installed in the serve
 ## 1. Character Management
 | Command | Description |
 |---------|-------------|
-| `/importsheet <url>` | Import from Google Sheets (SWN/WWN/CWN). You can also attach a `.csv`, `.txt`, or `.json` file. |
+| Paste a Google Sheet link or attach a sheet file | Automatically import, activate, bind, and register the character for Game Master Mode. No command is required. |
+| `/importsheet <url>` | Optional manual import from Google Sheets. You can also attach a `.csv`, `.txt`, or `.json` file. |
 | `/importjson <url>` | Import from raw JSON (characterswithoutnumber.app). You can also attach a `.json` file. |
 | `/update` | Sync your active character with its stored source URL |
 | `/link <url>` | Connect a character to a persistent sheet URL for syncing |
