@@ -25,7 +25,8 @@ COGS = [
     'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
     'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
     'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
-    'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility', 'cogs.gm_mode'
+    'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility', 'cogs.features',
+    'cogs.gm_mode'
 ]
 
 def get_token():
