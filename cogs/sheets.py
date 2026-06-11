@@ -694,8 +694,11 @@ class CharacterSheetCog(commands.Cog):
                         "shock": get_val(r, i + 3) if "shock" in " ".join(row_values(max(r - 1, 0))).lower() else "",
                     })
 
+        # The standard CWN sheet places the character name in B4 without a
+        # nearby "Name" label, while some variants use a labeled field.
+        character_name = find_after("name") or get_val(3, 1) or "Unknown Operator"
         char_data = {
-            "name": find_after("name", "Unknown Operator"),
+            "name": character_name,
             "level": self._coerce_int(find_after("level"), 1),
             "class": find_after("background", "Operator"),
             "hp": self._coerce_int(find_after("current hp") or find_after("hp"), 0),
