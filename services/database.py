@@ -378,6 +378,14 @@ class DatabaseService:
                 return row[0]
             return default
 
+    def delete_setting(self, target_id, key):
+        with self._get_connection() as conn:
+            conn.execute(
+                'DELETE FROM settings WHERE target_id = ? AND setting_key = ?',
+                (str(target_id), key),
+            )
+            conn.commit()
+
     # Character Operations
     def register_server_character(self, guild_id, user_id, character_name):
         if not guild_id:

@@ -244,7 +244,8 @@ class WithoutNumberBot(commands.Bot):
             'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
             'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
             'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
-            'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility', 'cogs.gm_mode'
+            'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility', 'cogs.features',
+            'cogs.gm_mode'
         ]
         for cog in cogs:
             try:
@@ -447,8 +448,15 @@ class WithoutNumberBot(commands.Bot):
     async def _handle_natural_voice_command(self, message: discord.Message) -> bool:
         """Handle clean speech-to-text commands typed directly into Discord."""
         try:
-            if await self._handle_character_sheet_drop(message):
+            features = self.get_cog("FeaturesCog")
+            if features and await features.handle_message(message):
                 return True
+
+            if (not features or features.is_enabled("sheets", message)) and await self._handle_character_sheet_drop(message):
+                return True
+
+            if features and not features.is_enabled("voice", message):
+                return False
 
             spoken_shortcuts = {
                 "show my sheet": "!sheet",

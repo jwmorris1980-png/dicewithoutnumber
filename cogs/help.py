@@ -58,6 +58,8 @@ HELP_MESSAGES = (
     "`roll one d6`, `sheet`, `help`, and other commands work without `/` or `!`\n"
     "A no-prefix command must start with an exact command name and stay on one line\n"
     "`accessibility` - Standard, simple, or private responses\n"
+    "`/features` `!features` - Turn optional features on/off for yourself or a server\n"
+    "`features off voice` or `features off sheets` - Keep explicit `/` and `!` commands\n"
     "`menu` `open menu` - Button-based quick menu\n"
     "`tutorial` - Guided walkthrough\n"
     "`setupguide` - Server setup checklist\n"
@@ -68,7 +70,9 @@ HELP_MESSAGES = (
     "**Campaign, Factions & Party**\n"
     "`/campaign start/join/leave/info` `!campaign start/join/leave/info`\n"
     "`/party info/set/add/split` `!party info/set/add/split`\n"
-    "`/faction create/list/edit/attack` `!faction create/list/edit/attack`\n\n"
+    "`/faction create/list/edit/attack` `!faction create/list/edit/attack`"
+),
+(
     "**Server Tools**\n"
     "`/channel role` `/channel setup` `/channel reactionrole` - Channel/reaction roles\n"
     "`!rrrole` `!role` `!lock` `/lock` - Prefix channel tools\n"
