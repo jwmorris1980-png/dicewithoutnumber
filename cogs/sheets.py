@@ -62,7 +62,8 @@ class CharacterSheetCog(commands.Cog):
 
     async def _send_target(self, target, content=None, *, embed=None, view=None, ephemeral=False):
         if not isinstance(target, discord.Interaction):
-            return await target.send(content, embed=embed, view=view)
+            destination = target if hasattr(target, "send") else target.channel
+            return await destination.send(content, embed=embed, view=view)
 
         kwargs = {"embed": embed, "view": view, "ephemeral": ephemeral}
         try:
@@ -233,7 +234,7 @@ class CharacterSheetCog(commands.Cog):
             safe_name, is_update = self.save_character(user_id, char_data, source_url=source_url)
         except ValueError as e:
             msg = f"Error: {e}"
-            await (target.followup.send if is_int else target.send)(msg)
+            await self._send_target(target, msg)
             return
 
         verb = "Updated" if is_update else "Imported"
@@ -247,7 +248,7 @@ class CharacterSheetCog(commands.Cog):
             f"{verb} **{safe_name}** from {source_name} and made them active for this {target_type}.\n"
             f"Try `!sheet`, `!roll 1d20`, `!skill notice`, or `!bind {safe_name}` in this channel."
         )
-        await (target.followup.send if is_int else target.send)(msg)
+        await self._send_target(target, msg)
 
     @app_commands.command(name="sheet")
     async def sheet_slash(self, interaction: discord.Interaction, view: str = "combat"):
