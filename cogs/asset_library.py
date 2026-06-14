@@ -110,6 +110,10 @@ class AssetLibraryCog(commands.Cog):
             if local_map:
                 await self._send_local_map(target, *local_map)
                 return
+            openverse_map = await self.catalog.search_openverse_map(query)
+            if openverse_map:
+                await self._send_catalog_result(target, openverse_map)
+                return
 
         # Parse query words into tags + free-text
         tags = query.replace(",", " ").strip() if query else None

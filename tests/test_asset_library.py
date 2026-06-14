@@ -42,3 +42,27 @@ def test_visible_map_feature_is_not_enabled_in_other_servers(monkeypatch):
     other_server = SimpleNamespace(guild=SimpleNamespace(id=999))
 
     assert AssetLibraryCog._is_test_area(other_server) is False
+
+
+def test_openverse_map_requires_direct_image_and_open_license():
+    direct = {
+        "url": "https://example.com/map.png",
+        "license": "cc0",
+    }
+    source_only = {
+        "url": "https://example.com/maps/",
+        "license": "cc0",
+    }
+
+    assert ImageCatalogService.displayable_image_url(direct) == direct["url"]
+    assert ImageCatalogService.displayable_image_url(source_only) is None
+
+
+def test_openverse_relevance_rejects_unrelated_results():
+    dungeon = {"title": "Hand Drawn Dungeon Map", "tags": []}
+    florida = {"title": "Florida Tour, August 2006", "tags": []}
+    wrong_subject = {"title": "City Map of New Orleans", "tags": []}
+
+    assert ImageCatalogService.relevant_openverse_map(dungeon, "dungeon") is True
+    assert ImageCatalogService.relevant_openverse_map(florida, "fantasy") is False
+    assert ImageCatalogService.relevant_openverse_map(wrong_subject, "space station") is False

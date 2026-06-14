@@ -8,6 +8,8 @@ each carrying full attribution/source info.
 
 import logging
 import os
+import random
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -118,6 +120,56 @@ class ImageCatalogService:
             log.warning("ImageCatalogService random failed: %s", exc)
             return None
 
+    async def search_openverse_map(self, query: str) -> Optional[dict]:
+        """Search Openverse for an openly licensed, directly displayable map."""
+        params = {
+            "q": f"{query} map".strip(),
+            "license": "cc0,pdm,by,by-sa",
+            "page_size": 20,
+            "mature": "false",
+        }
+        try:
+            session = await self._get_session()
+            async with session.get("https://api.openverse.org/v1/images/", params=params) as resp:
+                resp.raise_for_status()
+                results = (await resp.json()).get("results", [])
+        except Exception as exc:
+            log.warning("Openverse map search failed: %s", exc)
+            return None
+
+        usable = []
+        for result in results:
+            direct_url = self.displayable_image_url(result)
+            license_code = str(result.get("license") or "").lower()
+            if (
+                not direct_url
+                or license_code not in {"cc0", "pdm", "by", "by-sa"}
+                or not self.relevant_openverse_map(result, query)
+            ):
+                continue
+            usable.append(
+                {
+                    "id": f"openverse-{result.get('id', '')}",
+                    "type": "map",
+                    "name": result.get("title") or "Open map",
+                    "description": "Openly licensed map found through Openverse.",
+                    "url": direct_url,
+                    "thumbnail_url": result.get("thumbnail") or "",
+                    "source_page": result.get("foreign_landing_url") or "",
+                    "artist": result.get("creator") or "Unknown creator",
+                    "license": license_code.upper(),
+                    "license_url": result.get("license_url") or "",
+                    "attribution": (
+                        f"{result.get('title') or 'Map'} by "
+                        f"{result.get('creator') or 'Unknown creator'} "
+                        f"({license_code.upper()}) via Openverse."
+                    ),
+                    "system": ["General RPG"],
+                    "tags": [query, "openverse", "open-license"],
+                }
+            )
+        return random.choice(usable) if usable else None
+
     async def get_by_id(self, image_id: str) -> Optional[dict]:
         """Fetch a specific image by ID."""
         try:
@@ -225,3 +277,27 @@ class ImageCatalogService:
             "source_link": source_link,
         }
         return embed_dict
+    @staticmethod
+    def relevant_openverse_map(result: dict, query: str) -> bool:
+        """Reject loosely related search results rather than guessing they are maps."""
+        title = str(result.get("title") or "")
+        tags = " ".join(
+            str(tag.get("name") if isinstance(tag, dict) else tag)
+            for tag in result.get("tags", [])
+        )
+        title_lower = title.lower()
+        title_words = set(re.findall(r"[a-z0-9]+", title_lower))
+        haystack = f"{title} {tags}".lower()
+        haystack_words = set(re.findall(r"[a-z0-9]+", haystack))
+        if not (
+            title_words.intersection({"map", "maps", "battlemap", "battlemaps", "floorplan", "floorplans"})
+            or "battle map" in title_lower
+            or "floor plan" in title_lower
+        ):
+            return False
+        requested = {
+            word
+            for word in re.findall(r"[a-z0-9]+", str(query).lower())
+            if word not in {"a", "an", "the", "map", "please", "show", "find", "give", "me"}
+        }
+        return not requested or bool(requested.intersection(title_words))
