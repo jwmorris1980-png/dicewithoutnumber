@@ -18,6 +18,10 @@ Commands work with `/`, `!`, or no prefix when the bot is installed in the serve
 | `/tutorial` or `tutorial` | Learn rolls, sheets, maps, help, and tickets with a short walkthrough. |
 | `/setupguide` or `setupguide` | Recommended server permissions, testing, campaign, map, backup, and diagnostic steps. |
 | `/accessibility [mode]` or `accessibility [mode]` | Choose standard, simple/screen-reader-friendly, or private response preferences. |
+| `/features`, `!features`, or `features` | Show or change your optional bot features. Server managers can also set server defaults. |
+| `ignore me` or `features off bot` | Personal full mute: the bot completely ignores your messages and commands. |
+| `listen to me`, `features on bot`, or `/features on bot` | Restore bot access after using personal full mute. |
+| `features off voice` or `features off sheets` | Disable only no-prefix voice commands or automatic sheet imports while keeping explicit commands available. |
 | `/menu`, `menu`, or `open menu` | Open a button-based menu for dice, characters, maps, help, and support. |
 | `/ticket details:<problem> command:</sheet>` or `!ticket <problem>` | Open a support ticket. Also works from a personal app install. |
 | `/ticket details:<follow-up> ticket_id:<number>` | Add more information to an existing open ticket. |

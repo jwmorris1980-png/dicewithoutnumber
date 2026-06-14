@@ -108,7 +108,7 @@ class FeaturesCog(commands.Cog):
             return True
         return False
 
-    @app_commands.command(name="features", description="Turn optional bot features on or off.")
+    @app_commands.command(name="features", description="Manage features or make the bot completely ignore you.")
     @app_commands.choices(
         action=[
             app_commands.Choice(name="Show settings", value="show"),
@@ -129,7 +129,7 @@ class FeaturesCog(commands.Cog):
     async def features_slash(self, interaction: discord.Interaction, action: str = "show", feature: str = None, scope: str = "me"):
         await self._configure(interaction, action, feature, scope)
 
-    @commands.command(name="features", aliases=["feature"])
+    @commands.command(name="features", aliases=["feature"], help="Manage features or use `!features off bot` for personal full mute.")
     async def features_prefix(self, ctx, action: str = "show", feature: str = None, scope: str = "me"):
         await self._configure(ctx, action.lower(), feature.lower() if feature else None, scope.lower())
 
