@@ -62,6 +62,7 @@ def test_roll_prefix_handles_fuzzy_roll_without_raising(monkeypatch):
 
     ctx = MagicMock()
     ctx.author.mention = "@devinb"
+    ctx.author.display_name = "Devin"
     ctx.send = AsyncMock()
 
     cog = DiceCog(bot)
@@ -69,6 +70,8 @@ def test_roll_prefix_handles_fuzzy_roll_without_raising(monkeypatch):
 
     ctx.send.assert_awaited_once()
     sent_message = ctx.send.await_args.args[0]
-    assert "@devinb" in sent_message
+    assert "@devinb" not in sent_message
+    assert "**Devin rolled:**" in sent_message
     assert "**26**" in sent_message
     assert "**8**" in sent_message
+    assert ctx.send.await_args.kwargs["allowed_mentions"].everyone is False

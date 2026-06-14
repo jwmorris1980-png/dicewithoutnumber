@@ -132,13 +132,14 @@ class WithoutNumberBot(commands.Bot):
         # 1. Alert Log Channel
         await self.send_alert(f"❌ **Slash Command Error: {interaction.command.name if interaction.command else 'Unknown'}**\nUser: {interaction.user}\nError: `{error}`")
         
-        # 2. Alert Owner via DM for critical errors
-        # Special case: If it's a roll command, alert owner even for typos if they are struggling
-        is_roll_cmd = interaction.command and interaction.command.name in ['roll', 'multiroll', 'skill', 'attack', 'gmroll']
-        is_user_error = isinstance(error, (app_commands.CheckFailure, app_commands.CommandNotFound))
+        # Alert the owner only for failures that need a code or service fix.
+        is_user_error = isinstance(
+            error,
+            (app_commands.CheckFailure, app_commands.CommandNotFound, app_commands.TransformerError),
+        )
         
-        if not is_user_error or is_roll_cmd:
-            issue_label = "Roll/Feature Issue" if is_roll_cmd else "Feature Issue"
+        if not is_user_error:
+            issue_label = "Feature Issue"
             await self.alert_owner(f"🚨 **{issue_label}!**\nCommand: `/{interaction.command.name if interaction.command else 'Unknown'}`\nUser: `{interaction.user}`\nError: `{error}`")
 
         try:
@@ -320,9 +321,6 @@ class WithoutNumberBot(commands.Bot):
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            # If someone tries a common misspelled command like !r1d20, alert owner
-            if ctx.invoked_with and ctx.invoked_with.startswith('r') and any(char.isdigit() for char in ctx.invoked_with):
-                 await self.alert_owner(f"❓ **Possible Command Typo!**\nUser: `{ctx.author}`\nTried: `!{ctx.invoked_with}`\n(Advise them to add a space!)")
             return
         
         logger.error(f"Command error: {error}", exc_info=True)
@@ -337,12 +335,11 @@ class WithoutNumberBot(commands.Bot):
         )
         await self.send_alert(f"❌ **Command Error: {ctx.command}**\nUser: {ctx.author}\nError: `{error}`")
         
-        # Alert Owner for non-user errors OR common roll failures
-        is_roll_cmd = ctx.command and str(ctx.command) in ['roll', 'r', 'multiroll', 'skill', 'attack', 'gmroll', 'gr']
+        # Alert the owner only for failures that need a code or service fix.
         is_user_error = isinstance(error, (commands.CheckFailure, commands.UserInputError))
         
-        if not is_user_error or is_roll_cmd:
-             issue_label = "Roll/Feature Issue" if is_roll_cmd else "Feature Issue"
+        if not is_user_error:
+             issue_label = "Feature Issue"
              await self.alert_owner(f"🚨 **{issue_label}!**\nCommand: `!{ctx.command}`\nUser: `{ctx.author}`\nError: `{error}`")
 
         if ctx.command:

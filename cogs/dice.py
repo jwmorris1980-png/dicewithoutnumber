@@ -165,10 +165,14 @@ class DiceCog(commands.Cog):
             if total_executions > 1: msg += f"↳ **Grand Total:** {total_sum}\n"
             all_results_msg += msg + "\n"
 
-        final_msg = f"{user.mention}\n{all_results_msg.strip()}"
+        display_name = discord.utils.escape_markdown(
+            getattr(user, "display_name", getattr(user, "name", "Player"))
+        )
+        final_msg = f"**{display_name} rolled:**\n{all_results_msg.strip()}"
         
         send = target.followup.send if is_int else target.send
-        kwargs = {}
+        # Roll output should never ping users or roles, including mentions in comments.
+        kwargs = {"allowed_mentions": discord.AllowedMentions.none()}
         
         if is_hidden:
             if is_int:
