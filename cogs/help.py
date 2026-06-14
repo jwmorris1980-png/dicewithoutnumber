@@ -6,94 +6,287 @@ from discord.ext import commands
 
 logger = logging.getLogger(__name__)
 
-HELP_MESSAGES = (
-(
-    "**DICEwithoutNumber Command Directory**\n"
-    "Free, open-source, accessibility-focused play tools with multilingual support and tactical maps.\n"
-    "**Sheets & Characters**\n"
-    "Paste Google Sheet link or attach CSV/TXT/JSON - auto imports\n"
-    "`/importsheet` `!importsheet` - Manual import\n"
-    "`/importjson` `!importjson` `!uploadjson` - Import JSON from URL or attachment\n"
-    "`/sheet` `!sheet` `!s` `!sc` `!sf` - Show active sheet\n"
-    "`/update` `!update` `!up` - Refresh active sheet\n"
-    "`/sync` `!sync` - Sync active character source\n"
-    "`/bind` `!bind` - Bind character to current channel\n"
-    "`/portrait` `!portrait` - Set character portrait\n"
-    "`/ship` `!ship` `/shiplist` `!shiplist` - Starship sheets\n"
-    "`/threshold_wizard` `/swn` `/wwn` `/cwn` `/threshold` - Character generation\n\n"
-    "**Dice & Combat**\n"
-    "`/roll` `!roll` `!r` - Roll dice, like `1d20+5` or `3x 2d6`\n"
-    "`7x d20` or `d20 7 times` - Show repeated rolls vertically in order\n"
-    "`target N` or `target low N` - Success check, like `!roll d20 target low 13`\n"
-    "`/gmroll` `!gmroll` `!gr` - Hidden/private roll\n"
-    "`/multiroll` `!multiroll` `!rr` - Roll one expression multiple times, like `!rr 7 1d20`\n"
-    "`/skill` `!skill` - Skill check from active sheet\n"
-    "`/attack` `!attack` - Weapon attack from active sheet\n"
-    "`/combathelp` `/ship_combat` `!ship_combat` `/hack_help` `!hack_help` - Rule helpers\n\n"
-    "**Tracker & Map**\n"
-    "`game master mode` - Uses sheets imported in this server; no campaign join needed\n"
-    "Say `skip` during Game Master Mode to leave out any section\n"
-    "`/gmmode` - Fully hidden one-form setup\n"
-    "`/tracker add` `!tracker add` - Add enemies\n"
-    "`/tracker list` `!tracker list` - Show tracker\n"
-    "`/tracker damage` `!tracker damage` - Apply damage\n"
-    "`/tracker move` `!tracker move` - Move token\n"
-    "`/tracker next` `!tracker next` - Advance turn\n"
-    "`/tracker clear` `!tracker clear` - Clear tracker\n"
-    "`/tracker map` `!tracker map` `/tracker controller` `!tracker controller` - Tactical map\n"
-    "`/tracker ac/hide/condition/distance/grid/party` - More tracker tools\n"
-    "`/importmap` `/map` `!map` - Map upload/link"
-),
-(
-    "**Free Asset Library**\n"
-    "`find map forest` `/maplibrary` `!findmap` - Free downloadable map library\n"
-    "`find portrait operative` `/portraitlibrary` `!findportrait` - Free portrait library\n\n"
-),
-(
-    "**World, Rules & Gear**\n"
-    "`/weapon` `!weapon` `/armor` `!armor` `/gear` `!gear` - Equipment lookup\n"
-    "`/shipinfo` `!shipinfo` `!si` `/foci` `!foci` `!focus` - Reference lookup\n"
-    "`/rule` `!rule` - Search rules\n"
-    "`/gen` `!gen` - Generate planet/NPC/corp/alien\n"
-    "`/reaction` `/morale` `/oracle` `/plot` `/loot` `/weather` `/encounter` `/hazard` - GM tools\n\n"
-    "**Polls**\n"
-    "`/poll` `!poll` - SimplePoll-style yes/no or choice polls\n"
-    "`!poll \"Question?\" \"Choice A\" \"Choice B\"` - Quote choices for prefix polls\n\n"
-    "**Voice Access**\n"
-    "`roll one d6`, `sheet`, `help`, and other commands work without `/` or `!`\n"
-    "A no-prefix command must start with an exact command name and stay on one line\n"
-    "`accessibility` - Standard, simple, or private responses\n"
-    "`/features` `!features` - Turn optional features on/off for yourself or a server\n"
-    "`ignore me` or `features off bot` - Make the bot completely ignore you\n"
-    "`listen to me` or `/features on bot` - Turn the bot back on for yourself\n"
-    "`features off voice` or `features off sheets` - Keep explicit `/` and `!` commands\n"
-    "`menu` `open menu` - Button-based quick menu\n"
-    "`tutorial` - Guided walkthrough\n"
-    "`setupguide` - Server setup checklist\n"
-    "`/voice roll one d6` - Natural spoken commands with a personal install\n"
-    "`/voicehelp` - Voice-friendly usage tips and supported phrases\n"
-    "`/up` `/down` `/catchup` - Show recent messages without scrolling\n"
-    "`/roll` `/multiroll` - Use these when the app is installed only for you\n\n"
-    "**Campaign, Factions & Party**\n"
-    "`/campaign start/join/leave/info` `!campaign start/join/leave/info`\n"
-    "`/party info/set/add/split` `!party info/set/add/split`\n"
-    "`/faction create/list/edit/attack` `!faction create/list/edit/attack`"
-),
-(
-    "**Server Tools**\n"
-    "`/channel role` `/channel setup` `/channel reactionrole` - Channel/reaction roles\n"
-    "`!rrrole` `!role` `!lock` `/lock` - Prefix channel tools\n"
-    "`/avatar` `!avatar` `/rename` `!rename` `!botsync guild` `!botsync global`\n"
-    "`/backup` `/heartbeat` `!logs` `!payload` `!reload` - Owner/admin diagnostics\n\n"
-    "**Start Here**\n"
-    "`/starthere` `!starthere` `/swnhelp` `/wwnhelp` `/cwnhelp` - Quick guides\n"
-    "`/help` `!help` `!wnhelp` - This directory\n"
-    "`/ticket` `!ticket` - Open or follow up on a support ticket\n"
-    "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` - Owner ticket tools with buttons\n"
-    "`/errors` - Owner view of persisted runtime errors"
-)
-)
+# ---------------------------------------------------------------------------
+# Per-category embed data
+# ---------------------------------------------------------------------------
 
+CATEGORIES = {
+    "sheets": {
+        "label": "Sheets & Characters",
+        "emoji": "📋",
+        "color": discord.Color.blue(),
+        "fields": [
+            ("Import", (
+                "Paste a Google Sheet link or attach CSV/TXT/JSON — auto-imports\n"
+                "`/importsheet` `!importsheet` — Manual import\n"
+                "`/importjson` `!importjson` `!uploadjson` — Import JSON from URL or attachment"
+            )),
+            ("View & Sync", (
+                "`/sheet` `!sheet` `!s` `!sc` `!sf` — Show active sheet\n"
+                "`/update` `!update` `!up` — Refresh active sheet\n"
+                "`/sync` `!sync` — Sync character source\n"
+                "`/bind` `!bind` — Bind character to this channel\n"
+                "`/portrait` `!portrait` — Set character portrait"
+            )),
+            ("Ships & Generation", (
+                "`/ship` `!ship` `/shiplist` `!shiplist` — Starship sheets\n"
+                "`/threshold_wizard` `/swn` `/wwn` `/cwn` `/threshold` — Character generation"
+            )),
+        ],
+    },
+    "dice": {
+        "label": "Dice & Combat",
+        "emoji": "🎲",
+        "color": discord.Color.red(),
+        "fields": [
+            ("Rolling", (
+                "`/roll` `!roll` `!r` — Roll dice, e.g. `1d20+5` or `3x 2d6`\n"
+                "`7x d20` or `d20 7 times` — Repeated rolls listed in order\n"
+                "`target N` / `target low N` — Success check, e.g. `!roll d20 target low 13`\n"
+                "`/gmroll` `!gmroll` `!gr` — Hidden/private roll\n"
+                "`/multiroll` `!multiroll` `!rr` — Repeat one expression, e.g. `!rr 7 1d20`"
+            )),
+            ("Sheet-Based Actions", (
+                "`/skill` `!skill` — Skill check from active sheet\n"
+                "`/attack` `!attack` — Weapon attack from active sheet"
+            )),
+            ("Rule Helpers", (
+                "`/combathelp` — Combat cheat-sheet\n"
+                "`/ship_combat` `!ship_combat` — Starship combat guide\n"
+                "`/hack_help` `!hack_help` — Hacking rules"
+            )),
+        ],
+    },
+    "tracker": {
+        "label": "Tracker & Map",
+        "emoji": "🗺️",
+        "color": discord.Color.green(),
+        "fields": [
+            ("GM Mode Setup", (
+                "`game master mode` — Voice/text wizard, uses server sheets\n"
+                "Say `skip` during setup to omit any section\n"
+                "`/gmmode` — Fully hidden one-form setup"
+            )),
+            ("Tracker Commands", (
+                "`/tracker add` — Add enemies\n"
+                "`/tracker list` — Show tracker\n"
+                "`/tracker damage` — Apply damage\n"
+                "`/tracker move` — Move token\n"
+                "`/tracker next` — Advance turn\n"
+                "`/tracker clear` — Clear tracker\n"
+                "`/tracker ac` `/tracker hide` `/tracker condition` `/tracker distance` `/tracker grid` `/tracker party` — Extra tools"
+            )),
+            ("Map", (
+                "`/tracker map` `!tracker map` — Open tactical map\n"
+                "`/tracker controller` `!tracker controller` — Map controller\n"
+                "`/importmap` `/map` `!map` — Upload or link a map"
+            )),
+        ],
+    },
+    "assets": {
+        "label": "Free Image Library",
+        "emoji": "🖼️",
+        "color": discord.Color.teal(),
+        "fields": [
+            ("Maps", (
+                "`/maplibrary [query]` `!findmap [query]` — Search free maps\n"
+                "e.g. `/maplibrary space station` or `/maplibrary ruins`\n"
+                "`find map forest` — Natural-language shortcut"
+            )),
+            ("Portraits", (
+                "`/portraitlibrary [query]` `!findportrait [query]` — Search free portraits\n"
+                "e.g. `/portraitlibrary psychic female` or `/portraitlibrary corporate npc`\n"
+                "`find portrait operative` — Natural-language shortcut"
+            )),
+            ("Random & Admin", (
+                "`/randomimage [type] [system]` — Random free image (SWN/CWN/WWN)\n"
+                "`/addimage` — Admin: add a new free image to the catalog\n"
+                "All images link to the original artist with full attribution."
+            )),
+        ],
+    },
+    "world": {
+        "label": "World, Rules & Gear",
+        "emoji": "📖",
+        "color": discord.Color.gold(),
+        "fields": [
+            ("Equipment Lookup", (
+                "`/weapon` `!weapon` — Weapon stats\n"
+                "`/armor` `!armor` — Armour stats\n"
+                "`/gear` `!gear` — General equipment\n"
+                "`/shipinfo` `!shipinfo` `!si` — Ship stats\n"
+                "`/foci` `!foci` `!focus` — Focus reference"
+            )),
+            ("Rules & Generation", (
+                "`/rule` `!rule` — Search rules index\n"
+                "`/gen` `!gen` — Generate planet/NPC/corp/alien"
+            )),
+            ("GM Tools", (
+                "`/reaction` `/morale` `/oracle` `/plot` `/loot`\n"
+                "`/weather` `/encounter` `/hazard` — Random GM tables"
+            )),
+        ],
+    },
+    "voice": {
+        "label": "Voice & Accessibility",
+        "emoji": "🎙️",
+        "color": discord.Color.purple(),
+        "fields": [
+            ("No-Prefix Commands", (
+                "`roll one d6`, `sheet`, `help` — Works without `/` or `!`\n"
+                "A no-prefix command must start with the exact command name on one line\n"
+                "`accessibility` — Switch between standard, simple, or private responses"
+            )),
+            ("Features Toggle", (
+                "`/features` `!features` — Turn optional features on/off\n"
+                "`ignore me` or `features off bot` — Bot ignores you completely\n"
+                "`listen to me` or `/features on bot` — Re-enable the bot for yourself\n"
+                "`features off voice` / `features off sheets` — Disable sub-systems"
+            )),
+            ("Navigation", (
+                "`menu` / `open menu` — Button-based quick menu\n"
+                "`tutorial` — Guided walkthrough\n"
+                "`setupguide` — Server setup checklist\n"
+                "`/voicehelp` — Voice-friendly tips and supported phrases\n"
+                "`/up` `/down` `/catchup` — Browse recent messages without scrolling\n"
+                "`/voice roll one d6` — Natural speech with personal install"
+            )),
+        ],
+    },
+    "campaign": {
+        "label": "Campaign, Party & Factions",
+        "emoji": "⚔️",
+        "color": discord.Color.orange(),
+        "fields": [
+            ("Campaign", (
+                "`/campaign start` `/campaign join` `/campaign leave` `/campaign info`\n"
+                "`!campaign start/join/leave/info`"
+            )),
+            ("Party", (
+                "`/party info` `/party set` `/party add` `/party split`\n"
+                "`!party info/set/add/split`"
+            )),
+            ("Factions", (
+                "`/faction create` `/faction list` `/faction edit` `/faction attack`\n"
+                "`!faction create/list/edit/attack`"
+            )),
+            ("Polls", (
+                "`/poll` `!poll` — Yes/no or multiple-choice polls\n"
+                '`!poll "Question?" "Choice A" "Choice B"` — Prefix poll with quoted choices'
+            )),
+        ],
+    },
+    "server": {
+        "label": "Server Tools & Support",
+        "emoji": "🔧",
+        "color": discord.Color.greyple(),
+        "fields": [
+            ("Channel & Roles", (
+                "`/channel role` `/channel setup` `/channel reactionrole` — Role assignment\n"
+                "`!rrrole` `!role` `!lock` `/lock` — Prefix channel tools\n"
+                "`/avatar` `!avatar` `/rename` `!rename`"
+            )),
+            ("Admin / Owner", (
+                "`!botsync guild` `!botsync global` — Sync slash commands\n"
+                "`/backup` `/heartbeat` `!logs` `!payload` `!reload` — Diagnostics\n"
+                "`/errors` — View persisted runtime errors"
+            )),
+            ("Getting Help", (
+                "`/starthere` `!starthere` — Quick start guide\n"
+                "`/swnhelp` `/wwnhelp` `/cwnhelp` — Game-specific guides\n"
+                "`/ticket` `!ticket` — Open a support ticket\n"
+                "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` — Ticket management"
+            )),
+        ],
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Views
+# ---------------------------------------------------------------------------
+
+def _category_embed(key: str) -> discord.Embed:
+    cat = CATEGORIES[key]
+    embed = discord.Embed(
+        title=f"{cat['emoji']}  {cat['label']}",
+        color=cat["color"],
+    )
+    for name, value in cat["fields"]:
+        embed.add_field(name=name, value=value, inline=False)
+    embed.set_footer(text="DICEwithoutNumber • /help to return to the menu")
+    return embed
+
+
+def _index_embed() -> discord.Embed:
+    embed = discord.Embed(
+        title="DICEwithoutNumber — Help",
+        description=(
+            "Free, open-source, accessibility-focused play tools for SWN, CWN, and WWN.\n\n"
+            "**Pick a category below** to see its commands.\n"
+            "All responses are private — only you can see them."
+        ),
+        color=discord.Color.blurple(),
+    )
+    for key, cat in CATEGORIES.items():
+        embed.add_field(
+            name=f"{cat['emoji']} {cat['label']}",
+            value="\u200b",  # zero-width space keeps columns tidy
+            inline=True,
+        )
+    embed.set_footer(text="DICEwithoutNumber • type /help any time")
+    return embed
+
+
+class CategoryButton(discord.ui.Button):
+    def __init__(self, key: str):
+        cat = CATEGORIES[key]
+        super().__init__(
+            label=cat["label"],
+            emoji=cat["emoji"],
+            style=discord.ButtonStyle.secondary,
+            custom_id=f"help_{key}",
+        )
+        self.key = key
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.edit_message(
+            embed=_category_embed(self.key),
+            view=CategoryDetailView(self.key),
+        )
+
+
+class BackButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(label="← Back to menu", style=discord.ButtonStyle.primary)
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.edit_message(
+            embed=_index_embed(),
+            view=HelpIndexView(),
+        )
+
+
+class HelpIndexView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=300)
+        for key in CATEGORIES:
+            self.add_item(CategoryButton(key))
+
+
+class CategoryDetailView(discord.ui.View):
+    def __init__(self, active_key: str):
+        super().__init__(timeout=300)
+        self.add_item(BackButton())
+        for key in CATEGORIES:
+            btn = CategoryButton(key)
+            if key == active_key:
+                btn.style = discord.ButtonStyle.primary
+            self.add_item(btn)
+
+
+# ---------------------------------------------------------------------------
+# Cog
+# ---------------------------------------------------------------------------
 
 class HelpCog(commands.Cog):
     def __init__(self, bot):
@@ -102,18 +295,25 @@ class HelpCog(commands.Cog):
     async def _send_help(self, ctx_or_interaction):
         try:
             if isinstance(ctx_or_interaction, discord.Interaction):
-                await ctx_or_interaction.response.send_message(HELP_MESSAGES[0], ephemeral=True)
-                for message in HELP_MESSAGES[1:]:
-                    await ctx_or_interaction.followup.send(message, ephemeral=True)
+                await ctx_or_interaction.response.send_message(
+                    embed=_index_embed(),
+                    view=HelpIndexView(),
+                    ephemeral=True,
+                )
             else:
+                # Prefix command — try DM first, fall back to channel
                 try:
-                    for message in HELP_MESSAGES:
-                        await ctx_or_interaction.author.send(message)
+                    await ctx_or_interaction.author.send(
+                        embed=_index_embed(),
+                        view=HelpIndexView(),
+                    )
                     if ctx_or_interaction.guild:
-                        await ctx_or_interaction.send("I've sent the help menu to your DMs!")
+                        await ctx_or_interaction.send("Help menu sent to your DMs!")
                 except discord.Forbidden:
-                    for message in HELP_MESSAGES:
-                        await ctx_or_interaction.send(message)
+                    await ctx_or_interaction.send(
+                        embed=_index_embed(),
+                        view=HelpIndexView(),
+                    )
         except Exception as e:
             logger.exception("Help command failed")
             fallback = (
@@ -122,7 +322,11 @@ class HelpCog(commands.Cog):
                 "You can also attach a `.csv` or `.json` file to import a character."
             )
             if isinstance(ctx_or_interaction, discord.Interaction):
-                target = ctx_or_interaction.followup if ctx_or_interaction.response.is_done() else ctx_or_interaction.response
+                target = (
+                    ctx_or_interaction.followup
+                    if ctx_or_interaction.response.is_done()
+                    else ctx_or_interaction.response
+                )
                 await target.send(f"{fallback}\n\nError: `{e}`", ephemeral=True)
             else:
                 await ctx_or_interaction.send(f"{fallback}\n\nError: `{e}`")
