@@ -1,4 +1,5 @@
 import logging
+import os
 
 import discord
 from discord import app_commands
@@ -284,6 +285,26 @@ class CategoryDetailView(discord.ui.View):
             self.add_item(btn)
 
 
+class PrivateHelpLauncher(discord.ui.View):
+    def __init__(self, requester_id: int):
+        super().__init__(timeout=120)
+        self.requester_id = requester_id
+
+    @discord.ui.button(label="Open private help", style=discord.ButtonStyle.primary)
+    async def open_help(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.requester_id:
+            await interaction.response.send_message(
+                "Use `/help` to open your own private help menu.",
+                ephemeral=True,
+            )
+            return
+        await interaction.response.send_message(
+            embed=_index_embed(),
+            view=HelpIndexView(),
+            ephemeral=True,
+        )
+
+
 # ---------------------------------------------------------------------------
 # Cog
 # ---------------------------------------------------------------------------
@@ -291,6 +312,12 @@ class CategoryDetailView(discord.ui.View):
 class HelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @staticmethod
+    def _use_private_launcher(ctx) -> bool:
+        test_guild_id = os.getenv("TEST_GUILD_ID", "").strip()
+        guild_id = getattr(getattr(ctx, "guild", None), "id", None)
+        return bool(test_guild_id and str(guild_id) == test_guild_id)
 
     async def _send_help(self, ctx_or_interaction):
         try:
@@ -301,19 +328,32 @@ class HelpCog(commands.Cog):
                     ephemeral=True,
                 )
             else:
-                # Prefix command — try DM first, fall back to channel
+                if not self._use_private_launcher(ctx_or_interaction):
+                    try:
+                        await ctx_or_interaction.author.send(
+                            embed=_index_embed(),
+                            view=HelpIndexView(),
+                        )
+                        if ctx_or_interaction.guild:
+                            await ctx_or_interaction.send("Help menu sent to your DMs!")
+                    except discord.Forbidden:
+                        await ctx_or_interaction.send(
+                            embed=_index_embed(),
+                            view=HelpIndexView(),
+                        )
+                    return
+                # Text commands cannot be ephemeral. The button opens the full
+                # embed privately inside the current channel and never uses DMs.
                 try:
-                    await ctx_or_interaction.author.send(
-                        embed=_index_embed(),
-                        view=HelpIndexView(),
-                    )
-                    if ctx_or_interaction.guild:
-                        await ctx_or_interaction.send("Help menu sent to your DMs!")
-                except discord.Forbidden:
-                    await ctx_or_interaction.send(
-                        embed=_index_embed(),
-                        view=HelpIndexView(),
-                    )
+                    await ctx_or_interaction.message.delete()
+                except (discord.Forbidden, discord.NotFound, AttributeError):
+                    pass
+                await ctx_or_interaction.send(
+                    "Open your private help menu:",
+                    view=PrivateHelpLauncher(ctx_or_interaction.author.id),
+                    allowed_mentions=discord.AllowedMentions.none(),
+                    delete_after=120,
+                )
         except Exception as e:
             logger.exception("Help command failed")
             fallback = (
