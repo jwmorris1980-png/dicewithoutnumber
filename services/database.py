@@ -6,8 +6,8 @@ import logging
 logger = logging.getLogger('discord')
 
 class DatabaseService:
-    def __init__(self, db_path="data/bot_database.db"):
-        self.db_path = db_path
+    def __init__(self, db_path=None):
+        self.db_path = db_path or os.getenv("DICEWITHOUTNUMBER_TEST_DB") or "data/bot_database.db"
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         self._init_db()
 
