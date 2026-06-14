@@ -46,6 +46,7 @@ Commands work with `/`, `!`, or no prefix when the bot is installed in the serve
 | `/gmroll <exp>` | Hidden roll (private/ephemeral, use `!gmroll` for prefix) |
 | `/attack [weapon]` | Roll attack using sheet modifiers |
 | `/skill [name]` | Roll an exact skill from the active sheet (e.g., `!skill notice`). The bot never guesses missing skills or modifiers. |
+| `find map forest` or `/maplibrary forest` | Post a visible map directly in Discord. Built-in visible maps: cave, city, desert, dungeon, forest, and space. |
 | `/initiative` | Roll initiative |
 | `/3d6kh` / `/4d6kh` | Specialized rolls (Keep High) |
 

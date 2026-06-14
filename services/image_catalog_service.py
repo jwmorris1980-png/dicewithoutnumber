@@ -177,6 +177,18 @@ class ImageCatalogService:
     # ------------------------------------------------------------------
 
     @staticmethod
+    def displayable_image_url(entry: dict) -> Optional[str]:
+        """Return a direct image URL Discord can render, never a collection page."""
+        for key in ("url", "thumbnail_url"):
+            value = str(entry.get(key) or "").strip()
+            path = value.lower().split("?", 1)[0]
+            if value.startswith(("http://", "https://")) and path.endswith(
+                (".png", ".jpg", ".jpeg", ".webp", ".gif")
+            ):
+                return value
+        return None
+
+    @staticmethod
     def build_embed_data(entry: dict) -> dict:
         """
         Returns a dict of keyword arguments suitable for constructing a
@@ -192,7 +204,7 @@ class ImageCatalogService:
         artist = entry.get("artist", "Unknown")
         systems = ", ".join(entry.get("system", []))
         tags = ", ".join(entry.get("tags", []))
-        image_url = entry.get("url", "")
+        image_url = ImageCatalogService.displayable_image_url(entry)
 
         license_link = f"[{license_text}]({license_url})" if license_url else license_text
         source_link = f"[Source page]({source_page})" if source_page else ""
@@ -209,7 +221,7 @@ class ImageCatalogService:
             ],
             "footer": "All images are free for personal use — always credit the original artist.",
             "url": source_page,
-            "image_url": image_url if image_url.startswith("http") else None,
+            "image_url": image_url,
             "source_link": source_link,
         }
         return embed_dict

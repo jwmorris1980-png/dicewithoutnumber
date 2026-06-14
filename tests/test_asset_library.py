@@ -2,7 +2,10 @@ import asyncio
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
+import discord
+
 from cogs.asset_library import AssetLibraryCog
+from services.image_catalog_service import ImageCatalogService
 
 
 def test_asset_library_finds_maps_and_voice_phrase():
@@ -12,23 +15,18 @@ def test_asset_library_finds_maps_and_voice_phrase():
         sent.append((args, kwargs))
 
     cog = AssetLibraryCog(SimpleNamespace())
-    entry = {
-        "name": "Dark Forest",
-        "description": "A dark forest battle map.",
-        "source_page": "https://example.com/forest",
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "artist": "Test Artist",
-        "attribution": "Test Artist, CC0",
-        "url": "https://example.com/forest.png",
-        "thumbnail_url": "",
-        "tags": ["dark", "forest"],
-        "system": ["WWN"],
-    }
-    cog.catalog.random_image = AsyncMock(return_value=entry)
     message = SimpleNamespace(content="find map forest", channel=SimpleNamespace(send=send))
 
     assert asyncio.run(cog.handle_message(message)) is True
     assert sent
-    assert sent[0][1]["embed"].title == "Dark Forest — Image"
-    cog.catalog.random_image.assert_awaited_once_with(image_type="map", tags="forest")
+    assert sent[0][1]["embed"].title == "Forest Map"
+    assert sent[0][1]["embed"].image.url == "attachment://map_forest.png"
+    assert isinstance(sent[0][1]["file"], discord.File)
+
+
+def test_collection_page_is_not_treated_as_displayable_image():
+    assert AssetLibraryCog._find_local_map("show me a city") is not None
+    assert ImageCatalogService.displayable_image_url({"url": "https://example.com/maps/"}) is None
+    assert ImageCatalogService.displayable_image_url(
+        {"url": "https://example.com/maps/forest.png"}
+    ) == "https://example.com/maps/forest.png"
