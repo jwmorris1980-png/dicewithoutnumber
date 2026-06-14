@@ -367,5 +367,44 @@ class Maintenance(commands.Cog):
         elif isinstance(error, commands.MissingPermissions):
             await ctx.send(f"🚫 **Permission Denied:** Only server administrators can rename the bot.", ephemeral=True)
 
+    @commands.command(name="testguildid", aliases=["guildid", "serverid"])
+    @commands.is_owner()
+    async def testguildid(self, ctx):
+        """Owner: Print this server's guild ID so it can be set as TEST_GUILD_ID."""
+        if not ctx.guild:
+            await ctx.send("This command must be used in a server.")
+            return
+        current_test = os.getenv("TEST_GUILD_ID", "")
+        is_test = str(ctx.guild.id) == current_test
+        status = "✅ **already set as TEST_GUILD_ID**" if is_test else "❌ not yet set as TEST_GUILD_ID"
+        await ctx.send(
+            f"**{ctx.guild.name}**\n"
+            f"Guild ID: `{ctx.guild.id}`\n"
+            f"Status: {status}\n\n"
+            f"To use this server for testing, add to your `.env`:\n"
+            f"```\nTEST_GUILD_ID={ctx.guild.id}\n```\n"
+            f"Then redeploy. New commands will appear here instantly.\n"
+            f"Remove `TEST_GUILD_ID=` (or leave blank) to go live globally.",
+            ephemeral=False,
+        )
+
+    @commands.command(name="testmode", aliases=["istest"])
+    @commands.is_owner()
+    async def testmode(self, ctx):
+        """Owner: Show current test mode status."""
+        test_id = os.getenv("TEST_GUILD_ID", "")
+        if test_id:
+            await ctx.send(
+                f"🧪 **TEST MODE is ON**\n"
+                f"Slash commands are synced only to guild `{test_id}`.\n"
+                f"Remove `TEST_GUILD_ID` from `.env` and redeploy to go live globally.",
+                ephemeral=False,
+            )
+        else:
+            await ctx.send(
+                "🌐 **PRODUCTION MODE** — slash commands are synced globally.",
+                ephemeral=False,
+            )
+
 async def setup(bot):
     await bot.add_cog(Maintenance(bot))

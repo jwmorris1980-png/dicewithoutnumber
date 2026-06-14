@@ -39,6 +39,9 @@ logger = logging.getLogger('discord')
 load_project_env()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD_ID = os.getenv('GUILD_ID')
+# When set, all slash commands are synced ONLY to this guild (instant).
+# Leave blank to sync globally (production).
+TEST_GUILD_ID = os.getenv('TEST_GUILD_ID')
 
 class WithoutNumberBot(commands.Bot):
     def __init__(self):
@@ -272,6 +275,19 @@ class WithoutNumberBot(commands.Bot):
         # Set the translator
         await self.tree.set_translator(MyTranslator())
 
+        # Sync slash commands
+        if TEST_GUILD_ID:
+            test_guild = discord.Object(id=int(TEST_GUILD_ID))
+            self.tree.copy_global_to(guild=test_guild)
+            synced = await self.tree.sync(guild=test_guild)
+            logger.info(
+                f"TEST MODE: synced {len(synced)} slash commands to guild {TEST_GUILD_ID} only. "
+                f"Global commands unchanged. Set TEST_GUILD_ID= to go live."
+            )
+        else:
+            synced = await self.tree.sync()
+            logger.info(f"Synced {len(synced)} slash commands globally.")
+
         # Start the web service
         try:
             await self.web_service.start()
@@ -431,19 +447,16 @@ class WithoutNumberBot(commands.Bot):
 
             first_token = message.content.strip().split(maxsplit=1)[0].lower()
             if first_token in {"!help", "!wnhelp"}:
-                try:
-                    from cogs.help import HELP_MESSAGES
-                    help_messages = HELP_MESSAGES
-                except Exception:
-                    help_messages = (
-                        "**DICEwithoutNumber Help**\n"
-                        "`!roll`, `!sheet`, `!importsheet`, `!tracker`, `!campaign`, `!faction`, `!map`",
-                    )
-                try:
-                    for help_text in help_messages:
-                        await message.channel.send(help_text)
-                except Exception as e:
-                    logger.warning(f"Direct help send failed: {e}")
+                # Route through the HelpCog so the embed+button menu is used
+                help_cog = self.get_cog("HelpCog")
+                if help_cog:
+                    try:
+                        await help_cog._send_help(message)
+                    except Exception as e:
+                        logger.warning(f"Direct help send failed: {e}")
+                        await message.channel.send(
+                            "Use `/help` for the full command menu, or `!roll`, `!sheet`, `!importsheet`, `!tracker`."
+                        )
                 return
 
             if not message.content.startswith(self.command_prefix):
