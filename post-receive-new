@@ -16,4 +16,6 @@ sudo chown -R ubuntu:ubuntu $TARGET
 # Restart
 sudo systemctl daemon-reload
 sudo systemctl restart dicewithoutnumber.service
-echo "Service restarted."
+echo "Bot service restarted."
+sudo systemctl restart imagecatalog.service
+echo "Image catalog service restarted."

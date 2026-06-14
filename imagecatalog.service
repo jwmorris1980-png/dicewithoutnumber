@@ -1,0 +1,17 @@
+[Unit]
+Description=DICEwithoutNumber Image Catalog Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/DICEwithoutNumber/image_server
+ExecStart=/usr/bin/python3 -m uvicorn main:app --host 127.0.0.1 --port 8001
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/ubuntu/DICEwithoutNumber/catalog.log
+StandardError=append:/home/ubuntu/DICEwithoutNumber/catalog.log
+Environment=IMAGE_ADMIN_KEY_FILE=/home/ubuntu/.dicewithoutnumber/image_admin.key
+
+[Install]
+WantedBy=multi-user.target
