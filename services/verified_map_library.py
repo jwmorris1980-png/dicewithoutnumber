@@ -10,6 +10,28 @@ from pathlib import Path
 
 MANIFEST = Path(__file__).resolve().parents[1] / "data" / "verified_maps.json"
 QUERY_STOPWORDS = {"a", "an", "the", "map", "maps", "please", "show", "find", "give", "me"}
+RPG_PLAY_TERMS = {
+    "battlemap",
+    "battlemaps",
+    "dungeon",
+    "floorplan",
+    "floorplans",
+    "encounter",
+    "tactical",
+    "vtt",
+    "deckplan",
+    "deckplans",
+}
+NON_RPG_TERMS = {
+    "prison",
+    "museum",
+    "county",
+    "state",
+    "habs",
+    "haer",
+    "facility",
+    "engineering",
+}
 
 
 def load_verified_maps() -> list[dict]:
@@ -18,6 +40,11 @@ def load_verified_maps() -> list[dict]:
     except (FileNotFoundError, json.JSONDecodeError):
         return []
     return payload.get("images", []) if isinstance(payload, dict) else []
+
+
+def is_rpg_play_map(entry: dict) -> bool:
+    words = set(re.findall(r"[a-z0-9]+", str(entry.get("name") or "").lower()))
+    return bool(words.intersection(RPG_PLAY_TERMS)) and not bool(words.intersection(NON_RPG_TERMS))
 
 
 def find_verified_map(query: str) -> dict | None:
@@ -30,6 +57,8 @@ def find_verified_map(query: str) -> dict | None:
         return random.choice(load_verified_maps()) if load_verified_maps() else None
     matches = []
     for entry in load_verified_maps():
+        if not is_rpg_play_map(entry):
+            continue
         searchable = " ".join(
             [str(entry.get("name") or ""), " ".join(entry.get("tags") or [])]
         ).lower()

@@ -107,10 +107,13 @@ class AssetLibraryCog(commands.Cog):
         await _defer(target)
 
         if kind == "map" and self._is_test_area(target):
-            local_map = self._find_local_map(query)
-            if local_map:
-                await self._send_local_map(target, *local_map)
-                return
+            normalized_query = " ".join(str(query or "").lower().split())
+            if normalized_query.startswith(("built in ", "builtin ", "generated ")):
+                local_query = normalized_query.split(" ", 1)[1]
+                local_map = self._find_local_map(local_query)
+                if local_map:
+                    await self._send_local_map(target, *local_map)
+                    return
             verified_map = find_verified_map(query)
             if verified_map:
                 await self._send_catalog_result(target, verified_map)

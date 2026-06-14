@@ -31,6 +31,19 @@ CATALOG_URL = os.environ.get("IMAGE_CATALOG_URL", _DEFAULT_URL).rstrip("/")
 
 
 class ImageCatalogService:
+    RPG_MAP_TERMS = {
+        "battlemap",
+        "battlemaps",
+        "dungeon",
+        "floorplan",
+        "floorplans",
+        "encounter",
+        "tactical",
+        "vtt",
+        "deckplan",
+        "deckplans",
+    }
+
     """Async client for the DICEwithoutNumber image catalog server."""
 
     def __init__(self, base_url: str = CATALOG_URL, timeout: int = 12):
@@ -294,6 +307,8 @@ class ImageCatalogService:
             or "battle map" in title_lower
             or "floor plan" in title_lower
         ):
+            return False
+        if not title_words.intersection(ImageCatalogService.RPG_MAP_TERMS):
             return False
         requested = {
             word
