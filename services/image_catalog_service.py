@@ -22,9 +22,9 @@ import aiohttp
 
 log = logging.getLogger(__name__)
 
-# The catalog runs on the same Oracle server, proxied by nginx at /catalog/
-# Override with IMAGE_CATALOG_URL in .env if needed.
-_DEFAULT_URL = "https://sparks-magic.com/catalog"
+# The catalog runs on the same Oracle server on port 8001.
+# Bot connects internally; set IMAGE_CATALOG_URL to override (e.g. for local dev).
+_DEFAULT_URL = "http://127.0.0.1:8001"
 CATALOG_URL = os.environ.get("IMAGE_CATALOG_URL", _DEFAULT_URL).rstrip("/")
 
 
