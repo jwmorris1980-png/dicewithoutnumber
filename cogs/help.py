@@ -47,7 +47,7 @@ CATEGORIES = {
                 "`/multiroll` `!multiroll` `!rr` — Repeat one expression, e.g. `!rr 7 1d20`"
             )),
             ("Sheet-Based Actions", (
-                "`/skill` `!skill` — Skill check from active sheet\n"
+                "`/skill` `!skill` — Exact skill check from active sheet; never guesses missing skills\n"
                 "`/attack` `!attack` — Weapon attack from active sheet"
             )),
             ("Rule Helpers", (

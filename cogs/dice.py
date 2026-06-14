@@ -43,6 +43,18 @@ class DiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @staticmethod
+    def _find_exact_named_value(values, requested_name):
+        """Return an exact case-insensitive sheet value without guessing."""
+        if not isinstance(values, dict):
+            return None
+        requested = " ".join(str(requested_name or "").strip().lower().split())
+        for name, value in values.items():
+            normalized = " ".join(str(name).strip().lower().split())
+            if normalized == requested:
+                return str(name), value
+        return None
+
     def _normalize_iterations(self, expression):
         suffix_match = re.match(
             r"^(?P<expr>.+?)\s+(?P<count>\d+)\s+times?(?P<rest>\s+target\b.*)?$",
@@ -215,12 +227,59 @@ class DiceCog(commands.Cog):
     async def _perform_skill(self, target, char_data, name, attribute, bonus):
         is_int = isinstance(target, discord.Interaction)
         user = target.user if is_int else target.author
-        
+
+        skills = char_data.get('skills', {})
+        matched_skill = self._find_exact_named_value(skills, name)
+        if not matched_skill:
+            if skills:
+                available = ", ".join(sorted(str(skill) for skill in skills))
+                message = (
+                    f"I could not find the skill `{name}` on **{char_data['name']}**. "
+                    "I will not guess or use a different skill.\n"
+                    f"Skills on this sheet: {available[:1400]}"
+                )
+            else:
+                message = (
+                    f"**{char_data['name']}** has no skill values in the imported sheet, so I cannot "
+                    f"safely roll `{name}`. I will not guess or automatically use `-1`.\n"
+                    "Please re-import a sheet that includes its skills, or send "
+                    "`ticket imported sheet has no skills` so we can fix the importer."
+                )
+            send = target.followup.send if is_int else target.send
+            await send(message)
+            return
+
+        skill_name, skill_val = matched_skill
+        try:
+            skill_val = int(skill_val)
+        except (TypeError, ValueError):
+            send = target.followup.send if is_int else target.send
+            await send(
+                f"The imported value for `{skill_name}` on **{char_data['name']}** is not a valid "
+                "number. I will not guess. Please send `ticket invalid skill value`."
+            )
+            return
+
         total_mod = bonus
-        skill_val = char_data.get('skills', {}).get(name.lower(), -1)
         total_mod += skill_val
         if attribute:
-            total_mod += char_data.get('attributes', {}).get(attribute.lower(), 0)
+            matched_attribute = self._find_exact_named_value(char_data.get('attributes', {}), attribute)
+            if not matched_attribute:
+                send = target.followup.send if is_int else target.send
+                await send(
+                    f"I could not find the attribute `{attribute}` on **{char_data['name']}**. "
+                    "I will not guess or substitute another attribute."
+                )
+                return
+            try:
+                total_mod += int(matched_attribute[1])
+            except (TypeError, ValueError):
+                send = target.followup.send if is_int else target.send
+                await send(
+                    f"The imported value for `{matched_attribute[0]}` is not a valid number. "
+                    "I will not guess."
+                )
+                return
             
         expression = f"2d6{total_mod:+d}"
         total, details, err, _, _ = self.bot.dice_service.parse_and_roll(expression)

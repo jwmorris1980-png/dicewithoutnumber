@@ -45,7 +45,7 @@ Commands work with `/`, `!`, or no prefix when the bot is installed in the serve
 | `/multiroll <num> <exp>` or `!rr <num> <exp>` | Roll the same expression multiple times. Example: `!rr 7 1d20`. |
 | `/gmroll <exp>` | Hidden roll (private/ephemeral, use `!gmroll` for prefix) |
 | `/attack [weapon]` | Roll attack using sheet modifiers |
-| `/skill [name]` | Roll skill check (e.g., `!skill notice`) |
+| `/skill [name]` | Roll an exact skill from the active sheet (e.g., `!skill notice`). The bot never guesses missing skills or modifiers. |
 | `/initiative` | Roll initiative |
 | `/3d6kh` / `/4d6kh` | Specialized rolls (Keep High) |
 
