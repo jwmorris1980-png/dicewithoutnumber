@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 from pathlib import Path
 import random
+import os
 
 from services.image_catalog_service import ImageCatalogService, _load_admin_key
 
@@ -21,6 +22,16 @@ class AssetLibraryCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.catalog = ImageCatalogService()
+
+    @staticmethod
+    def _is_test_area(target) -> bool:
+        """New feature behavior is limited to the designated Discord test server."""
+        test_guild_id = os.getenv("TEST_GUILD_ID", "").strip()
+        guild = getattr(target, "guild", None)
+        if guild is None:
+            guild = getattr(target, "guild_id", None)
+        guild_id = getattr(guild, "id", guild)
+        return bool(test_guild_id and str(guild_id) == test_guild_id)
 
     async def cog_unload(self):
         await self.catalog.close()
@@ -94,7 +105,7 @@ class AssetLibraryCog(commands.Cog):
         """Query the catalog and send the best match, or a clear 'not found' message."""
         await _defer(target)
 
-        if kind == "map":
+        if kind == "map" and self._is_test_area(target):
             local_map = self._find_local_map(query)
             if local_map:
                 await self._send_local_map(target, *local_map)
@@ -121,7 +132,7 @@ class AssetLibraryCog(commands.Cog):
             await _reply(target, msg)
             return
 
-        if kind == "map" and not ImageCatalogService.displayable_image_url(entry):
+        if kind == "map" and self._is_test_area(target) and not ImageCatalogService.displayable_image_url(entry):
             choices = ", ".join(sorted(self.LOCAL_MAPS))
             await _reply(
                 target,
