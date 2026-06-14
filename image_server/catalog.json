@@ -56,7 +56,7 @@
     {
       "id": "dyson-003",
       "type": "map",
-      "name": "Caer Aegas � Hill Fort",
+      "name": "Caer Aegas ï¿½ Hill Fort",
       "description": "Fortified hilltop settlement with outer walls, inner keep, and scattered outbuildings. Works as a WWN frontier fortress or remote SWN colony.",
       "tags": [
         "fort",
@@ -83,7 +83,7 @@
     {
       "id": "dyson-004",
       "type": "map",
-      "name": "Lorn Keep � Abandoned Stronghold",
+      "name": "Lorn Keep ï¿½ Abandoned Stronghold",
       "description": "Partially collapsed stone keep, interior rooms intact. Perfect SWN abandoned outpost or WWN haunted stronghold.",
       "tags": [
         "keep",
@@ -111,7 +111,7 @@
       "id": "dyson-005",
       "type": "map",
       "name": "The Warped Warrens",
-      "description": "Organic, asymmetric tunnels � ideal for alien hive complexes, psychic-twisted caverns, or mutant lairs in SWN.",
+      "description": "Organic, asymmetric tunnels ï¿½ ideal for alien hive complexes, psychic-twisted caverns, or mutant lairs in SWN.",
       "tags": [
         "tunnels",
         "alien",
@@ -165,7 +165,7 @@
     {
       "id": "dyson-007",
       "type": "map",
-      "name": "Dyson's Delve � Level 1",
+      "name": "Dyson's Delve ï¿½ Level 1",
       "description": "Classic multi-room dungeon level, well-balanced for small groups. Level 1 of Dyson's landmark megadungeon.",
       "tags": [
         "dungeon",
@@ -192,8 +192,8 @@
     {
       "id": "dyson-008",
       "type": "map",
-      "name": "Dyson's Delve � Level 2",
-      "description": "Deeper megadungeon level � more complex layout, multiple access points.",
+      "name": "Dyson's Delve ï¿½ Level 2",
+      "description": "Deeper megadungeon level ï¿½ more complex layout, multiple access points.",
       "tags": [
         "dungeon",
         "megadungeon",
@@ -219,7 +219,7 @@
     {
       "id": "dyson-009",
       "type": "map",
-      "name": "Plague Village � Overland",
+      "name": "Plague Village ï¿½ Overland",
       "description": "Small isolated village with surrounding farmland and a church. Adaptable as a rural encounter zone in any setting.",
       "tags": [
         "village",
@@ -274,7 +274,7 @@
     {
       "id": "dyson-011",
       "type": "map",
-      "name": "Riverside Tavern � Ground Floor",
+      "name": "Riverside Tavern ï¿½ Ground Floor",
       "description": "Ground floor of a riverside inn with common room, kitchen, and storage. Useful for SWN colony rest stops or CWN safe houses.",
       "tags": [
         "tavern",
@@ -302,7 +302,7 @@
     {
       "id": "dyson-012",
       "type": "map",
-      "name": "Riverside Tavern � Upper Floor",
+      "name": "Riverside Tavern ï¿½ Upper Floor",
       "description": "Upper floor with private rooms and a balcony. Pair with ground floor for a full inn location.",
       "tags": [
         "tavern",
@@ -330,7 +330,7 @@
     {
       "id": "dyson-013",
       "type": "map",
-      "name": "Wizard's Tower � Exterior",
+      "name": "Wizard's Tower ï¿½ Exterior",
       "description": "Tall isolated tower with walled courtyard. Ideal for an eccentric technomancer's lair in SWN or a mage in WWN.",
       "tags": [
         "tower",
@@ -386,7 +386,7 @@
       "id": "dyson-015",
       "type": "map",
       "name": "Sewers of the Old City",
-      "description": "Branching sewer tunnels beneath a city � great for CWN urban infiltration or SWN colony underbelly.",
+      "description": "Branching sewer tunnels beneath a city ï¿½ great for CWN urban infiltration or SWN colony underbelly.",
       "tags": [
         "sewers",
         "urban",
@@ -440,7 +440,7 @@
     {
       "id": "dyson-017",
       "type": "map",
-      "name": "Goblin Caves � Hive Complex",
+      "name": "Goblin Caves ï¿½ Hive Complex",
       "description": "Sprawling multi-entrance cave system with dozens of small chambers. Re-skin as alien insectoid hive for SWN.",
       "tags": [
         "caves",
@@ -495,7 +495,7 @@
     {
       "id": "dyson-019",
       "type": "map",
-      "name": "Prison Block � Secure Facility",
+      "name": "Prison Block ï¿½ Secure Facility",
       "description": "Cell block with guard station, interrogation room, and exercise yard. Direct SWN/CWN application.",
       "tags": [
         "prison",
@@ -522,7 +522,7 @@
     {
       "id": "dyson-020",
       "type": "map",
-      "name": "The Dragon's Roost � Mountain Peak",
+      "name": "The Dragon's Roost ï¿½ Mountain Peak",
       "description": "Mountain-top platform and cave system. Works as a high-altitude base, alien artifact site, or psychic beacon.",
       "tags": [
         "mountain",
@@ -550,7 +550,7 @@
     {
       "id": "2mt-001",
       "type": "map",
-      "name": "2MT � Sci-Fi Ship Corridor",
+      "name": "2MT ï¿½ Sci-Fi Ship Corridor",
       "description": "Clean sci-fi corridor with blast doors and wall panels. High quality VTT-ready. Direct SWN tactical use.",
       "tags": [
         "corridor",
@@ -576,7 +576,7 @@
     {
       "id": "2mt-002",
       "type": "map",
-      "name": "2MT � Tavern Ground Floor VTT",
+      "name": "2MT ï¿½ Tavern Ground Floor VTT",
       "description": "Detailed full-colour tavern interior, VTT grid ready. Safe house or meeting point in any setting.",
       "tags": [
         "tavern",
@@ -603,7 +603,7 @@
     {
       "id": "2mt-003",
       "type": "map",
-      "name": "2MT � City Street Battle Map",
+      "name": "2MT ï¿½ City Street Battle Map",
       "description": "VTT-ready city street with market stalls and alleys. Excellent CWN urban encounter map.",
       "tags": [
         "city",
@@ -631,7 +631,7 @@
     {
       "id": "2mt-004",
       "type": "map",
-      "name": "2MT � Dungeon Room Set",
+      "name": "2MT ï¿½ Dungeon Room Set",
       "description": "Modular dungeon room tiles in full colour. Mix and match for any underground complex.",
       "tags": [
         "dungeon",
@@ -659,7 +659,7 @@
     {
       "id": "2mt-005",
       "type": "map",
-      "name": "2MT � Forest Clearing Battle Map",
+      "name": "2MT ï¿½ Forest Clearing Battle Map",
       "description": "Detailed wooded clearing with stream, rocks, and fallen trees. Alien jungle landing zone or wilderness ambush.",
       "tags": [
         "forest",
@@ -686,7 +686,7 @@
     {
       "id": "2mt-006",
       "type": "map",
-      "name": "2MT � Ruined Temple Exterior",
+      "name": "2MT ï¿½ Ruined Temple Exterior",
       "description": "Crumbling temple exterior with overgrown courtyard. Alien ruin or pre-Scream remnant.",
       "tags": [
         "temple",
@@ -712,7 +712,7 @@
     {
       "id": "2mt-007",
       "type": "map",
-      "name": "2MT � Abandoned Warehouse",
+      "name": "2MT ï¿½ Abandoned Warehouse",
       "description": "Large warehouse interior with crates, loading dock, and catwalk. Classic CWN crime/heist location.",
       "tags": [
         "warehouse",
@@ -740,7 +740,7 @@
     {
       "id": "2mt-008",
       "type": "map",
-      "name": "2MT � Rooftop Chase Map",
+      "name": "2MT ï¿½ Rooftop Chase Map",
       "description": "Multi-building rooftop battle map with vents and railings. Perfect for CWN pursuit encounters.",
       "tags": [
         "rooftop",
@@ -767,7 +767,7 @@
     {
       "id": "2mt-009",
       "type": "map",
-      "name": "2MT � Underground Lab / Bunker",
+      "name": "2MT ï¿½ Underground Lab / Bunker",
       "description": "Multi-room underground lab or bunker with security doors. SWN research facility or CWN megacorp basement.",
       "tags": [
         "lab",
@@ -794,7 +794,7 @@
     {
       "id": "2mt-010",
       "type": "map",
-      "name": "2MT � Desert Ruins",
+      "name": "2MT ï¿½ Desert Ruins",
       "description": "Sun-bleached ruins in arid terrain. Alien desert planet surface or ancient precursor site.",
       "tags": [
         "desert",
@@ -821,7 +821,7 @@
     {
       "id": "2mt-011",
       "type": "portrait",
-      "name": "2MT � Free Character Token Pack",
+      "name": "2MT ï¿½ Free Character Token Pack",
       "description": "2-Minute Tabletop character tokens available free. Clean top-down token style for VTT use.",
       "tags": [
         "token",
@@ -848,7 +848,7 @@
     {
       "id": "wata-001",
       "type": "map",
-      "name": "Watabou � Procedural City Generator",
+      "name": "Watabou ï¿½ Procedural City Generator",
       "description": "Full procedural city map generator. Export any city for your campaign. Free browser tool, no login.",
       "tags": [
         "city",
@@ -875,7 +875,7 @@
     {
       "id": "wata-002",
       "type": "map",
-      "name": "Watabou � One Page Dungeon Generator",
+      "name": "Watabou ï¿½ One Page Dungeon Generator",
       "description": "Procedurally generated one-page dungeon. Fresh layout every time. Export and use immediately.",
       "tags": [
         "dungeon",
@@ -902,7 +902,7 @@
     {
       "id": "wata-003",
       "type": "map",
-      "name": "Watabou � Perilous Shores Island Map",
+      "name": "Watabou ï¿½ Perilous Shores Island Map",
       "description": "Procedural island and coastline map generator. Export for SWN ocean planets or WWN island nations.",
       "tags": [
         "island",
@@ -928,7 +928,7 @@
     {
       "id": "wata-004",
       "type": "map",
-      "name": "Watabou � Village Generator",
+      "name": "Watabou ï¿½ Village Generator",
       "description": "Small village layout with named buildings. Great for WWN hamlets or isolated SWN colony outposts.",
       "tags": [
         "village",
@@ -955,7 +955,7 @@
     {
       "id": "wata-005",
       "type": "map",
-      "name": "Watabou � Neighbourhood Generator",
+      "name": "Watabou ï¿½ Neighbourhood Generator",
       "description": "City neighbourhood with street-level detail. Excellent for CWN districts.",
       "tags": [
         "neighbourhood",
@@ -981,7 +981,7 @@
     {
       "id": "wata-006",
       "type": "map",
-      "name": "Watabou � Procgen Mansion Layout",
+      "name": "Watabou ï¿½ Procgen Mansion Layout",
       "description": "Procedurally generated mansion floor plan with rooms and grounds. Corporate HQ or noble estate.",
       "tags": [
         "mansion",
@@ -1008,7 +1008,7 @@
     {
       "id": "wata-007",
       "type": "map",
-      "name": "Watabou � Dungeon Cells Generator",
+      "name": "Watabou ï¿½ Dungeon Cells Generator",
       "description": "Tight cell-by-cell dungeon generator. Produces compact tactical maps fast.",
       "tags": [
         "dungeon",
@@ -1035,7 +1035,7 @@
     {
       "id": "donjon-001",
       "type": "map",
-      "name": "Donjon � Random Fantasy Dungeon",
+      "name": "Donjon ï¿½ Random Fantasy Dungeon",
       "description": "Procedurally generated dungeon map from donjon. Grid-based, customizable size, public domain output.",
       "tags": [
         "dungeon",
@@ -1062,7 +1062,7 @@
     {
       "id": "donjon-002",
       "type": "map",
-      "name": "Donjon � Sci-Fi Deck Plan Generator",
+      "name": "Donjon ï¿½ Sci-Fi Deck Plan Generator",
       "description": "Sci-fi starship or space station floor plan generator. Fully customizable. Public domain output.",
       "tags": [
         "sci-fi",
@@ -1088,7 +1088,7 @@
     {
       "id": "donjon-003",
       "type": "map",
-      "name": "Donjon � World Map Generator",
+      "name": "Donjon ï¿½ World Map Generator",
       "description": "Hex-grid world map with terrain, rivers, and place names. Full planet or continent.",
       "tags": [
         "world",
@@ -1115,7 +1115,7 @@
     {
       "id": "donjon-004",
       "type": "map",
-      "name": "Donjon � Wilderness Encounter Map",
+      "name": "Donjon ï¿½ Wilderness Encounter Map",
       "description": "Random wilderness encounter area. Forest, grassland, or wasteland options.",
       "tags": [
         "wilderness",
@@ -1143,7 +1143,7 @@
     {
       "id": "donjon-005",
       "type": "map",
-      "name": "Donjon � Town / Settlement Map",
+      "name": "Donjon ï¿½ Town / Settlement Map",
       "description": "Procedural town map generator with building placement and named districts.",
       "tags": [
         "town",
@@ -1170,8 +1170,8 @@
     {
       "id": "1pd-001",
       "type": "map",
-      "name": "1PDC � Derelict Colony Ship",
-      "description": "Complete derelict colony ship in one page � map, encounter tables, hooks. CC BY, credit the author.",
+      "name": "1PDC ï¿½ Derelict Colony Ship",
+      "description": "Complete derelict colony ship in one page ï¿½ map, encounter tables, hooks. CC BY, credit the author.",
       "tags": [
         "ship",
         "derelict",
@@ -1190,12 +1190,12 @@
         "SWN"
       ],
       "added": "2026-06-14",
-      "attribution": "One Page Dungeon Contest entry. CC BY 4.0 � credit the individual author listed. https://1pdcamp.itch.io/"
+      "attribution": "One Page Dungeon Contest entry. CC BY 4.0 ï¿½ credit the individual author listed. https://1pdcamp.itch.io/"
     },
     {
       "id": "1pd-002",
       "type": "map",
-      "name": "1PDC � Crashed Spacecraft",
+      "name": "1PDC ï¿½ Crashed Spacecraft",
       "description": "Crashed ship buried in alien terrain. Full encounter and loot in one page.",
       "tags": [
         "ship",
@@ -1221,7 +1221,7 @@
     {
       "id": "1pd-003",
       "type": "map",
-      "name": "1PDC � Cult Compound",
+      "name": "1PDC ï¿½ Cult Compound",
       "description": "Sealed compound with ritual areas, guard posts, and a hidden basement.",
       "tags": [
         "cult",
@@ -1248,7 +1248,7 @@
     {
       "id": "1pd-004",
       "type": "map",
-      "name": "1PDC � Orbital Platform",
+      "name": "1PDC ï¿½ Orbital Platform",
       "description": "Small orbital platform with docking clamps, habitat ring, and reactor core.",
       "tags": [
         "orbital",
@@ -1275,7 +1275,7 @@
     {
       "id": "1pd-005",
       "type": "map",
-      "name": "1PDC � Border Fortress",
+      "name": "1PDC ï¿½ Border Fortress",
       "description": "Frontier military fort. Watchtowers, barracks, armoury. Colonial SWN outpost.",
       "tags": [
         "fortress",
@@ -1302,7 +1302,7 @@
     {
       "id": "1pd-006",
       "type": "map",
-      "name": "1PDC � Haunted Research Station",
+      "name": "1PDC ï¿½ Haunted Research Station",
       "description": "Isolated research station with something very wrong in it. Full one-page adventure.",
       "tags": [
         "research",
@@ -1328,7 +1328,7 @@
     {
       "id": "1pd-007",
       "type": "map",
-      "name": "1PDC � Underground Rebel Base",
+      "name": "1PDC ï¿½ Underground Rebel Base",
       "description": "Hidden rebel or resistance base carved into a mountain or asteroid.",
       "tags": [
         "rebel",
@@ -1355,7 +1355,7 @@
     {
       "id": "scrawl-001",
       "type": "map",
-      "name": "Dungeon Scrawl � Custom Hand-Draw Tool",
+      "name": "Dungeon Scrawl ï¿½ Custom Hand-Draw Tool",
       "description": "Free browser tool to create clean hand-drawn dungeon maps in minutes. Export PNG/PDF. No login needed.",
       "tags": [
         "hand-drawn",
@@ -1384,7 +1384,7 @@
     {
       "id": "rpgms-001",
       "type": "map",
-      "name": "RPGMapShare � Community Cave Map",
+      "name": "RPGMapShare ï¿½ Community Cave Map",
       "description": "Community-contributed cave maps. All maps on RPGMapShare are free to use with credit to the original author.",
       "tags": [
         "cave",
@@ -1411,7 +1411,7 @@
     {
       "id": "rpgms-002",
       "type": "map",
-      "name": "RPGMapShare � City Encounter Map",
+      "name": "RPGMapShare ï¿½ City Encounter Map",
       "description": "Detailed city encounter battle maps. VTT ready. Credit individual authors.",
       "tags": [
         "city",
@@ -1438,8 +1438,8 @@
     {
       "id": "rpgms-003",
       "type": "map",
-      "name": "RPGMapShare � Sci-Fi / Space Maps",
-      "description": "Sci-fi specific maps � stations, ships, labs. Filter by sci-fi tag on site.",
+      "name": "RPGMapShare ï¿½ Sci-Fi / Space Maps",
+      "description": "Sci-fi specific maps ï¿½ stations, ships, labs. Filter by sci-fi tag on site.",
       "tags": [
         "sci-fi",
         "space",
@@ -1465,7 +1465,7 @@
     {
       "id": "fa-001",
       "type": "map",
-      "name": "Forgotten Adventures � Free Map Pack",
+      "name": "Forgotten Adventures ï¿½ Free Map Pack",
       "description": "Professional-quality VTT maps. Free tier available without Patreon. Clean modern art style.",
       "tags": [
         "VTT",
@@ -1492,7 +1492,7 @@
     {
       "id": "fa-002",
       "type": "portrait",
-      "name": "Forgotten Adventures � Free Character Tokens",
+      "name": "Forgotten Adventures ï¿½ Free Character Tokens",
       "description": "High quality round character tokens. Diverse types. Free tier.",
       "tags": [
         "token",
@@ -1520,7 +1520,7 @@
     {
       "id": "crosshead-001",
       "type": "map",
-      "name": "Crosshead Studios � Free City Map",
+      "name": "Crosshead Studios ï¿½ Free City Map",
       "description": "High quality isometric and top-down city maps. Free monthly releases.",
       "tags": [
         "city",
@@ -1547,7 +1547,7 @@
     {
       "id": "crosshead-002",
       "type": "map",
-      "name": "Crosshead Studios � Free Dungeon Map",
+      "name": "Crosshead Studios ï¿½ Free Dungeon Map",
       "description": "Clean, detailed dungeon battle map with Crosshead's distinctive lighting style.",
       "tags": [
         "dungeon",
@@ -1573,8 +1573,8 @@
     {
       "id": "oga-p-001",
       "type": "portrait",
-      "name": "OGA � Justin Nichol Painterly Portrait Pack",
-      "description": "Large pack of hand-painted RPG character portraits. Warriors, rogues, mages � re-skin for SWN classes. CC0.",
+      "name": "OGA ï¿½ Justin Nichol Painterly Portrait Pack",
+      "description": "Large pack of hand-painted RPG character portraits. Warriors, rogues, mages ï¿½ re-skin for SWN classes. CC0.",
       "tags": [
         "painterly",
         "warrior",
@@ -1601,7 +1601,7 @@
     {
       "id": "oga-p-002",
       "type": "portrait",
-      "name": "OGA � Cyberpunk Character Tokens",
+      "name": "OGA ï¿½ Cyberpunk Character Tokens",
       "description": "Flat-colour cyberpunk VTT tokens. Hackers, street samurai, corp agents, civilians.",
       "tags": [
         "cyberpunk",
@@ -1623,13 +1623,13 @@
         "CWN"
       ],
       "added": "2026-06-14",
-      "attribution": "Tokens from OpenGameArt.org. CC BY 3.0 � credit the artist listed on the source page."
+      "attribution": "Tokens from OpenGameArt.org. CC BY 3.0 ï¿½ credit the artist listed on the source page."
     },
     {
       "id": "oga-p-003",
       "type": "portrait",
-      "name": "OGA � Sci-Fi Soldier Token Pack",
-      "description": "Tactical token set � heavy infantry, scout, officer, medic. SWN mercenary company.",
+      "name": "OGA ï¿½ Sci-Fi Soldier Token Pack",
+      "description": "Tactical token set ï¿½ heavy infantry, scout, officer, medic. SWN mercenary company.",
       "tags": [
         "soldier",
         "token",
@@ -1656,8 +1656,8 @@
     {
       "id": "oga-p-004",
       "type": "portrait",
-      "name": "OGA � Fantasy NPC Portraits 30-Pack",
-      "description": "30 varied NPC busts � merchants, guards, nobles, scholars. Re-skin for SWN patrons and contacts.",
+      "name": "OGA ï¿½ Fantasy NPC Portraits 30-Pack",
+      "description": "30 varied NPC busts ï¿½ merchants, guards, nobles, scholars. Re-skin for SWN patrons and contacts.",
       "tags": [
         "npc",
         "merchant",
@@ -1685,8 +1685,8 @@
     {
       "id": "oga-p-005",
       "type": "portrait",
-      "name": "OGA � Alien Creature Portraits",
-      "description": "Non-humanoid alien portraits � insectoid, reptilian, energy-being, aquatic.",
+      "name": "OGA ï¿½ Alien Creature Portraits",
+      "description": "Non-humanoid alien portraits ï¿½ insectoid, reptilian, energy-being, aquatic.",
       "tags": [
         "alien",
         "non-humanoid",
@@ -1711,7 +1711,7 @@
     {
       "id": "oga-p-006",
       "type": "portrait",
-      "name": "OGA � Robot / Synthetic Portraits",
+      "name": "OGA ï¿½ Robot / Synthetic Portraits",
       "description": "Robotic and synthetic character faces. SWN True AI, androids, and VI companions.",
       "tags": [
         "robot",
@@ -1738,8 +1738,8 @@
     {
       "id": "oga-p-007",
       "type": "portrait",
-      "name": "OGA � Villain / Antagonist Pack",
-      "description": "Menacing portraits � corrupt officials, crime lords, warlords, cult leaders.",
+      "name": "OGA ï¿½ Villain / Antagonist Pack",
+      "description": "Menacing portraits ï¿½ corrupt officials, crime lords, warlords, cult leaders.",
       "tags": [
         "villain",
         "antagonist",
@@ -1766,7 +1766,7 @@
     {
       "id": "oga-p-008",
       "type": "portrait",
-      "name": "OGA � Medic / Doctor Portraits",
+      "name": "OGA ï¿½ Medic / Doctor Portraits",
       "description": "Clinical medic/doctor portraits. SWN ship medics, CWN street docs, WWN healers.",
       "tags": [
         "medic",
@@ -1793,7 +1793,7 @@
     {
       "id": "oga-p-009",
       "type": "portrait",
-      "name": "OGA � Pilot / Spacer Pack",
+      "name": "OGA ï¿½ Pilot / Spacer Pack",
       "description": "Leather-jacketed pilots and flight-suit spacers. SWN free trader crews and star captains.",
       "tags": [
         "pilot",
@@ -1819,7 +1819,7 @@
     {
       "id": "oga-p-010",
       "type": "portrait",
-      "name": "OGA � Hacker / Tech Specialist",
+      "name": "OGA ï¿½ Hacker / Tech Specialist",
       "description": "Interface-lit portraits for hackers and tech specialists. CWN hacker class portraits.",
       "tags": [
         "hacker",
@@ -1846,7 +1846,7 @@
     {
       "id": "oga-p-011",
       "type": "portrait",
-      "name": "OGA � Noble / Corporate Portraits",
+      "name": "OGA ï¿½ Noble / Corporate Portraits",
       "description": "Wealthy and formal portraits. Corporate board members, planetary governors, WWN nobles.",
       "tags": [
         "noble",
@@ -1874,7 +1874,7 @@
     {
       "id": "oga-p-012",
       "type": "portrait",
-      "name": "OGA � Scholar / Sage / Elder NPC",
+      "name": "OGA ï¿½ Scholar / Sage / Elder NPC",
       "description": "Aged scholars, mentors, and advisors. SWN sages, CWN informants, WWN elders.",
       "tags": [
         "elderly",
@@ -1903,7 +1903,7 @@
     {
       "id": "oga-p-013",
       "type": "portrait",
-      "name": "OGA � Psychic / Mystic Portraits",
+      "name": "OGA ï¿½ Psychic / Mystic Portraits",
       "description": "Portraits with otherworldly or psionic visual themes. SWN Psychics and WWN practitioners.",
       "tags": [
         "psychic",
@@ -1930,7 +1930,7 @@
     {
       "id": "devin-001",
       "type": "portrait",
-      "name": "Devin Night � Free Token Packs (All)",
+      "name": "Devin Night ï¿½ Free Token Packs (All)",
       "description": "Devin Night's free token releases on immortalnights.com. Diverse humanoid characters, high quality circular VTT tokens. Regularly updated.",
       "tags": [
         "token",
@@ -1959,8 +1959,8 @@
     {
       "id": "artbreed-001",
       "type": "portrait",
-      "name": "Artbreeder � Sci-Fi Character Faces",
-      "description": "Photorealistic character faces from Artbreeder. Free to download for personal use. Great for NPC portraits � search sci-fi or futuristic styles.",
+      "name": "Artbreeder ï¿½ Sci-Fi Character Faces",
+      "description": "Photorealistic character faces from Artbreeder. Free to download for personal use. Great for NPC portraits ï¿½ search sci-fi or futuristic styles.",
       "tags": [
         "photorealistic",
         "face",
@@ -1982,12 +1982,12 @@
         "WWN"
       ],
       "added": "2026-06-14",
-      "attribution": "Portrait via Artbreeder.com. CC0 � free for personal use, no credit required."
+      "attribution": "Portrait via Artbreeder.com. CC0 ï¿½ free for personal use, no credit required."
     },
     {
       "id": "artbreed-002",
       "type": "portrait",
-      "name": "Artbreeder � Fantasy Character Faces",
+      "name": "Artbreeder ï¿½ Fantasy Character Faces",
       "description": "Fantasy character face blends. Filter by style for alien, elf, or otherworldly types.",
       "tags": [
         "fantasy",
@@ -2014,7 +2014,7 @@
     {
       "id": "gameicons-001",
       "type": "portrait",
-      "name": "Game-Icons.net � Sci-Fi Icon Tokens",
+      "name": "Game-Icons.net ï¿½ Sci-Fi Icon Tokens",
       "description": "Thousands of clean SVG icons: sci-fi, space, and fantasy. Usable as stylized VTT tokens or card art. CC BY.",
       "tags": [
         "icon",
@@ -2038,12 +2038,12 @@
         "WWN"
       ],
       "added": "2026-06-14",
-      "attribution": "Icons by Lorc, Delapouite et al. (game-icons.net). CC BY 3.0 � credit 'game-icons.net'."
+      "attribution": "Icons by Lorc, Delapouite et al. (game-icons.net). CC BY 3.0 ï¿½ credit 'game-icons.net'."
     },
     {
       "id": "official-001",
       "type": "map",
-      "name": "SWN Free Edition � Sector Hex Grid",
+      "name": "SWN Free Edition ï¿½ Sector Hex Grid",
       "description": "Blank 10x8 sector hex grid in SWN standard format. Print and fill in your own systems. From Kevin Crawford's free edition.",
       "tags": [
         "sector",
@@ -2070,7 +2070,7 @@
     {
       "id": "official-002",
       "type": "map",
-      "name": "CWN Free Edition � City District Maps",
+      "name": "CWN Free Edition ï¿½ City District Maps",
       "description": "City district map templates from the Cities Without Number Free Edition by Kevin Crawford.",
       "tags": [
         "city",
@@ -2096,7 +2096,7 @@
     {
       "id": "official-003",
       "type": "map",
-      "name": "WWN Free Edition � Regional Maps",
+      "name": "WWN Free Edition ï¿½ Regional Maps",
       "description": "Region and realm maps from the Worlds Without Number Free Edition by Kevin Crawford.",
       "tags": [
         "region",
@@ -2122,7 +2122,7 @@
     {
       "id": "reddit-001",
       "type": "map",
-      "name": "r/battlemaps � Sci-Fi Maps (Top Rated)",
+      "name": "r/battlemaps ï¿½ Sci-Fi Maps (Top Rated)",
       "description": "r/battlemaps is a massive source of free community battle maps. This link filters to top sci-fi maps for SWN/CWN use. Check each post for individual license.",
       "tags": [
         "community",
@@ -2137,7 +2137,7 @@
       "thumbnail_url": "",
       "source_page": "https://www.reddit.com/r/battlemaps/",
       "artist": "r/battlemaps community (various)",
-      "license": "Varies � check individual post (most: personal/VTT free)",
+      "license": "Varies ï¿½ check individual post (most: personal/VTT free)",
       "license_url": "https://www.reddit.com/r/battlemaps/wiki/index",
       "system": [
         "SWN",
@@ -2149,7 +2149,7 @@
     {
       "id": "reddit-002",
       "type": "map",
-      "name": "r/battlemaps � Fantasy Maps (Top Rated)",
+      "name": "r/battlemaps ï¿½ Fantasy Maps (Top Rated)",
       "description": "Top-rated fantasy maps from r/battlemaps. Dungeons, wilderness, taverns, caves.",
       "tags": [
         "fantasy",
@@ -2164,7 +2164,7 @@
       "thumbnail_url": "",
       "source_page": "https://www.reddit.com/r/battlemaps/",
       "artist": "r/battlemaps community (various)",
-      "license": "Varies � check individual post",
+      "license": "Varies ï¿½ check individual post",
       "license_url": "https://www.reddit.com/r/battlemaps/wiki/index",
       "system": [
         "WWN",
@@ -2177,7 +2177,7 @@
     {
       "id": "reddit-003",
       "type": "portrait",
-      "name": "r/characterdrawing � Free-to-Use Portraits",
+      "name": "r/characterdrawing ï¿½ Free-to-Use Portraits",
       "description": "Search r/characterdrawing for posts tagged 'free to use'. Huge variety of styles and character types.",
       "tags": [
         "community",
@@ -2192,7 +2192,7 @@
       "thumbnail_url": "",
       "source_page": "https://www.reddit.com/r/characterdrawing/",
       "artist": "r/characterdrawing community (various)",
-      "license": "Varies � check each post for 'free to use' tag",
+      "license": "Varies ï¿½ check each post for 'free to use' tag",
       "license_url": "https://www.reddit.com/r/characterdrawing/",
       "system": [
         "SWN",
@@ -2205,7 +2205,7 @@
     {
       "id": "inkwell-001",
       "type": "map",
-      "name": "Inkwell Ideas � Town Map Generator",
+      "name": "Inkwell Ideas ï¿½ Town Map Generator",
       "description": "Procedural town map with named buildings and districts. Free browser tool.",
       "tags": [
         "town",
@@ -2232,7 +2232,7 @@
     {
       "id": "inkwell-002",
       "type": "map",
-      "name": "Inkwell Ideas � Dungeon Map Generator",
+      "name": "Inkwell Ideas ï¿½ Dungeon Map Generator",
       "description": "Random dungeon generator with room descriptions and encounter notes.",
       "tags": [
         "dungeon",

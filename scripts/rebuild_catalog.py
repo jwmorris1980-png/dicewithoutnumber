@@ -129,5 +129,5 @@ IMAGES = [
 ]
 
 out_path = Path(__file__).parent.parent / "image_server" / "catalog.json"
-out_path.write_text(json.dumps({"images": IMAGES}, indent=2, ensure_ascii=False))
+out_path.write_text(json.dumps({"images": IMAGES}, indent=2, ensure_ascii=False), encoding="utf-8")
 print(f"Wrote {len(IMAGES)} entries to {out_path}")
