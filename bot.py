@@ -258,7 +258,7 @@ class WithoutNumberBot(commands.Bot):
             'cogs.help', 'cogs.tracker', 'cogs.rules_specific', 'cogs.sandbox',
             'cogs.faction', 'cogs.party', 'cogs.campaign', 'cogs.wizard',
             'cogs.maintenance', 'cogs.ships', 'cogs.intro', 'cogs.storyteller',
-            'cogs.map_commands', 'cogs.channel_mgmt', 'cogs.polls',
+            'cogs.map_commands', 'cogs.asset_library', 'cogs.channel_mgmt', 'cogs.polls',
             'cogs.voice_access', 'cogs.tickets', 'cogs.accessibility', 'cogs.features',
             'cogs.gm_mode'
         ]
@@ -469,6 +469,10 @@ class WithoutNumberBot(commands.Bot):
         try:
             features = self.get_cog("FeaturesCog")
             if features and await features.handle_message(message):
+                return True
+
+            asset_library = self.get_cog("AssetLibraryCog")
+            if asset_library and await asset_library.handle_message(message):
                 return True
 
             if (not features or features.is_enabled("sheets", message)) and await self._handle_character_sheet_drop(message):

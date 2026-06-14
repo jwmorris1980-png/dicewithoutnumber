@@ -42,7 +42,12 @@ HELP_MESSAGES = (
     "`/tracker clear` `!tracker clear` - Clear tracker\n"
     "`/tracker map` `!tracker map` `/tracker controller` `!tracker controller` - Tactical map\n"
     "`/tracker ac/hide/condition/distance/grid/party` - More tracker tools\n"
-    "`/importmap` `/map` `!map` - Map upload/link\n\n"
+    "`/importmap` `/map` `!map` - Map upload/link"
+),
+(
+    "**Free Asset Library**\n"
+    "`find map forest` `/maplibrary` `!findmap` - Free downloadable map library\n"
+    "`find portrait operative` `/portraitlibrary` `!findportrait` - Free portrait library\n\n"
 ),
 (
     "**World, Rules & Gear**\n"

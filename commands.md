@@ -72,6 +72,8 @@ When the bot is installed in a server, any registered command can be sent withou
 | `/tracker map` | Show Tactical Map with interactive movement |
 | `/tracker controller` | Launch the in-Discord button-based tactical controller |
 | `/importmap <image>` | Upload custom map background |
+| `find map forest`, `/maplibrary`, or `!findmap forest` | Post a free downloadable CC0 map from the bot's built-in library. |
+| `find portrait operative`, `/portraitlibrary`, or `!findportrait operative` | Post a free downloadable CC0 portrait from the bot's built-in library. |
 | `/tracker move <id> <c>` | Move token to coordinates (e.g., `A1`) |
 | `/tracker next` | Advance to the next turn |
 | `/tracker damage <id> <n>`| Deal damage to a combatant |
