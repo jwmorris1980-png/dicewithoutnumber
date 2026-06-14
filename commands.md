@@ -3,7 +3,8 @@
 DICEwithoutNumber is a free, open-source, accessibility-focused Discord bot for Without Number games and other tabletop RPGs. It provides voice-friendly commands, multilingual tools, character sheets, rules references, polls, campaigns, support tickets, combat tracking, and interactive tactical maps.
 
 `/help` opens a private embed menu inside the current channel. `!help` or spoken
-`help` displays the embed menu in the channel for 60 seconds, then deletes it.
+`help` displays the embed menu in the channel and deletes it after 60 seconds of
+inactivity. Using a help category button resets the inactivity timer.
 
 Commands work with `/`, `!`, or no prefix when the bot is installed in the server. No-prefix commands must begin with an exact command name and stay on one line.
 

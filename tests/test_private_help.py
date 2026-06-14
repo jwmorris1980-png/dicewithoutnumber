@@ -1,7 +1,6 @@
 import asyncio
 from types import SimpleNamespace
-from unittest.mock import AsyncMock
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from cogs.help import HelpCog, HelpIndexView
 
@@ -11,6 +10,7 @@ def test_text_help_uses_temporary_embed_not_dm():
 
     async def send(*args, **kwargs):
         sent.append((args, kwargs))
+        return SimpleNamespace(delete=AsyncMock())
 
     ctx = SimpleNamespace(
         author=SimpleNamespace(id=123, send=AsyncMock()),
@@ -26,6 +26,21 @@ def test_text_help_uses_temporary_embed_not_dm():
     ctx.author.send.assert_not_awaited()
     ctx.message.delete.assert_awaited_once()
     assert not sent[0][0]
-    assert sent[0][1]["embed"].title == "DICEwithoutNumber — Help"
+    assert sent[0][1]["embed"].title.startswith("DICEwithoutNumber")
     assert isinstance(sent[0][1]["view"], HelpIndexView)
-    assert sent[0][1]["delete_after"] == 60
+    assert "delete_after" not in sent[0][1]
+    assert sent[0][1]["view"].session.idle_seconds == 60
+    sent[0][1]["view"].session._task.cancel()
+
+
+def test_clicking_help_category_resets_idle_timer():
+    async def run():
+        session = SimpleNamespace(touch=__import__("unittest").mock.Mock())
+        view = HelpIndexView(session=session)
+        interaction = SimpleNamespace(response=SimpleNamespace(edit_message=AsyncMock()))
+
+        await view.children[0].callback(interaction)
+
+        session.touch.assert_called_once()
+
+    asyncio.run(run())

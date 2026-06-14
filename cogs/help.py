@@ -1,5 +1,6 @@
 import logging
 import os
+import asyncio
 
 import discord
 from discord import app_commands
@@ -239,7 +240,7 @@ def _index_embed() -> discord.Embed:
 
 
 class CategoryButton(discord.ui.Button):
-    def __init__(self, key: str):
+    def __init__(self, key: str, session=None):
         cat = CATEGORIES[key]
         super().__init__(
             label=cat["label"],
@@ -248,41 +249,72 @@ class CategoryButton(discord.ui.Button):
             custom_id=f"help_{key}",
         )
         self.key = key
+        self.session = session
 
     async def callback(self, interaction: discord.Interaction):
+        if self.session:
+            self.session.touch()
         await interaction.response.edit_message(
             embed=_category_embed(self.key),
-            view=CategoryDetailView(self.key),
+            view=CategoryDetailView(self.key, session=self.session),
         )
 
 
 class BackButton(discord.ui.Button):
-    def __init__(self):
+    def __init__(self, session=None):
         super().__init__(label="← Back to menu", style=discord.ButtonStyle.primary)
+        self.session = session
 
     async def callback(self, interaction: discord.Interaction):
+        if self.session:
+            self.session.touch()
         await interaction.response.edit_message(
             embed=_index_embed(),
-            view=HelpIndexView(),
+            view=HelpIndexView(session=self.session),
         )
 
 
 class HelpIndexView(discord.ui.View):
-    def __init__(self):
+    def __init__(self, session=None):
         super().__init__(timeout=300)
+        self.session = session
         for key in CATEGORIES:
-            self.add_item(CategoryButton(key))
+            self.add_item(CategoryButton(key, session=session))
 
 
 class CategoryDetailView(discord.ui.View):
-    def __init__(self, active_key: str):
+    def __init__(self, active_key: str, session=None):
         super().__init__(timeout=300)
-        self.add_item(BackButton())
+        self.session = session
+        self.add_item(BackButton(session=session))
         for key in CATEGORIES:
-            btn = CategoryButton(key)
+            btn = CategoryButton(key, session=session)
             if key == active_key:
                 btn.style = discord.ButtonStyle.primary
             self.add_item(btn)
+
+
+class TemporaryHelpSession:
+    def __init__(self, idle_seconds=60):
+        self.idle_seconds = idle_seconds
+        self.message = None
+        self._generation = 0
+        self._task = None
+
+    def touch(self):
+        self._generation += 1
+        generation = self._generation
+        if self._task:
+            self._task.cancel()
+        self._task = asyncio.create_task(self._delete_after_idle(generation))
+
+    async def _delete_after_idle(self, generation):
+        try:
+            await asyncio.sleep(self.idle_seconds)
+            if generation == self._generation and self.message:
+                await self.message.delete()
+        except (asyncio.CancelledError, discord.Forbidden, discord.NotFound):
+            pass
 
 
 class PrivateHelpLauncher(discord.ui.View):
@@ -348,12 +380,13 @@ class HelpCog(commands.Cog):
                     await ctx_or_interaction.message.delete()
                 except (discord.Forbidden, discord.NotFound, AttributeError):
                     pass
-                await ctx_or_interaction.send(
+                session = TemporaryHelpSession(idle_seconds=60)
+                session.message = await ctx_or_interaction.send(
                     embed=_index_embed(),
-                    view=HelpIndexView(),
+                    view=HelpIndexView(session=session),
                     allowed_mentions=discord.AllowedMentions.none(),
-                    delete_after=60,
                 )
+                session.touch()
         except Exception as e:
             logger.exception("Help command failed")
             fallback = (
