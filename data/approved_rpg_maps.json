@@ -1,0 +1,30 @@
+{
+  "generated": "2026-06-14",
+  "policy": "Only visually reviewed, clearly playable RPG maps may be listed here.",
+  "count": 1,
+  "images": [
+    {
+      "id": "commons-77722803",
+      "type": "map",
+      "name": "Hand-Drawn Dungeon Map with Crosshatch Pattern",
+      "description": "A clearly playable hand-drawn dungeon map.",
+      "tags": [
+        "dungeon",
+        "verified",
+        "hand-reviewed"
+      ],
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Hand-Drawn_Dungeon_Map_with_Crosshatch_Pattern.jpg/1280px-Hand-Drawn_Dungeon_Map_with_Crosshatch_Pattern.jpg",
+      "thumbnail_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Hand-Drawn_Dungeon_Map_with_Crosshatch_Pattern.jpg/1280px-Hand-Drawn_Dungeon_Map_with_Crosshatch_Pattern.jpg",
+      "source_page": "https://commons.wikimedia.org/wiki/File:Hand-Drawn_Dungeon_Map_with_Crosshatch_Pattern.jpg",
+      "artist": "Marc Majcher",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+      "system": [
+        "General RPG"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Hand-Drawn Dungeon Map with Crosshatch Pattern by Marc Majcher, CC BY-SA 2.0.",
+      "verified_source": "Wikimedia Commons; manually reviewed for RPG playability"
+    }
+  ]
+}

@@ -16,7 +16,7 @@ def test_verified_map_manifest_search(monkeypatch, tmp_path):
         ),
         encoding="utf-8",
     )
-    monkeypatch.setattr(verified_map_library, "MANIFEST", manifest)
+    monkeypatch.setattr(verified_map_library, "APPROVED_MANIFEST", manifest)
 
     assert verified_map_library.find_verified_map("dungeon")["name"] == "Dungeon Map"
     assert verified_map_library.find_verified_map("show me a dungeon map")["name"] == "Dungeon Map"
@@ -26,7 +26,7 @@ def test_verified_map_manifest_search(monkeypatch, tmp_path):
 
 def test_verified_manifest_entries_are_direct_and_licensed():
     entries = verified_map_library.load_verified_maps()
-    assert len(entries) >= 300
+    assert entries
     for entry in entries:
         assert entry["url"].lower().split("?", 1)[0].endswith((".png", ".jpg", ".jpeg", ".webp", ".gif"))
         assert entry["source_page"]
@@ -40,3 +40,8 @@ def test_institutional_floor_plan_is_not_treated_as_rpg_map():
 
     assert verified_map_library.is_rpg_play_map(prison) is False
     assert verified_map_library.is_rpg_play_map(actual) is True
+
+
+def test_only_approved_manifest_is_user_searchable():
+    assert verified_map_library.find_verified_map("dungeon") is not None
+    assert verified_map_library.find_verified_map("battle") is None

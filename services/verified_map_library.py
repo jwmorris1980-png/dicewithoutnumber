@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 MANIFEST = Path(__file__).resolve().parents[1] / "data" / "verified_maps.json"
+APPROVED_MANIFEST = Path(__file__).resolve().parents[1] / "data" / "approved_rpg_maps.json"
 QUERY_STOPWORDS = {"a", "an", "the", "map", "maps", "please", "show", "find", "give", "me"}
 RPG_PLAY_TERMS = {
     "battlemap",
@@ -34,9 +35,10 @@ NON_RPG_TERMS = {
 }
 
 
-def load_verified_maps() -> list[dict]:
+def load_verified_maps(manifest: Path | None = None) -> list[dict]:
+    manifest = manifest or APPROVED_MANIFEST
     try:
-        payload = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError):
         return []
     return payload.get("images", []) if isinstance(payload, dict) else []

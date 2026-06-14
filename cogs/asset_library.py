@@ -118,10 +118,12 @@ class AssetLibraryCog(commands.Cog):
             if verified_map:
                 await self._send_catalog_result(target, verified_map)
                 return
-            openverse_map = await self.catalog.search_openverse_map(query)
-            if openverse_map:
-                await self._send_catalog_result(target, openverse_map)
-                return
+            await _reply(
+                target,
+                f"No hand-reviewed RPG map is approved yet for **{query or 'that request'}**. "
+                "I will not substitute a generated, reference, or questionable map.",
+            )
+            return
 
         # Parse query words into tags + free-text
         tags = query.replace(",", " ").strip() if query else None
