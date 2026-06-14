@@ -342,17 +342,17 @@ class HelpCog(commands.Cog):
                             view=HelpIndexView(),
                         )
                     return
-                # Text commands cannot be ephemeral. The button opens the full
-                # embed privately inside the current channel and never uses DMs.
+                # Text and spoken commands cannot be ephemeral. Show the full
+                # embed in-channel briefly, then remove it automatically.
                 try:
                     await ctx_or_interaction.message.delete()
                 except (discord.Forbidden, discord.NotFound, AttributeError):
                     pass
                 await ctx_or_interaction.send(
-                    "Open your private help menu:",
-                    view=PrivateHelpLauncher(ctx_or_interaction.author.id),
+                    embed=_index_embed(),
+                    view=HelpIndexView(),
                     allowed_mentions=discord.AllowedMentions.none(),
-                    delete_after=120,
+                    delete_after=60,
                 )
         except Exception as e:
             logger.exception("Help command failed")

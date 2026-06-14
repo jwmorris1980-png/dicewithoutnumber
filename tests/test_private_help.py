@@ -3,14 +3,14 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock
 from unittest.mock import patch
 
-from cogs.help import HelpCog, PrivateHelpLauncher
+from cogs.help import HelpCog, HelpIndexView
 
 
-def test_text_help_uses_private_launcher_not_dm():
+def test_text_help_uses_temporary_embed_not_dm():
     sent = []
 
-    async def send(content, **kwargs):
-        sent.append((content, kwargs))
+    async def send(*args, **kwargs):
+        sent.append((args, kwargs))
 
     ctx = SimpleNamespace(
         author=SimpleNamespace(id=123, send=AsyncMock()),
@@ -25,6 +25,7 @@ def test_text_help_uses_private_launcher_not_dm():
 
     ctx.author.send.assert_not_awaited()
     ctx.message.delete.assert_awaited_once()
-    assert sent[0][0] == "Open your private help menu:"
-    assert isinstance(sent[0][1]["view"], PrivateHelpLauncher)
-    assert sent[0][1]["delete_after"] == 120
+    assert not sent[0][0]
+    assert sent[0][1]["embed"].title == "DICEwithoutNumber — Help"
+    assert isinstance(sent[0][1]["view"], HelpIndexView)
+    assert sent[0][1]["delete_after"] == 60
