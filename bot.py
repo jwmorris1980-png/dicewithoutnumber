@@ -275,7 +275,9 @@ class WithoutNumberBot(commands.Bot):
         # Set the translator
         await self.tree.set_translator(MyTranslator())
 
-        # Sync slash commands
+        # Test-guild sync is safe and instant. Never bulk-sync global commands
+        # during startup because Discord Entry Point commands require the
+        # dedicated scripts/sync_global_safe.py workflow.
         if TEST_GUILD_ID:
             test_guild = discord.Object(id=int(TEST_GUILD_ID))
             self.tree.copy_global_to(guild=test_guild)
@@ -285,8 +287,7 @@ class WithoutNumberBot(commands.Bot):
                 f"Global commands unchanged. Set TEST_GUILD_ID= to go live."
             )
         else:
-            synced = await self.tree.sync()
-            logger.info(f"Synced {len(synced)} slash commands globally.")
+            logger.info("Production mode: skipping startup command sync; use sync_global_safe.py.")
 
         # Start the web service
         try:
