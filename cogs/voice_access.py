@@ -39,9 +39,11 @@ class VoiceAccessCog(commands.Cog):
                 command,
                 expression,
                 self.bot.dice_service,
+                interaction.user.display_name,
             )
             await interaction.response.send_message(
                 f"Interpreted as `{normalized}`\n{response}",
+                allowed_mentions=discord.AllowedMentions.none(),
             )
             return
 

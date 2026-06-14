@@ -177,13 +177,13 @@ class DiceCog(commands.Cog):
         if is_hidden:
             if is_int:
                 kwargs['ephemeral'] = True
-                final_msg = f"🕵️ **GM Roll**\n{all_results_msg.strip()}"
+                final_msg = f"🕵️ **GM Roll by {display_name}**\n{all_results_msg.strip()}"
             else:
                 try:
                     await target.message.delete()
                 except:
                     pass
-                final_msg = f"🕵️ **GM Roll**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/gmroll` next time!)*_"
+                final_msg = f"🕵️ **GM Roll by {display_name}**\n|| {all_results_msg.strip()} ||\n_*(Note: Discord only allows 'hidden windows' for Slash Commands! Use `/gmroll` next time!)*_"
 
         await send(final_msg, **kwargs)
 

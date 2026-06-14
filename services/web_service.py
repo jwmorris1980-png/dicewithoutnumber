@@ -1,4 +1,5 @@
 from aiohttp import web
+import discord
 import json
 import os
 import asyncio
@@ -481,14 +482,14 @@ class WebService:
                     command, expr = message[1:].split(" ", 1)
                 except ValueError:
                     command, expr = message[1:], ""
-                roll_response = self._build_voice_roll_response(command.lower(), expr.strip(), dice_service)
+                roll_response = self._build_voice_roll_response(command.lower(), expr.strip(), dice_service, user_name)
 
             # Send to Discord
             formatted_msg = f"**{user_name}** (Map): {message}"
             if roll_response:
                 formatted_msg += f"\n\n{roll_response}"
 
-            await channel.send(formatted_msg)
+            await channel.send(formatted_msg, allowed_mentions=discord.AllowedMentions.none())
 
             # Save to local history immediately for the map to see it faster
             self.bot.db.save_chat_message(guild_id, channel_id, user_name, message)
@@ -624,12 +625,16 @@ class WebService:
 
         return message, None
 
-    def _build_voice_roll_response(self, command: str, expression: str, dice_service) -> str | None:
+    def _build_voice_roll_response(self, command: str, expression: str, dice_service, roller_name: str = None) -> str | None:
         if not dice_service:
             return "Error: dice service is unavailable."
 
         command = command.lower().strip()
         expression = (expression or "").strip()
+        actor = discord.utils.escape_markdown(str(roller_name)) if roller_name else None
+
+        def attributed(result):
+            return f"**{actor} rolled:**\n{result}" if actor else result
         target_match = re.search(
             r"\btarget\s+(?:(?P<direction1>high|higher|over|above|low|lower|under|below)\s+)?(?P<number>-?\d+)(?:\s+(?P<direction2>high|higher|over|above|low|lower|under|below))?\b",
             expression,
@@ -669,7 +674,7 @@ class WebService:
                     return f"Error rolling `{inner_expr}`: {err}"
                 lines.append(f"-> Roll {i + 1}: {details} = **{total}**{target_text(total)}")
 
-            return "Multi Roll\n" + "\n".join(lines)
+            return attributed("Multi Roll\n" + "\n".join(lines))
 
         if command in {"attack", "skill"} and not expression:
             expression = "1d20" if command == "attack" else "2d6"
@@ -687,7 +692,7 @@ class WebService:
                 if repeat_err:
                     return f"Error rolling `{inner_expr}`: {repeat_err}"
                 lines.append(f"-> Roll {i + 1}: {repeat_details} = **{repeat_total}**{target_text(repeat_total)}")
-            return "Result\n" + "\n".join(lines)
+            return attributed("Result\n" + "\n".join(lines))
 
         titles = {
             "roll": "Result",
@@ -698,8 +703,8 @@ class WebService:
         title = titles.get(command, "Result")
         result = f"-> Result: {details} = **{total}**{target_text(total)}"
         if command == "gmroll":
-            return f"{title}\n|| {result} ||\n_(Hidden voice roll.)_"
-        return f"{title}\n{result}"
+            return attributed(f"{title}\n|| {result} ||\n_(Hidden voice roll.)_")
+        return attributed(f"{title}\n{result}")
 
     async def handle_theme(self, request):
         try:

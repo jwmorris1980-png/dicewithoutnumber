@@ -104,6 +104,7 @@ class FactionCog(commands.GroupCog, group_name="faction", description="Manage gl
         embed.add_field(name="Attacker", value=f"Roll: {atk_roll}\nStat: {attacker_stat}\n**Total: {atk_total}**", inline=True)
         embed.add_field(name="Defender", value=f"Roll: {def_roll}\nStat: {defender_stat}\n**Total: {def_total}**", inline=True)
         embed.add_field(name="Result", value=result, inline=False)
+        embed.set_footer(text=f"Rolled by {interaction.user.display_name}")
         
         await interaction.response.send_message(embed=embed)
 
@@ -169,6 +170,7 @@ class FactionCog(commands.GroupCog, group_name="faction", description="Manage gl
         embed.add_field(name="Attacker", value=f"Roll: {atk_roll}\nStat: {attacker_stat}\n**Total: {atk_total}**", inline=True)
         embed.add_field(name="Defender", value=f"Roll: {def_roll}\nStat: {defender_stat}\n**Total: {def_total}**", inline=True)
         embed.add_field(name="Result", value=result, inline=False)
+        embed.set_footer(text=f"Rolled by {ctx.author.display_name}")
         await ctx.send(embed=embed)
 
 async def setup(bot):

@@ -6,6 +6,9 @@ import random
 class StorytellerCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    def _rolled_by(self, interaction):
+        return f"Rolled by {interaction.user.display_name}"
         
         self.plot_hooks = [
             "A sudden mechanical failure threatens the immediate environment.",
@@ -64,7 +67,7 @@ class StorytellerCog(commands.Cog):
             color = discord.Color.gold()
             
         embed = discord.Embed(title="🎲 Reaction Roll", description=f"Result: **{roll}**\n\n{result}", color=color)
-        embed.set_footer(text="Standard 2d6 Reaction Table")
+        embed.set_footer(text=f"Standard 2d6 Reaction Table | {self._rolled_by(interaction)}")
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="morale", description="Roll 2d6 to check an NPC's morale.")
@@ -80,6 +83,7 @@ class StorytellerCog(commands.Cog):
             color = discord.Color.red()
             
         embed = discord.Embed(title="🛡️ Morale Check", description=f"Roll: **{roll}** vs Target: **{target}**\n\n{result}", color=color)
+        embed.set_footer(text=self._rolled_by(interaction))
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="oracle", description="Ask the Oracle a Yes/No question (2d6 weighted response).")
@@ -100,6 +104,7 @@ class StorytellerCog(commands.Cog):
             result = "**YES, AND...** (The best outcome/additional benefit)"
             
         embed = discord.Embed(title="🔮 The Oracle Says...", description=f"Result: **{roll}**\n\n{result}", color=discord.Color.dark_magenta())
+        embed.set_footer(text=self._rolled_by(interaction))
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="plot", description="Generate a random plot hook or situational idea for the GM.")
@@ -133,6 +138,7 @@ class StorytellerCog(commands.Cog):
         }
         res = table.get(roll, "Clear")
         embed = discord.Embed(title="🌤️ Weather/Environment Check", description=f"Roll: {roll}\nResult: **{res}**", color=discord.Color.blue())
+        embed.set_footer(text=self._rolled_by(interaction))
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="encounter", description="Quick check for a random encounter (1 on 1d6). (Private)")
@@ -140,6 +146,7 @@ class StorytellerCog(commands.Cog):
         roll = random.randint(1, 6)
         res = "⚠️ **RANDOM ENCOUNTER!** Prepare for contact." if roll == 1 else "✅ **All Clear.** No encounter this turn."
         embed = discord.Embed(title="🎲 Random Encounter Check", description=f"Roll: {roll}\nResult: {res}", color=discord.Color.red() if roll == 1 else discord.Color.green())
+        embed.set_footer(text=self._rolled_by(interaction))
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @app_commands.command(name="hazard", description="Generates a random environmental hazard or complication. (Private)")

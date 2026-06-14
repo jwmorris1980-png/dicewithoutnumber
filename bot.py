@@ -513,9 +513,13 @@ class WithoutNumberBot(commands.Bot):
                     command.lower(),
                     expr.strip(),
                     self.dice_service,
+                    message.author.display_name,
                 )
                 if roll_response:
-                    await message.channel.send(f"Interpreted as `{normalized}`\n{roll_response}")
+                    await message.channel.send(
+                        f"Interpreted as `{normalized}`\n{roll_response}",
+                        allowed_mentions=discord.AllowedMentions.none(),
+                    )
                     return True
 
             return await self._handle_bare_command(message)
