@@ -69,6 +69,7 @@ class WithoutNumberBot(commands.Bot):
 
         # Add tree error handler
         self.tree.on_error = self.on_tree_error
+        self.tree.interaction_check = self._feature_interaction_check
 
     async def sync_identity(self):
         """Update bot nickname in all guilds and sync global username."""
@@ -128,6 +129,19 @@ class WithoutNumberBot(commands.Bot):
             guild_id=interaction.guild_id,
             channel_id=getattr(interaction.channel, "id", None),
         )
+    async def _feature_interaction_check(self, interaction: discord.Interaction) -> bool:
+        features = self.get_cog("FeaturesCog")
+        if not features or not features.is_user_muted(interaction.user.id):
+            return True
+        command_name = (interaction.data or {}).get("name")
+        if command_name == "features":
+            return True
+        if not interaction.response.is_done():
+            await interaction.response.send_message(
+                "The bot is currently ignoring you. Use `/features on bot` to turn it back on.",
+                ephemeral=True,
+            )
+        return False
         
         # 1. Alert Log Channel
         await self.send_alert(f"❌ **Slash Command Error: {interaction.command.name if interaction.command else 'Unknown'}**\nUser: {interaction.user}\nError: `{error}`")
@@ -378,6 +392,14 @@ class WithoutNumberBot(commands.Bot):
         # Ignore regular bots to prevent loops, but ALLOW webhooks (Tupperbox)
         if message.author.bot and not message.webhook_id:
             return
+
+        features = self.get_cog("FeaturesCog")
+        if features and features.is_user_muted(message.author.id):
+            if await features.handle_message(message):
+                return
+            content = " ".join(str(message.content or "").lower().strip().split())
+            if content not in {"!features on bot", "/features on bot", "features on bot"}:
+                return
 
         logger.info(
             f"on_message: guild={getattr(message.guild, 'id', 'dm')} "

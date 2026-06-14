@@ -59,6 +59,8 @@ HELP_MESSAGES = (
     "A no-prefix command must start with an exact command name and stay on one line\n"
     "`accessibility` - Standard, simple, or private responses\n"
     "`/features` `!features` - Turn optional features on/off for yourself or a server\n"
+    "`ignore me` or `features off bot` - Make the bot completely ignore you\n"
+    "`listen to me` or `/features on bot` - Turn the bot back on for yourself\n"
     "`features off voice` or `features off sheets` - Keep explicit `/` and `!` commands\n"
     "`menu` `open menu` - Button-based quick menu\n"
     "`tutorial` - Guided walkthrough\n"

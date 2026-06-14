@@ -6,6 +6,7 @@ from discord.ext import commands
 
 
 FEATURES = {
+    "bot": ("all bot interactions", "bot_interactions"),
     "voice": ("voice/no-prefix commands", "voice_commands"),
     "sheets": ("automatic sheet imports", "automatic_sheet_imports"),
 }
@@ -32,6 +33,9 @@ class FeaturesCog(commands.Cog):
                 return server_value == "on"
         return True
 
+    def is_user_muted(self, user_id):
+        return self.bot.db.get_setting(f"user:{user_id}", "feature:bot_interactions") == "off"
+
     async def _send(self, target, text):
         if isinstance(target, discord.Interaction):
             await target.response.send_message(text, ephemeral=True)
@@ -40,6 +44,10 @@ class FeaturesCog(commands.Cog):
             await destination.send(text)
 
     async def _configure(self, target, action="show", feature=None, scope="me"):
+        if feature == "bot" and scope == "server":
+            await self._send(target, "Full bot mute is personal only. Choose **Just me**.")
+            return
+
         if scope == "server":
             if not target.guild:
                 await self._send(target, "Server feature settings must be changed inside a server.")
@@ -55,12 +63,12 @@ class FeaturesCog(commands.Cog):
             for short_name, (label, key) in FEATURES.items():
                 value = self.bot.db.get_setting(target_id, f"feature:{key}", "server default" if scope == "me" else "on")
                 lines.append(f"- **{label}:** {value} (`{short_name}`)")
-            lines.append("Use `features off voice`, `features on sheets`, or `/features`.")
+            lines.append("Use `features off bot` to be completely ignored, or `features on bot` to return.")
             await self._send(target, "\n".join(lines))
             return
 
         if feature not in FEATURES or action not in {"on", "off", "default"}:
-            await self._send(target, "Use `features on/off/default voice` or `features on/off/default sheets`.")
+            await self._send(target, "Use `features on/off bot`, `features on/off voice`, or `features on/off sheets`.")
             return
 
         label, key = FEATURES[feature]
@@ -70,11 +78,16 @@ class FeaturesCog(commands.Cog):
         else:
             value = action
             self.bot.db.set_setting(target_id, f"feature:{key}", value)
-        await self._send(target, f"**{label}** set to **{value}** for {scope}. Explicit `/` and `!` commands still work.")
+        if feature == "bot" and action == "off":
+            await self._send(target, "The bot will now completely ignore you. Say `listen to me` or use `/features on bot` to return.")
+            return
+        await self._send(target, f"**{label}** set to **{value}** for {scope}.")
 
     async def handle_message(self, message):
         text = " ".join(str(message.content or "").lower().strip().split())
         patterns = (
+            (r"^(?:ignore me|stop listening to me|do not interact with me|don't interact with me)$", "bot", "off"),
+            (r"^(?:listen to me|stop ignoring me|interact with me)$", "bot", "on"),
             (r"^(?:turn|switch) (on|off) (?:the )?(?:voice commands?|no prefix commands?)$", "voice", None),
             (r"^enable (?:the )?(?:voice commands?|no prefix commands?)$", "voice", "on"),
             (r"^disable (?:the )?(?:voice commands?|no prefix commands?)$", "voice", "off"),
@@ -104,6 +117,7 @@ class FeaturesCog(commands.Cog):
             app_commands.Choice(name="Use default", value="default"),
         ],
         feature=[
+            app_commands.Choice(name="Completely ignore me", value="bot"),
             app_commands.Choice(name="Voice / no-prefix commands", value="voice"),
             app_commands.Choice(name="Automatic sheet imports", value="sheets"),
         ],
