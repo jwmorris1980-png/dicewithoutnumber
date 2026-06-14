@@ -13,8 +13,14 @@ echo "Code deployed to $TARGET"
 echo "Restoring ownership to ubuntu user..."
 sudo chown -R ubuntu:ubuntu $TARGET
 
-# Restart
+# Keep service definitions and the independent watchdog current.
+sudo cp "$TARGET/dicewithoutnumber.service" /etc/systemd/system/
+sudo cp "$TARGET/dicewithoutnumber-watchdog.service" /etc/systemd/system/
+sudo cp "$TARGET/dicewithoutnumber-watchdog.timer" /etc/systemd/system/
 sudo systemctl daemon-reload
+sudo systemctl enable --now dicewithoutnumber-watchdog.timer
+
+# Restart
 sudo systemctl restart dicewithoutnumber.service
 echo "Bot service restarted."
 sudo systemctl restart imagecatalog.service

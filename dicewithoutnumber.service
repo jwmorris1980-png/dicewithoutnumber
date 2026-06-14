@@ -1,16 +1,17 @@
 [Unit]
 Description=Dice Without Number Discord Bot
-After=network.target
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
-User=root
-WorkingDirectory=/root/DICEwithoutNumber
-ExecStart=/usr/bin/python bot.py
+User=ubuntu
+WorkingDirectory=/home/ubuntu/DICEwithoutNumber
+ExecStart=/home/ubuntu/DICEwithoutNumber/venv/bin/python3 bot.py
 Restart=always
 RestartSec=10
-StandardOutput=append:/root/DICEwithoutNumber/bot_new.log
-StandardError=append:/root/DICEwithoutNumber/bot_new.log
+StandardOutput=append:/home/ubuntu/DICEwithoutNumber/bot.log
+StandardError=append:/home/ubuntu/DICEwithoutNumber/bot.log
 
 [Install]
 WantedBy=multi-user.target

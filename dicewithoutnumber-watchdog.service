@@ -1,0 +1,9 @@
+[Unit]
+Description=Check and recover DICEwithoutNumber bot
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/home/ubuntu/DICEwithoutNumber
+ExecStart=/home/ubuntu/DICEwithoutNumber/venv/bin/python3 scripts/bot_watchdog.py
