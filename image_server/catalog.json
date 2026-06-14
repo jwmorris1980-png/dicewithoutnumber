@@ -1,260 +1,2260 @@
 {
   "images": [
     {
-      "id": "swn-map-001",
+      "id": "dyson-001",
       "type": "map",
-      "name": "Space Station Sector Map",
-      "description": "Classic hand-drawn sector map suitable for Stars Without Number space exploration. Grid-based layout with docking bays and corridors.",
-      "tags": ["space", "station", "interior", "sci-fi", "grid", "corridors"],
+      "name": "The Lair of the Bone Witch",
+      "description": "Compact underground complex with ritual chambers, trapped corridors, and a central crypt. Excellent for a mid-size dungeon delve or pre-Scream installation.",
+      "tags": [
+        "dungeon",
+        "underground",
+        "crypt",
+        "ritual",
+        "compact"
+      ],
       "url": "https://dysonlogos.blog/maps/",
       "thumbnail_url": "",
       "source_page": "https://dysonlogos.blog/maps/",
       "artist": "Dyson Logos",
       "license": "Personal Use (Free)",
       "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
-      "system": ["SWN", "CWN", "WWN", "OSR"],
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN",
+        "OSR"
+      ],
       "added": "2026-06-14",
-      "attribution": "Map by Dyson Logos (dysonlogos.blog). Free for personal use. See https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/ for full terms."
+      "attribution": "Map by Dyson Logos (dysonlogos.blog). Free for personal use. https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/"
     },
     {
-      "id": "swn-map-002",
+      "id": "dyson-002",
       "type": "map",
-      "name": "Abandoned Mining Facility",
-      "description": "Multi-level abandoned industrial complex. Perfect for SWN delve sessions or CWN urban ruins exploration.",
-      "tags": ["industrial", "ruins", "dungeon", "multi-level", "sci-fi", "interior"],
+      "name": "The Sunken Citadel",
+      "description": "Multi-level flooded ruin. Great for aquatic or partially flooded sci-fi derelicts.",
+      "tags": [
+        "ruins",
+        "flooded",
+        "multi-level",
+        "citadel",
+        "collapsed"
+      ],
       "url": "https://dysonlogos.blog/maps/",
       "thumbnail_url": "",
       "source_page": "https://dysonlogos.blog/maps/",
       "artist": "Dyson Logos",
       "license": "Personal Use (Free)",
       "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
-      "system": ["SWN", "CWN"],
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
       "added": "2026-06-14",
-      "attribution": "Map by Dyson Logos (dysonlogos.blog). Free for personal use."
+      "attribution": "Map by Dyson Logos. Free for personal use. https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/"
     },
     {
-      "id": "swn-map-003",
+      "id": "dyson-003",
       "type": "map",
-      "name": "Alien Jungle Planet Surface",
-      "description": "Hand-drawn wilderness overland map with alien flora, rivers, and ruins. Ideal for SWN planet-fall scenarios.",
-      "tags": ["wilderness", "jungle", "alien", "overland", "planet", "ruins"],
+      "name": "Caer Aegas — Hill Fort",
+      "description": "Fortified hilltop settlement with outer walls, inner keep, and scattered outbuildings. Works as a WWN frontier fortress or remote SWN colony.",
+      "tags": [
+        "fort",
+        "settlement",
+        "walls",
+        "hilltop",
+        "military",
+        "WWN"
+      ],
       "url": "https://dysonlogos.blog/maps/",
       "thumbnail_url": "",
       "source_page": "https://dysonlogos.blog/maps/",
       "artist": "Dyson Logos",
       "license": "Personal Use (Free)",
       "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
-      "system": ["SWN", "WWN"],
+      "system": [
+        "WWN",
+        "SWN",
+        "OSR"
+      ],
       "added": "2026-06-14",
-      "attribution": "Map by Dyson Logos (dysonlogos.blog). Free for personal use."
+      "attribution": "Map by Dyson Logos. Free for personal use."
     },
     {
-      "id": "swn-map-004",
+      "id": "dyson-004",
       "type": "map",
-      "name": "Starship Deck Plan - Frigate Class",
-      "description": "Detailed deck plan for a mid-size frigate. Includes bridge, crew quarters, cargo hold, and engine room. VTT-ready.",
-      "tags": ["ship", "starship", "deck-plan", "interior", "tactical", "frigate"],
-      "url": "https://donjon.bin.sh/",
+      "name": "Lorn Keep — Abandoned Stronghold",
+      "description": "Partially collapsed stone keep, interior rooms intact. Perfect SWN abandoned outpost or WWN haunted stronghold.",
+      "tags": [
+        "keep",
+        "stronghold",
+        "abandoned",
+        "ruins",
+        "interior",
+        "stone"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
       "thumbnail_url": "",
-      "source_page": "https://donjon.bin.sh/",
-      "artist": "donjon.bin.sh (public domain generator)",
-      "license": "Public Domain / Free Use",
-      "license_url": "https://donjon.bin.sh/",
-      "system": ["SWN", "CWN"],
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
       "added": "2026-06-14",
-      "attribution": "Generated via donjon.bin.sh random dungeon generator. Public domain. https://donjon.bin.sh/"
+      "attribution": "Map by Dyson Logos. Free for personal use."
     },
     {
-      "id": "swn-map-005",
+      "id": "dyson-005",
       "type": "map",
-      "name": "City Street Grid - Cyberpunk District",
-      "description": "Urban street grid for Cities Without Number. Features alleyways, market stalls, and multi-story buildings footprints.",
-      "tags": ["city", "urban", "street", "cyberpunk", "CWN", "district", "grid"],
+      "name": "The Warped Warrens",
+      "description": "Organic, asymmetric tunnels — ideal for alien hive complexes, psychic-twisted caverns, or mutant lairs in SWN.",
+      "tags": [
+        "tunnels",
+        "alien",
+        "hive",
+        "organic",
+        "asymmetric",
+        "caverns",
+        "mutant"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-006",
+      "type": "map",
+      "name": "Temple of the Obsidian Moon",
+      "description": "Formal temple complex with grand hall, side chapels, and inner sanctum. Good for alien religion sites in SWN or divine cults in WWN.",
+      "tags": [
+        "temple",
+        "religion",
+        "sanctum",
+        "formal",
+        "cult",
+        "chapel"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-007",
+      "type": "map",
+      "name": "Dyson's Delve — Level 1",
+      "description": "Classic multi-room dungeon level, well-balanced for small groups. Level 1 of Dyson's landmark megadungeon.",
+      "tags": [
+        "dungeon",
+        "megadungeon",
+        "classic",
+        "OSR",
+        "rooms",
+        "level-1"
+      ],
+      "url": "https://dysonlogos.blog/2019/01/02/dysons-delve-level-1-revised/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/2019/01/02/dysons-delve-level-1-revised/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use. https://dysonlogos.blog/2019/01/02/dysons-delve-level-1-revised/"
+    },
+    {
+      "id": "dyson-008",
+      "type": "map",
+      "name": "Dyson's Delve — Level 2",
+      "description": "Deeper megadungeon level — more complex layout, multiple access points.",
+      "tags": [
+        "dungeon",
+        "megadungeon",
+        "classic",
+        "OSR",
+        "rooms",
+        "level-2"
+      ],
+      "url": "https://dysonlogos.blog/2019/01/09/dysons-delve-level-2-revised/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/2019/01/09/dysons-delve-level-2-revised/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-009",
+      "type": "map",
+      "name": "Plague Village — Overland",
+      "description": "Small isolated village with surrounding farmland and a church. Adaptable as a rural encounter zone in any setting.",
+      "tags": [
+        "village",
+        "overland",
+        "rural",
+        "settlement",
+        "farmland",
+        "church"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "WWN",
+        "SWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-010",
+      "type": "map",
+      "name": "The Blood Warrens",
+      "description": "Tight, claustrophobic combat map with a central open area and branching escape tunnels. Ideal for ambush scenarios.",
+      "tags": [
+        "combat",
+        "claustrophobic",
+        "ambush",
+        "tunnels",
+        "tactical",
+        "tight"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-011",
+      "type": "map",
+      "name": "Riverside Tavern — Ground Floor",
+      "description": "Ground floor of a riverside inn with common room, kitchen, and storage. Useful for SWN colony rest stops or CWN safe houses.",
+      "tags": [
+        "tavern",
+        "inn",
+        "interior",
+        "ground-floor",
+        "common-room",
+        "safe-house"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-012",
+      "type": "map",
+      "name": "Riverside Tavern — Upper Floor",
+      "description": "Upper floor with private rooms and a balcony. Pair with ground floor for a full inn location.",
+      "tags": [
+        "tavern",
+        "inn",
+        "interior",
+        "upper-floor",
+        "private-rooms",
+        "balcony"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-013",
+      "type": "map",
+      "name": "Wizard's Tower — Exterior",
+      "description": "Tall isolated tower with walled courtyard. Ideal for an eccentric technomancer's lair in SWN or a mage in WWN.",
+      "tags": [
+        "tower",
+        "mage",
+        "exterior",
+        "walled",
+        "isolated",
+        "technomancer"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "WWN",
+        "SWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-014",
+      "type": "map",
+      "name": "The Black Mausoleum",
+      "description": "Sprawling tomb complex with burial chambers, false passages, and a central vault.",
+      "tags": [
+        "tomb",
+        "mausoleum",
+        "burial",
+        "undead",
+        "vault",
+        "horror",
+        "false-passages"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "WWN",
+        "SWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-015",
+      "type": "map",
+      "name": "Sewers of the Old City",
+      "description": "Branching sewer tunnels beneath a city — great for CWN urban infiltration or SWN colony underbelly.",
+      "tags": [
+        "sewers",
+        "urban",
+        "tunnels",
+        "infiltration",
+        "city",
+        "underground",
+        "CWN"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "CWN",
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-016",
+      "type": "map",
+      "name": "Small Merchant Ship Deck Plan",
+      "description": "Compact merchant vessel: bridge, crew quarters, cargo hold. Perfect SWN free trader ship.",
+      "tags": [
+        "ship",
+        "merchant",
+        "deck-plan",
+        "small",
+        "bridge",
+        "cargo",
+        "trader"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-017",
+      "type": "map",
+      "name": "Goblin Caves — Hive Complex",
+      "description": "Sprawling multi-entrance cave system with dozens of small chambers. Re-skin as alien insectoid hive for SWN.",
+      "tags": [
+        "caves",
+        "hive",
+        "alien",
+        "insectoid",
+        "multi-entrance",
+        "complex"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-018",
+      "type": "map",
+      "name": "The Collapsed Cathedral",
+      "description": "Ruined cathedral interior with fallen pillars, open sky sections, and underground crypt access.",
+      "tags": [
+        "cathedral",
+        "ruins",
+        "collapsed",
+        "pillars",
+        "multi-level",
+        "crypt",
+        "interior"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "WWN",
+        "SWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-019",
+      "type": "map",
+      "name": "Prison Block — Secure Facility",
+      "description": "Cell block with guard station, interrogation room, and exercise yard. Direct SWN/CWN application.",
+      "tags": [
+        "prison",
+        "cell-block",
+        "guard",
+        "interrogation",
+        "secure",
+        "facility",
+        "CWN"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "dyson-020",
+      "type": "map",
+      "name": "The Dragon's Roost — Mountain Peak",
+      "description": "Mountain-top platform and cave system. Works as a high-altitude base, alien artifact site, or psychic beacon.",
+      "tags": [
+        "mountain",
+        "peak",
+        "cave",
+        "dramatic",
+        "high-altitude",
+        "base",
+        "beacon"
+      ],
+      "url": "https://dysonlogos.blog/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://dysonlogos.blog/maps/",
+      "artist": "Dyson Logos",
+      "license": "Personal Use (Free)",
+      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Dyson Logos. Free for personal use."
+    },
+    {
+      "id": "2mt-001",
+      "type": "map",
+      "name": "2MT — Sci-Fi Ship Corridor",
+      "description": "Clean sci-fi corridor with blast doors and wall panels. High quality VTT-ready. Direct SWN tactical use.",
+      "tags": [
+        "corridor",
+        "sci-fi",
+        "ship",
+        "blast-doors",
+        "VTT",
+        "tactical"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Ross McConnell / 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-002",
+      "type": "map",
+      "name": "2MT — Tavern Ground Floor VTT",
+      "description": "Detailed full-colour tavern interior, VTT grid ready. Safe house or meeting point in any setting.",
+      "tags": [
+        "tavern",
+        "interior",
+        "VTT",
+        "full-colour",
+        "ground-floor",
+        "safe-house"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-003",
+      "type": "map",
+      "name": "2MT — City Street Battle Map",
+      "description": "VTT-ready city street with market stalls and alleys. Excellent CWN urban encounter map.",
+      "tags": [
+        "city",
+        "street",
+        "urban",
+        "market",
+        "VTT",
+        "alley",
+        "CWN"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "CWN",
+        "WWN",
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-004",
+      "type": "map",
+      "name": "2MT — Dungeon Room Set",
+      "description": "Modular dungeon room tiles in full colour. Mix and match for any underground complex.",
+      "tags": [
+        "dungeon",
+        "modular",
+        "tiles",
+        "stone",
+        "rooms",
+        "VTT",
+        "underground"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-005",
+      "type": "map",
+      "name": "2MT — Forest Clearing Battle Map",
+      "description": "Detailed wooded clearing with stream, rocks, and fallen trees. Alien jungle landing zone or wilderness ambush.",
+      "tags": [
+        "forest",
+        "clearing",
+        "wilderness",
+        "stream",
+        "rocks",
+        "battle",
+        "VTT"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-006",
+      "type": "map",
+      "name": "2MT — Ruined Temple Exterior",
+      "description": "Crumbling temple exterior with overgrown courtyard. Alien ruin or pre-Scream remnant.",
+      "tags": [
+        "temple",
+        "ruins",
+        "exterior",
+        "courtyard",
+        "overgrown",
+        "alien"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-007",
+      "type": "map",
+      "name": "2MT — Abandoned Warehouse",
+      "description": "Large warehouse interior with crates, loading dock, and catwalk. Classic CWN crime/heist location.",
+      "tags": [
+        "warehouse",
+        "industrial",
+        "crates",
+        "dock",
+        "catwalk",
+        "CWN",
+        "heist",
+        "crime"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "CWN",
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-008",
+      "type": "map",
+      "name": "2MT — Rooftop Chase Map",
+      "description": "Multi-building rooftop battle map with vents and railings. Perfect for CWN pursuit encounters.",
+      "tags": [
+        "rooftop",
+        "chase",
+        "urban",
+        "multi-building",
+        "vents",
+        "CWN",
+        "pursuit"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "CWN",
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-009",
+      "type": "map",
+      "name": "2MT — Underground Lab / Bunker",
+      "description": "Multi-room underground lab or bunker with security doors. SWN research facility or CWN megacorp basement.",
+      "tags": [
+        "lab",
+        "bunker",
+        "underground",
+        "security",
+        "research",
+        "multi-room",
+        "megacorp"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-010",
+      "type": "map",
+      "name": "2MT — Desert Ruins",
+      "description": "Sun-bleached ruins in arid terrain. Alien desert planet surface or ancient precursor site.",
+      "tags": [
+        "desert",
+        "ruins",
+        "arid",
+        "alien",
+        "planet",
+        "precursor",
+        "terrain"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "2mt-011",
+      "type": "portrait",
+      "name": "2MT — Free Character Token Pack",
+      "description": "2-Minute Tabletop character tokens available free. Clean top-down token style for VTT use.",
+      "tags": [
+        "token",
+        "VTT",
+        "character",
+        "free",
+        "top-down",
+        "clean"
+      ],
+      "url": "https://2minutetabletop.com/product-category/free/",
+      "thumbnail_url": "",
+      "source_page": "https://2minutetabletop.com/product-category/free/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "Free (personal/VTT use with attribution)",
+      "license_url": "https://2minutetabletop.com/terms-of-use/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Tokens by 2-Minute Tabletop. Free personal/VTT use. https://2minutetabletop.com"
+    },
+    {
+      "id": "wata-001",
+      "type": "map",
+      "name": "Watabou — Procedural City Generator",
+      "description": "Full procedural city map generator. Export any city for your campaign. Free browser tool, no login.",
+      "tags": [
+        "city",
+        "procedural",
+        "generator",
+        "urban",
+        "full-colour",
+        "districts"
+      ],
       "url": "https://watabou.itch.io/medieval-fantasy-city-generator",
       "thumbnail_url": "",
       "source_page": "https://watabou.itch.io/medieval-fantasy-city-generator",
       "artist": "Watabou (watabou.itch.io)",
-      "license": "Free (CC0-like, export for personal use)",
+      "license": "Free (personal use, export)",
       "license_url": "https://watabou.itch.io/medieval-fantasy-city-generator",
-      "system": ["CWN", "SWN"],
+      "system": [
+        "WWN",
+        "CWN",
+        "SWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "City map generated with Watabou's City Generator (watabou.itch.io). Free for personal/non-commercial use."
+      "attribution": "Generated with Watabou's City Generator (watabou.itch.io). Free for personal use."
     },
     {
-      "id": "swn-map-006",
+      "id": "wata-002",
       "type": "map",
-      "name": "Ancient Alien Ruins - Precursor Site",
-      "description": "Mysterious non-human architecture. Ideal for Mandate-era Precursor ruins in SWN.",
-      "tags": ["ruins", "alien", "precursor", "ancient", "sci-fi", "mysterious"],
-      "url": "https://dysonlogos.blog/maps/",
+      "name": "Watabou — One Page Dungeon Generator",
+      "description": "Procedurally generated one-page dungeon. Fresh layout every time. Export and use immediately.",
+      "tags": [
+        "dungeon",
+        "one-page",
+        "procedural",
+        "generator",
+        "compact",
+        "instant"
+      ],
+      "url": "https://watabou.itch.io/one-page-dungeon",
       "thumbnail_url": "",
-      "source_page": "https://dysonlogos.blog/maps/",
-      "artist": "Dyson Logos",
-      "license": "Personal Use (Free)",
-      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
-      "system": ["SWN"],
+      "source_page": "https://watabou.itch.io/one-page-dungeon",
+      "artist": "Watabou (watabou.itch.io)",
+      "license": "Free (personal use, export)",
+      "license_url": "https://watabou.itch.io/one-page-dungeon",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
       "added": "2026-06-14",
-      "attribution": "Map by Dyson Logos (dysonlogos.blog). Free for personal use."
+      "attribution": "Generated with Watabou's One Page Dungeon (watabou.itch.io). Free for personal use."
     },
     {
-      "id": "swn-map-007",
+      "id": "wata-003",
       "type": "map",
-      "name": "Underground Bunker Complex",
-      "description": "Cold-war style underground bunker adapted for sci-fi. Multiple blast doors, armory, command center.",
-      "tags": ["bunker", "underground", "military", "interior", "sci-fi", "compound"],
-      "url": "https://dysonlogos.blog/maps/",
+      "name": "Watabou — Perilous Shores Island Map",
+      "description": "Procedural island and coastline map generator. Export for SWN ocean planets or WWN island nations.",
+      "tags": [
+        "island",
+        "coastline",
+        "overland",
+        "ocean",
+        "procedural",
+        "shore"
+      ],
+      "url": "https://watabou.itch.io/perilous-shores",
       "thumbnail_url": "",
-      "source_page": "https://dysonlogos.blog/maps/",
-      "artist": "Dyson Logos",
-      "license": "Personal Use (Free)",
-      "license_url": "https://dysonlogos.blog/maps/the-free-maps-of-dyson-logos/",
-      "system": ["SWN", "CWN"],
+      "source_page": "https://watabou.itch.io/perilous-shores",
+      "artist": "Watabou (watabou.itch.io)",
+      "license": "Free (personal use, export)",
+      "license_url": "https://watabou.itch.io/perilous-shores",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Map by Dyson Logos (dysonlogos.blog). Free for personal use."
+      "attribution": "Generated with Watabou's Perilous Shores (watabou.itch.io). Free for personal use."
     },
     {
-      "id": "swn-map-008",
+      "id": "wata-004",
       "type": "map",
-      "name": "One Page Dungeon - Derelict Cargo Hauler",
-      "description": "Award-winning one-page dungeon adapted for SWN. A derelict cargo hauler drifting near a gas giant.",
-      "tags": ["ship", "derelict", "cargo", "space", "dungeon", "one-page"],
+      "name": "Watabou — Village Generator",
+      "description": "Small village layout with named buildings. Great for WWN hamlets or isolated SWN colony outposts.",
+      "tags": [
+        "village",
+        "hamlet",
+        "settlement",
+        "small",
+        "colony",
+        "outpost",
+        "generator"
+      ],
+      "url": "https://watabou.itch.io/village-generator",
+      "thumbnail_url": "",
+      "source_page": "https://watabou.itch.io/village-generator",
+      "artist": "Watabou (watabou.itch.io)",
+      "license": "Free (personal use, export)",
+      "license_url": "https://watabou.itch.io/village-generator",
+      "system": [
+        "WWN",
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Generated with Watabou's Village Generator (watabou.itch.io). Free for personal use."
+    },
+    {
+      "id": "wata-005",
+      "type": "map",
+      "name": "Watabou — Neighbourhood Generator",
+      "description": "City neighbourhood with street-level detail. Excellent for CWN districts.",
+      "tags": [
+        "neighbourhood",
+        "urban",
+        "district",
+        "street-level",
+        "CWN",
+        "city"
+      ],
+      "url": "https://watabou.itch.io/neighbourhood",
+      "thumbnail_url": "",
+      "source_page": "https://watabou.itch.io/neighbourhood",
+      "artist": "Watabou (watabou.itch.io)",
+      "license": "Free (personal use, export)",
+      "license_url": "https://watabou.itch.io/neighbourhood",
+      "system": [
+        "CWN",
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Generated with Watabou's Neighbourhood Generator (watabou.itch.io). Free for personal use."
+    },
+    {
+      "id": "wata-006",
+      "type": "map",
+      "name": "Watabou — Procgen Mansion Layout",
+      "description": "Procedurally generated mansion floor plan with rooms and grounds. Corporate HQ or noble estate.",
+      "tags": [
+        "mansion",
+        "interior",
+        "floor-plan",
+        "corporate",
+        "estate",
+        "rooms"
+      ],
+      "url": "https://watabou.itch.io/procgen-mansion",
+      "thumbnail_url": "",
+      "source_page": "https://watabou.itch.io/procgen-mansion",
+      "artist": "Watabou (watabou.itch.io)",
+      "license": "Free (personal use, export)",
+      "license_url": "https://watabou.itch.io/procgen-mansion",
+      "system": [
+        "CWN",
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Generated with Watabou's Procgen Mansion (watabou.itch.io). Free for personal use."
+    },
+    {
+      "id": "wata-007",
+      "type": "map",
+      "name": "Watabou — Dungeon Cells Generator",
+      "description": "Tight cell-by-cell dungeon generator. Produces compact tactical maps fast.",
+      "tags": [
+        "dungeon",
+        "cells",
+        "compact",
+        "tactical",
+        "generator",
+        "tight"
+      ],
+      "url": "https://watabou.itch.io/cells",
+      "thumbnail_url": "",
+      "source_page": "https://watabou.itch.io/cells",
+      "artist": "Watabou (watabou.itch.io)",
+      "license": "Free (personal use, export)",
+      "license_url": "https://watabou.itch.io/cells",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Generated with Watabou's Dungeon Cells (watabou.itch.io). Free for personal use."
+    },
+    {
+      "id": "donjon-001",
+      "type": "map",
+      "name": "Donjon — Random Fantasy Dungeon",
+      "description": "Procedurally generated dungeon map from donjon. Grid-based, customizable size, public domain output.",
+      "tags": [
+        "dungeon",
+        "procedural",
+        "grid",
+        "standard",
+        "public-domain",
+        "random"
+      ],
+      "url": "https://donjon.bin.sh/fantasy/dungeon/",
+      "thumbnail_url": "",
+      "source_page": "https://donjon.bin.sh/fantasy/dungeon/",
+      "artist": "donjon.bin.sh",
+      "license": "Public Domain",
+      "license_url": "https://donjon.bin.sh/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map generated at donjon.bin.sh. Public domain."
+    },
+    {
+      "id": "donjon-002",
+      "type": "map",
+      "name": "Donjon — Sci-Fi Deck Plan Generator",
+      "description": "Sci-fi starship or space station floor plan generator. Fully customizable. Public domain output.",
+      "tags": [
+        "sci-fi",
+        "deck-plan",
+        "starship",
+        "station",
+        "procedural",
+        "public-domain"
+      ],
+      "url": "https://donjon.bin.sh/scifi/dungeon/",
+      "thumbnail_url": "",
+      "source_page": "https://donjon.bin.sh/scifi/dungeon/",
+      "artist": "donjon.bin.sh",
+      "license": "Public Domain",
+      "license_url": "https://donjon.bin.sh/",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Deck plan generated at donjon.bin.sh/scifi/dungeon/. Public domain."
+    },
+    {
+      "id": "donjon-003",
+      "type": "map",
+      "name": "Donjon — World Map Generator",
+      "description": "Hex-grid world map with terrain, rivers, and place names. Full planet or continent.",
+      "tags": [
+        "world",
+        "overland",
+        "hex",
+        "terrain",
+        "rivers",
+        "planet",
+        "continent"
+      ],
+      "url": "https://donjon.bin.sh/fantasy/world/",
+      "thumbnail_url": "",
+      "source_page": "https://donjon.bin.sh/fantasy/world/",
+      "artist": "donjon.bin.sh",
+      "license": "Public Domain",
+      "license_url": "https://donjon.bin.sh/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "World map generated at donjon.bin.sh. Public domain."
+    },
+    {
+      "id": "donjon-004",
+      "type": "map",
+      "name": "Donjon — Wilderness Encounter Map",
+      "description": "Random wilderness encounter area. Forest, grassland, or wasteland options.",
+      "tags": [
+        "wilderness",
+        "encounter",
+        "forest",
+        "grassland",
+        "wasteland",
+        "random",
+        "overland"
+      ],
+      "url": "https://donjon.bin.sh/fantasy/wilderness/",
+      "thumbnail_url": "",
+      "source_page": "https://donjon.bin.sh/fantasy/wilderness/",
+      "artist": "donjon.bin.sh",
+      "license": "Public Domain",
+      "license_url": "https://donjon.bin.sh/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Wilderness map generated at donjon.bin.sh. Public domain."
+    },
+    {
+      "id": "donjon-005",
+      "type": "map",
+      "name": "Donjon — Town / Settlement Map",
+      "description": "Procedural town map generator with building placement and named districts.",
+      "tags": [
+        "town",
+        "settlement",
+        "procedural",
+        "named",
+        "districts",
+        "buildings"
+      ],
+      "url": "https://donjon.bin.sh/fantasy/town/",
+      "thumbnail_url": "",
+      "source_page": "https://donjon.bin.sh/fantasy/town/",
+      "artist": "donjon.bin.sh",
+      "license": "Public Domain",
+      "license_url": "https://donjon.bin.sh/",
+      "system": [
+        "SWN",
+        "WWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Town map generated at donjon.bin.sh. Public domain."
+    },
+    {
+      "id": "1pd-001",
+      "type": "map",
+      "name": "1PDC — Derelict Colony Ship",
+      "description": "Complete derelict colony ship in one page — map, encounter tables, hooks. CC BY, credit the author.",
+      "tags": [
+        "ship",
+        "derelict",
+        "colony",
+        "one-page",
+        "sci-fi",
+        "encounter-table"
+      ],
       "url": "https://1pdcamp.itch.io/",
       "thumbnail_url": "",
       "source_page": "https://1pdcamp.itch.io/",
-      "artist": "One Page Dungeon Contest (various, CC BY)",
+      "artist": "Various (One Page Dungeon Contest)",
       "license": "CC BY 4.0",
       "license_url": "https://creativecommons.org/licenses/by/4.0/",
-      "system": ["SWN"],
+      "system": [
+        "SWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "One Page Dungeon Contest entry. Licensed under CC BY 4.0. https://1pdcamp.itch.io/"
+      "attribution": "One Page Dungeon Contest entry. CC BY 4.0 — credit the individual author listed. https://1pdcamp.itch.io/"
     },
     {
-      "id": "swn-portrait-001",
+      "id": "1pd-002",
+      "type": "map",
+      "name": "1PDC — Crashed Spacecraft",
+      "description": "Crashed ship buried in alien terrain. Full encounter and loot in one page.",
+      "tags": [
+        "ship",
+        "crashed",
+        "alien",
+        "terrain",
+        "one-page",
+        "encounter",
+        "loot"
+      ],
+      "url": "https://1pdcamp.itch.io/",
+      "thumbnail_url": "",
+      "source_page": "https://1pdcamp.itch.io/",
+      "artist": "Various (One Page Dungeon Contest)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "One Page Dungeon Contest. CC BY 4.0. https://1pdcamp.itch.io/"
+    },
+    {
+      "id": "1pd-003",
+      "type": "map",
+      "name": "1PDC — Cult Compound",
+      "description": "Sealed compound with ritual areas, guard posts, and a hidden basement.",
+      "tags": [
+        "cult",
+        "compound",
+        "ritual",
+        "guard",
+        "basement",
+        "one-page"
+      ],
+      "url": "https://1pdcamp.itch.io/",
+      "thumbnail_url": "",
+      "source_page": "https://1pdcamp.itch.io/",
+      "artist": "Various (One Page Dungeon Contest)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "One Page Dungeon Contest. CC BY 4.0. https://1pdcamp.itch.io/"
+    },
+    {
+      "id": "1pd-004",
+      "type": "map",
+      "name": "1PDC — Orbital Platform",
+      "description": "Small orbital platform with docking clamps, habitat ring, and reactor core.",
+      "tags": [
+        "orbital",
+        "platform",
+        "space",
+        "docking",
+        "habitat",
+        "reactor",
+        "one-page",
+        "sci-fi"
+      ],
+      "url": "https://1pdcamp.itch.io/",
+      "thumbnail_url": "",
+      "source_page": "https://1pdcamp.itch.io/",
+      "artist": "Various (One Page Dungeon Contest)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "One Page Dungeon Contest. CC BY 4.0. https://1pdcamp.itch.io/"
+    },
+    {
+      "id": "1pd-005",
+      "type": "map",
+      "name": "1PDC — Border Fortress",
+      "description": "Frontier military fort. Watchtowers, barracks, armoury. Colonial SWN outpost.",
+      "tags": [
+        "fortress",
+        "border",
+        "military",
+        "watchtower",
+        "barracks",
+        "armoury",
+        "colonial"
+      ],
+      "url": "https://1pdcamp.itch.io/",
+      "thumbnail_url": "",
+      "source_page": "https://1pdcamp.itch.io/",
+      "artist": "Various (One Page Dungeon Contest)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "One Page Dungeon Contest. CC BY 4.0. https://1pdcamp.itch.io/"
+    },
+    {
+      "id": "1pd-006",
+      "type": "map",
+      "name": "1PDC — Haunted Research Station",
+      "description": "Isolated research station with something very wrong in it. Full one-page adventure.",
+      "tags": [
+        "research",
+        "station",
+        "horror",
+        "isolated",
+        "sci-fi",
+        "one-page",
+        "haunted"
+      ],
+      "url": "https://1pdcamp.itch.io/",
+      "thumbnail_url": "",
+      "source_page": "https://1pdcamp.itch.io/",
+      "artist": "Various (One Page Dungeon Contest)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "One Page Dungeon Contest. CC BY 4.0. https://1pdcamp.itch.io/"
+    },
+    {
+      "id": "1pd-007",
+      "type": "map",
+      "name": "1PDC — Underground Rebel Base",
+      "description": "Hidden rebel or resistance base carved into a mountain or asteroid.",
+      "tags": [
+        "rebel",
+        "resistance",
+        "base",
+        "underground",
+        "asteroid",
+        "mountain",
+        "hidden"
+      ],
+      "url": "https://1pdcamp.itch.io/",
+      "thumbnail_url": "",
+      "source_page": "https://1pdcamp.itch.io/",
+      "artist": "Various (One Page Dungeon Contest)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "One Page Dungeon Contest. CC BY 4.0. https://1pdcamp.itch.io/"
+    },
+    {
+      "id": "scrawl-001",
+      "type": "map",
+      "name": "Dungeon Scrawl — Custom Hand-Draw Tool",
+      "description": "Free browser tool to create clean hand-drawn dungeon maps in minutes. Export PNG/PDF. No login needed.",
+      "tags": [
+        "hand-drawn",
+        "custom",
+        "browser-tool",
+        "PNG",
+        "PDF",
+        "no-login",
+        "fast"
+      ],
+      "url": "https://app.dungeonscrawl.com/",
+      "thumbnail_url": "",
+      "source_page": "https://app.dungeonscrawl.com/",
+      "artist": "Dungeon Scrawl",
+      "license": "Free (export for personal use)",
+      "license_url": "https://app.dungeonscrawl.com/",
+      "system": [
+        "SWN",
+        "WWN",
+        "CWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map created with Dungeon Scrawl (dungeonscrawl.com). Free for personal use."
+    },
+    {
+      "id": "rpgms-001",
+      "type": "map",
+      "name": "RPGMapShare — Community Cave Map",
+      "description": "Community-contributed cave maps. All maps on RPGMapShare are free to use with credit to the original author.",
+      "tags": [
+        "cave",
+        "community",
+        "free",
+        "credit",
+        "underground",
+        "natural"
+      ],
+      "url": "https://rpgmapshare.com/",
+      "thumbnail_url": "",
+      "source_page": "https://rpgmapshare.com/",
+      "artist": "RPGMapShare community (various)",
+      "license": "Free with Attribution",
+      "license_url": "https://rpgmapshare.com/faq/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map from RPGMapShare.com. Credit the original author listed on the download page."
+    },
+    {
+      "id": "rpgms-002",
+      "type": "map",
+      "name": "RPGMapShare — City Encounter Map",
+      "description": "Detailed city encounter battle maps. VTT ready. Credit individual authors.",
+      "tags": [
+        "city",
+        "encounter",
+        "VTT",
+        "battle-map",
+        "community",
+        "urban"
+      ],
+      "url": "https://rpgmapshare.com/",
+      "thumbnail_url": "",
+      "source_page": "https://rpgmapshare.com/",
+      "artist": "RPGMapShare community (various)",
+      "license": "Free with Attribution",
+      "license_url": "https://rpgmapshare.com/faq/",
+      "system": [
+        "CWN",
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map from RPGMapShare.com. Credit individual authors as listed."
+    },
+    {
+      "id": "rpgms-003",
+      "type": "map",
+      "name": "RPGMapShare — Sci-Fi / Space Maps",
+      "description": "Sci-fi specific maps — stations, ships, labs. Filter by sci-fi tag on site.",
+      "tags": [
+        "sci-fi",
+        "space",
+        "station",
+        "ship",
+        "lab",
+        "VTT",
+        "community"
+      ],
+      "url": "https://rpgmapshare.com/",
+      "thumbnail_url": "",
+      "source_page": "https://rpgmapshare.com/",
+      "artist": "RPGMapShare community (various)",
+      "license": "Free with Attribution",
+      "license_url": "https://rpgmapshare.com/faq/",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map from RPGMapShare.com. Credit individual authors as listed."
+    },
+    {
+      "id": "fa-001",
+      "type": "map",
+      "name": "Forgotten Adventures — Free Map Pack",
+      "description": "Professional-quality VTT maps. Free tier available without Patreon. Clean modern art style.",
+      "tags": [
+        "VTT",
+        "professional",
+        "free-tier",
+        "modern",
+        "clean",
+        "battle-map"
+      ],
+      "url": "https://www.forgotten-adventures.net/product-category/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://www.forgotten-adventures.net/product-category/maps/",
+      "artist": "Forgotten Adventures",
+      "license": "Free (personal/VTT use)",
+      "license_url": "https://www.forgotten-adventures.net/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Forgotten Adventures (forgotten-adventures.net). Free for personal/VTT use."
+    },
+    {
+      "id": "fa-002",
       "type": "portrait",
-      "name": "Scifi Soldier - Female Operative",
-      "description": "Armored female operative in tactical gear. Suitable for SWN Warriors or Experts.",
-      "tags": ["female", "soldier", "operative", "armored", "human", "warrior"],
-      "url": "https://opengameart.org/content/painterly-spell-icons-part-4",
+      "name": "Forgotten Adventures — Free Character Tokens",
+      "description": "High quality round character tokens. Diverse types. Free tier.",
+      "tags": [
+        "token",
+        "round",
+        "character",
+        "diverse",
+        "high-quality",
+        "free-tier",
+        "VTT"
+      ],
+      "url": "https://www.forgotten-adventures.net/product-category/tokens/",
+      "thumbnail_url": "",
+      "source_page": "https://www.forgotten-adventures.net/product-category/tokens/",
+      "artist": "Forgotten Adventures",
+      "license": "Free (personal/VTT use)",
+      "license_url": "https://www.forgotten-adventures.net/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Tokens by Forgotten Adventures (forgotten-adventures.net). Free for personal/VTT use."
+    },
+    {
+      "id": "crosshead-001",
+      "type": "map",
+      "name": "Crosshead Studios — Free City Map",
+      "description": "High quality isometric and top-down city maps. Free monthly releases.",
+      "tags": [
+        "city",
+        "isometric",
+        "top-down",
+        "high-quality",
+        "monthly",
+        "urban"
+      ],
+      "url": "https://crossheadstudios.com/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://crossheadstudios.com/maps/",
+      "artist": "Crosshead Studios",
+      "license": "Free (personal/non-commercial with credit)",
+      "license_url": "https://crossheadstudios.com/",
+      "system": [
+        "CWN",
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Crosshead Studios (crossheadstudios.com). Free personal/non-commercial use with credit."
+    },
+    {
+      "id": "crosshead-002",
+      "type": "map",
+      "name": "Crosshead Studios — Free Dungeon Map",
+      "description": "Clean, detailed dungeon battle map with Crosshead's distinctive lighting style.",
+      "tags": [
+        "dungeon",
+        "battle-map",
+        "detailed",
+        "coloured-lighting",
+        "clean",
+        "VTT"
+      ],
+      "url": "https://crossheadstudios.com/maps/",
+      "thumbnail_url": "",
+      "source_page": "https://crossheadstudios.com/maps/",
+      "artist": "Crosshead Studios",
+      "license": "Free (personal/non-commercial with credit)",
+      "license_url": "https://crossheadstudios.com/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map by Crosshead Studios (crossheadstudios.com). Free personal/non-commercial use with credit."
+    },
+    {
+      "id": "oga-p-001",
+      "type": "portrait",
+      "name": "OGA — Justin Nichol Painterly Portrait Pack",
+      "description": "Large pack of hand-painted RPG character portraits. Warriors, rogues, mages — re-skin for SWN classes. CC0.",
+      "tags": [
+        "painterly",
+        "warrior",
+        "mage",
+        "rogue",
+        "large-pack",
+        "CC0",
+        "Justin-Nichol"
+      ],
+      "url": "https://opengameart.org/users/justin-nichol",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/users/justin-nichol",
       "artist": "Justin Nichol",
       "license": "CC0 (Public Domain)",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "system": ["SWN", "CWN"],
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait by Justin Nichol. CC0 Public Domain. Source: https://opengameart.org/users/justin-nichol"
+      "attribution": "Portrait by Justin Nichol. CC0 Public Domain. https://opengameart.org/users/justin-nichol"
     },
     {
-      "id": "swn-portrait-002",
+      "id": "oga-p-002",
       "type": "portrait",
-      "name": "Alien Diplomat - Non-Human NPC",
-      "description": "Striking non-human alien in formal attire. Great for alien NPCs in SWN first-contact scenarios.",
-      "tags": ["alien", "npc", "diplomat", "non-human", "formal", "exotic"],
+      "name": "OGA — Cyberpunk Character Tokens",
+      "description": "Flat-colour cyberpunk VTT tokens. Hackers, street samurai, corp agents, civilians.",
+      "tags": [
+        "cyberpunk",
+        "token",
+        "VTT",
+        "hacker",
+        "street-samurai",
+        "corp",
+        "agent",
+        "civilian"
+      ],
       "url": "https://opengameart.org/",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/",
       "artist": "OpenGameArt contributors",
       "license": "CC BY 3.0",
       "license_url": "https://creativecommons.org/licenses/by/3.0/",
-      "system": ["SWN"],
+      "system": [
+        "CWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC BY 3.0. See source page for individual artist credit."
+      "attribution": "Tokens from OpenGameArt.org. CC BY 3.0 — credit the artist listed on the source page."
     },
     {
-      "id": "swn-portrait-003",
+      "id": "oga-p-003",
       "type": "portrait",
-      "name": "Street Fixer - Male CWN Contact",
-      "description": "Grizzled middle-aged street fixer in a long coat. Perfect for CWN fixers, contacts, or veteran operatives.",
-      "tags": ["male", "fixer", "contact", "cyberpunk", "street", "veteran", "CWN"],
-      "url": "https://opengameart.org/",
-      "thumbnail_url": "",
-      "source_page": "https://opengameart.org/",
-      "artist": "OpenGameArt contributors",
-      "license": "CC BY 3.0",
-      "license_url": "https://creativecommons.org/licenses/by/3.0/",
-      "system": ["CWN", "SWN"],
-      "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC BY 3.0."
-    },
-    {
-      "id": "swn-portrait-004",
-      "type": "portrait",
-      "name": "Psychic Adept - Female",
-      "description": "Young woman in meditative pose with subtle psychic energy effects. Ideal for SWN Psychic characters.",
-      "tags": ["female", "psychic", "adept", "powers", "mystic", "SWN"],
+      "name": "OGA — Sci-Fi Soldier Token Pack",
+      "description": "Tactical token set — heavy infantry, scout, officer, medic. SWN mercenary company.",
+      "tags": [
+        "soldier",
+        "token",
+        "tactical",
+        "infantry",
+        "scout",
+        "officer",
+        "medic",
+        "mercenary"
+      ],
       "url": "https://opengameart.org/",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/",
       "artist": "OpenGameArt contributors",
       "license": "CC0 (Public Domain)",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "system": ["SWN"],
+      "system": [
+        "SWN",
+        "CWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC0 Public Domain."
+      "attribution": "Tokens from OpenGameArt.org. CC0 Public Domain."
     },
     {
-      "id": "swn-portrait-005",
+      "id": "oga-p-004",
       "type": "portrait",
-      "name": "Ship Captain - Veteran Spacer",
-      "description": "Weathered starship captain in worn uniform with captain's insignia. Great for SWN ship crew portraits.",
-      "tags": ["captain", "spacer", "veteran", "ship", "male", "uniform"],
+      "name": "OGA — Fantasy NPC Portraits 30-Pack",
+      "description": "30 varied NPC busts — merchants, guards, nobles, scholars. Re-skin for SWN patrons and contacts.",
+      "tags": [
+        "npc",
+        "merchant",
+        "guard",
+        "noble",
+        "scholar",
+        "patron",
+        "contact",
+        "30-pack"
+      ],
       "url": "https://opengameart.org/",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/",
       "artist": "OpenGameArt contributors",
       "license": "CC BY 3.0",
       "license_url": "https://creativecommons.org/licenses/by/3.0/",
-      "system": ["SWN", "CWN"],
+      "system": [
+        "SWN",
+        "WWN",
+        "CWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC BY 3.0."
+      "attribution": "Portraits from OpenGameArt.org. CC BY 3.0."
     },
     {
-      "id": "swn-portrait-006",
+      "id": "oga-p-005",
       "type": "portrait",
-      "name": "Corporate Agent - CWN Antagonist",
-      "description": "Sharp-suited corporate operative with cold expression. Perfect CWN faction NPC or antagonist.",
-      "tags": ["corporate", "agent", "antagonist", "suit", "CWN", "npc", "female"],
+      "name": "OGA — Alien Creature Portraits",
+      "description": "Non-humanoid alien portraits — insectoid, reptilian, energy-being, aquatic.",
+      "tags": [
+        "alien",
+        "non-humanoid",
+        "creature",
+        "insectoid",
+        "reptilian",
+        "aquatic",
+        "energy-being"
+      ],
+      "url": "https://opengameart.org/",
+      "thumbnail_url": "",
+      "source_page": "https://opengameart.org/",
+      "artist": "OpenGameArt contributors",
+      "license": "CC0 (Public Domain)",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portraits from OpenGameArt.org. CC0 Public Domain."
+    },
+    {
+      "id": "oga-p-006",
+      "type": "portrait",
+      "name": "OGA — Robot / Synthetic Portraits",
+      "description": "Robotic and synthetic character faces. SWN True AI, androids, and VI companions.",
+      "tags": [
+        "robot",
+        "synthetic",
+        "android",
+        "AI",
+        "VI",
+        "mechanical",
+        "True-AI"
+      ],
       "url": "https://opengameart.org/",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/",
       "artist": "OpenGameArt contributors",
       "license": "CC BY 3.0",
       "license_url": "https://creativecommons.org/licenses/by/3.0/",
-      "system": ["CWN"],
+      "system": [
+        "SWN",
+        "CWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC BY 3.0."
+      "attribution": "Portraits from OpenGameArt.org. CC BY 3.0."
     },
     {
-      "id": "swn-portrait-007",
+      "id": "oga-p-007",
       "type": "portrait",
-      "name": "Free Merchant - Traveller NPC",
-      "description": "Roguish free trader type in practical clothes. Works for SWN traders, smugglers, or patrons.",
-      "tags": ["merchant", "trader", "smuggler", "patron", "male", "rogue"],
+      "name": "OGA — Villain / Antagonist Pack",
+      "description": "Menacing portraits — corrupt officials, crime lords, warlords, cult leaders.",
+      "tags": [
+        "villain",
+        "antagonist",
+        "corrupt",
+        "crime-lord",
+        "warlord",
+        "cult-leader",
+        "npc"
+      ],
+      "url": "https://opengameart.org/",
+      "thumbnail_url": "",
+      "source_page": "https://opengameart.org/",
+      "artist": "OpenGameArt contributors",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portraits from OpenGameArt.org. CC BY 3.0."
+    },
+    {
+      "id": "oga-p-008",
+      "type": "portrait",
+      "name": "OGA — Medic / Doctor Portraits",
+      "description": "Clinical medic/doctor portraits. SWN ship medics, CWN street docs, WWN healers.",
+      "tags": [
+        "medic",
+        "doctor",
+        "healer",
+        "clinical",
+        "ship-medic",
+        "street-doc"
+      ],
       "url": "https://opengameart.org/",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/",
       "artist": "OpenGameArt contributors",
       "license": "CC0 (Public Domain)",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "system": ["SWN", "CWN"],
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC0 Public Domain."
+      "attribution": "Portraits from OpenGameArt.org. CC0 Public Domain."
     },
     {
-      "id": "swn-portrait-008",
+      "id": "oga-p-009",
       "type": "portrait",
-      "name": "WWN Hedge Mage",
-      "description": "Robed figure with arcane markings and a weathered staff. Classic Worlds Without Number mage or wise one.",
-      "tags": ["mage", "hedge-mage", "robed", "arcane", "staff", "WWN"],
+      "name": "OGA — Pilot / Spacer Pack",
+      "description": "Leather-jacketed pilots and flight-suit spacers. SWN free trader crews and star captains.",
+      "tags": [
+        "pilot",
+        "spacer",
+        "captain",
+        "flight-suit",
+        "leather-jacket",
+        "trader",
+        "crew"
+      ],
+      "url": "https://opengameart.org/",
+      "thumbnail_url": "",
+      "source_page": "https://opengameart.org/",
+      "artist": "OpenGameArt contributors",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portraits from OpenGameArt.org. CC BY 3.0."
+    },
+    {
+      "id": "oga-p-010",
+      "type": "portrait",
+      "name": "OGA — Hacker / Tech Specialist",
+      "description": "Interface-lit portraits for hackers and tech specialists. CWN hacker class portraits.",
+      "tags": [
+        "hacker",
+        "tech",
+        "programmer",
+        "interface",
+        "CWN",
+        "specialist",
+        "glow"
+      ],
       "url": "https://opengameart.org/",
       "thumbnail_url": "",
       "source_page": "https://opengameart.org/",
       "artist": "OpenGameArt contributors",
       "license": "CC0 (Public Domain)",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "system": ["WWN"],
+      "system": [
+        "CWN",
+        "SWN"
+      ],
       "added": "2026-06-14",
-      "attribution": "Portrait from OpenGameArt.org. CC0 Public Domain."
+      "attribution": "Portraits from OpenGameArt.org. CC0 Public Domain."
+    },
+    {
+      "id": "oga-p-011",
+      "type": "portrait",
+      "name": "OGA — Noble / Corporate Portraits",
+      "description": "Wealthy and formal portraits. Corporate board members, planetary governors, WWN nobles.",
+      "tags": [
+        "noble",
+        "aristocrat",
+        "formal",
+        "wealthy",
+        "governor",
+        "corporate",
+        "board"
+      ],
+      "url": "https://opengameart.org/",
+      "thumbnail_url": "",
+      "source_page": "https://opengameart.org/",
+      "artist": "OpenGameArt contributors",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portraits from OpenGameArt.org. CC BY 3.0."
+    },
+    {
+      "id": "oga-p-012",
+      "type": "portrait",
+      "name": "OGA — Scholar / Sage / Elder NPC",
+      "description": "Aged scholars, mentors, and advisors. SWN sages, CWN informants, WWN elders.",
+      "tags": [
+        "elderly",
+        "mentor",
+        "scholar",
+        "advisor",
+        "sage",
+        "elder",
+        "intel",
+        "contact"
+      ],
+      "url": "https://opengameart.org/",
+      "thumbnail_url": "",
+      "source_page": "https://opengameart.org/",
+      "artist": "OpenGameArt contributors",
+      "license": "CC0 (Public Domain)",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portraits from OpenGameArt.org. CC0 Public Domain."
+    },
+    {
+      "id": "oga-p-013",
+      "type": "portrait",
+      "name": "OGA — Psychic / Mystic Portraits",
+      "description": "Portraits with otherworldly or psionic visual themes. SWN Psychics and WWN practitioners.",
+      "tags": [
+        "psychic",
+        "mystic",
+        "psionic",
+        "otherworldly",
+        "powers",
+        "SWN",
+        "WWN"
+      ],
+      "url": "https://opengameart.org/",
+      "thumbnail_url": "",
+      "source_page": "https://opengameart.org/",
+      "artist": "OpenGameArt contributors",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "system": [
+        "SWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portraits from OpenGameArt.org. CC BY 3.0."
+    },
+    {
+      "id": "devin-001",
+      "type": "portrait",
+      "name": "Devin Night — Free Token Packs (All)",
+      "description": "Devin Night's free token releases on immortalnights.com. Diverse humanoid characters, high quality circular VTT tokens. Regularly updated.",
+      "tags": [
+        "token",
+        "VTT",
+        "humanoid",
+        "diverse",
+        "circular",
+        "Devin-Night",
+        "free-pack",
+        "regularly-updated"
+      ],
+      "url": "https://immortalnights.com/tokensite/",
+      "thumbnail_url": "",
+      "source_page": "https://immortalnights.com/tokensite/",
+      "artist": "Devin Night (Immortal Nights)",
+      "license": "Free (personal/VTT use)",
+      "license_url": "https://immortalnights.com/tokensite/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Tokens by Devin Night (immortalnights.com). Free for personal/VTT use."
+    },
+    {
+      "id": "artbreed-001",
+      "type": "portrait",
+      "name": "Artbreeder — Sci-Fi Character Faces",
+      "description": "Photorealistic character faces from Artbreeder. Free to download for personal use. Great for NPC portraits — search sci-fi or futuristic styles.",
+      "tags": [
+        "photorealistic",
+        "face",
+        "npc",
+        "portrait",
+        "artbreeder",
+        "sci-fi",
+        "free-download"
+      ],
+      "url": "https://www.artbreeder.com/browse",
+      "thumbnail_url": "",
+      "source_page": "https://www.artbreeder.com/browse",
+      "artist": "Artbreeder community (CC0 blends)",
+      "license": "CC0 (Public Domain)",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portrait via Artbreeder.com. CC0 — free for personal use, no credit required."
+    },
+    {
+      "id": "artbreed-002",
+      "type": "portrait",
+      "name": "Artbreeder — Fantasy Character Faces",
+      "description": "Fantasy character face blends. Filter by style for alien, elf, or otherworldly types.",
+      "tags": [
+        "fantasy",
+        "face",
+        "alien",
+        "blend",
+        "high-quality",
+        "browse",
+        "otherworldly"
+      ],
+      "url": "https://www.artbreeder.com/browse",
+      "thumbnail_url": "",
+      "source_page": "https://www.artbreeder.com/browse",
+      "artist": "Artbreeder community (CC0 blends)",
+      "license": "CC0 (Public Domain)",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "system": [
+        "WWN",
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portrait via Artbreeder.com. CC0. Free for personal use."
+    },
+    {
+      "id": "gameicons-001",
+      "type": "portrait",
+      "name": "Game-Icons.net — Sci-Fi Icon Tokens",
+      "description": "Thousands of clean SVG icons: sci-fi, space, and fantasy. Usable as stylized VTT tokens or card art. CC BY.",
+      "tags": [
+        "icon",
+        "SVG",
+        "token",
+        "sci-fi",
+        "space",
+        "stylized",
+        "CC-BY",
+        "thousands"
+      ],
+      "url": "https://game-icons.net/",
+      "thumbnail_url": "",
+      "source_page": "https://game-icons.net/",
+      "artist": "Lorc, Delapouite, and Game-Icons.net contributors",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Icons by Lorc, Delapouite et al. (game-icons.net). CC BY 3.0 — credit 'game-icons.net'."
+    },
+    {
+      "id": "official-001",
+      "type": "map",
+      "name": "SWN Free Edition — Sector Hex Grid",
+      "description": "Blank 10x8 sector hex grid in SWN standard format. Print and fill in your own systems. From Kevin Crawford's free edition.",
+      "tags": [
+        "sector",
+        "hex",
+        "blank",
+        "SWN-standard",
+        "print",
+        "fill-in",
+        "space",
+        "official"
+      ],
+      "url": "https://www.drivethrurpg.com/product/86467/Stars-Without-Number-Revised-Edition-Free-Version",
+      "thumbnail_url": "",
+      "source_page": "https://www.drivethrurpg.com/product/86467/Stars-Without-Number-Revised-Edition-Free-Version",
+      "artist": "Kevin Crawford / Sine Nomine Publishing",
+      "license": "Free (SWN Free Edition)",
+      "license_url": "https://www.drivethrurpg.com/product/86467",
+      "system": [
+        "SWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Sector map from Stars Without Number Free Edition by Kevin Crawford / Sine Nomine Publishing. Free on DriveThruRPG."
+    },
+    {
+      "id": "official-002",
+      "type": "map",
+      "name": "CWN Free Edition — City District Maps",
+      "description": "City district map templates from the Cities Without Number Free Edition by Kevin Crawford.",
+      "tags": [
+        "city",
+        "district",
+        "template",
+        "CWN",
+        "official",
+        "Kevin-Crawford",
+        "urban"
+      ],
+      "url": "https://www.drivethrurpg.com/product/392703/Cities-Without-Number-Free-Edition",
+      "thumbnail_url": "",
+      "source_page": "https://www.drivethrurpg.com/product/392703/Cities-Without-Number-Free-Edition",
+      "artist": "Kevin Crawford / Sine Nomine Publishing",
+      "license": "Free (CWN Free Edition)",
+      "license_url": "https://www.drivethrurpg.com/product/392703",
+      "system": [
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Maps from Cities Without Number Free Edition by Kevin Crawford. Free on DriveThruRPG."
+    },
+    {
+      "id": "official-003",
+      "type": "map",
+      "name": "WWN Free Edition — Regional Maps",
+      "description": "Region and realm maps from the Worlds Without Number Free Edition by Kevin Crawford.",
+      "tags": [
+        "region",
+        "realm",
+        "overland",
+        "WWN",
+        "official",
+        "Kevin-Crawford",
+        "fantasy"
+      ],
+      "url": "https://www.drivethrurpg.com/product/348809/Worlds-Without-Number-Free-Edition",
+      "thumbnail_url": "",
+      "source_page": "https://www.drivethrurpg.com/product/348809/Worlds-Without-Number-Free-Edition",
+      "artist": "Kevin Crawford / Sine Nomine Publishing",
+      "license": "Free (WWN Free Edition)",
+      "license_url": "https://www.drivethrurpg.com/product/348809",
+      "system": [
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Maps from Worlds Without Number Free Edition by Kevin Crawford. Free on DriveThruRPG."
+    },
+    {
+      "id": "reddit-001",
+      "type": "map",
+      "name": "r/battlemaps — Sci-Fi Maps (Top Rated)",
+      "description": "r/battlemaps is a massive source of free community battle maps. This link filters to top sci-fi maps for SWN/CWN use. Check each post for individual license.",
+      "tags": [
+        "community",
+        "battle-map",
+        "sci-fi",
+        "reddit",
+        "VTT",
+        "free",
+        "large-collection"
+      ],
+      "url": "https://www.reddit.com/r/battlemaps/search/?q=sci-fi&sort=top",
+      "thumbnail_url": "",
+      "source_page": "https://www.reddit.com/r/battlemaps/",
+      "artist": "r/battlemaps community (various)",
+      "license": "Varies — check individual post (most: personal/VTT free)",
+      "license_url": "https://www.reddit.com/r/battlemaps/wiki/index",
+      "system": [
+        "SWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Maps from r/battlemaps. Credit the individual artist listed in each post."
+    },
+    {
+      "id": "reddit-002",
+      "type": "map",
+      "name": "r/battlemaps — Fantasy Maps (Top Rated)",
+      "description": "Top-rated fantasy maps from r/battlemaps. Dungeons, wilderness, taverns, caves.",
+      "tags": [
+        "fantasy",
+        "dungeon",
+        "wilderness",
+        "tavern",
+        "cave",
+        "community",
+        "top-rated"
+      ],
+      "url": "https://www.reddit.com/r/battlemaps/search/?q=fantasy&sort=top",
+      "thumbnail_url": "",
+      "source_page": "https://www.reddit.com/r/battlemaps/",
+      "artist": "r/battlemaps community (various)",
+      "license": "Varies — check individual post",
+      "license_url": "https://www.reddit.com/r/battlemaps/wiki/index",
+      "system": [
+        "WWN",
+        "SWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Maps from r/battlemaps. Credit individual artists as listed in each post."
+    },
+    {
+      "id": "reddit-003",
+      "type": "portrait",
+      "name": "r/characterdrawing — Free-to-Use Portraits",
+      "description": "Search r/characterdrawing for posts tagged 'free to use'. Huge variety of styles and character types.",
+      "tags": [
+        "community",
+        "portrait",
+        "character",
+        "free-to-use",
+        "variety",
+        "styles",
+        "reddit"
+      ],
+      "url": "https://www.reddit.com/r/characterdrawing/search/?q=free+to+use&sort=top",
+      "thumbnail_url": "",
+      "source_page": "https://www.reddit.com/r/characterdrawing/",
+      "artist": "r/characterdrawing community (various)",
+      "license": "Varies — check each post for 'free to use' tag",
+      "license_url": "https://www.reddit.com/r/characterdrawing/",
+      "system": [
+        "SWN",
+        "CWN",
+        "WWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Portrait from r/characterdrawing. Credit the individual artist as listed. Only use posts marked 'free to use'."
+    },
+    {
+      "id": "inkwell-001",
+      "type": "map",
+      "name": "Inkwell Ideas — Town Map Generator",
+      "description": "Procedural town map with named buildings and districts. Free browser tool.",
+      "tags": [
+        "town",
+        "generator",
+        "named-buildings",
+        "districts",
+        "procedural",
+        "print"
+      ],
+      "url": "https://inkwellideas.com/tools/",
+      "thumbnail_url": "",
+      "source_page": "https://inkwellideas.com/tools/",
+      "artist": "Inkwell Ideas",
+      "license": "Free (personal use)",
+      "license_url": "https://inkwellideas.com/",
+      "system": [
+        "SWN",
+        "WWN",
+        "CWN"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map generated with Inkwell Ideas (inkwellideas.com). Free for personal use."
+    },
+    {
+      "id": "inkwell-002",
+      "type": "map",
+      "name": "Inkwell Ideas — Dungeon Map Generator",
+      "description": "Random dungeon generator with room descriptions and encounter notes.",
+      "tags": [
+        "dungeon",
+        "generator",
+        "rooms",
+        "encounter",
+        "browser-tool",
+        "random"
+      ],
+      "url": "https://inkwellideas.com/tools/",
+      "thumbnail_url": "",
+      "source_page": "https://inkwellideas.com/tools/",
+      "artist": "Inkwell Ideas",
+      "license": "Free (personal use)",
+      "license_url": "https://inkwellideas.com/",
+      "system": [
+        "SWN",
+        "WWN",
+        "OSR"
+      ],
+      "added": "2026-06-14",
+      "attribution": "Map generated with Inkwell Ideas (inkwellideas.com). Free for personal use."
     }
   ]
 }
