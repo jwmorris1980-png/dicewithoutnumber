@@ -61,18 +61,24 @@ class CharacterSheetCog(commands.Cog):
         )
 
     async def _send_target(self, target, content=None, *, embed=None, view=None, ephemeral=False):
+        kwargs = {}
+        if embed is not None:
+            kwargs["embed"] = embed
+        if view is not None:
+            kwargs["view"] = view
+
         if not isinstance(target, discord.Interaction):
             destination = target if hasattr(target, "send") else target.channel
-            return await destination.send(content, embed=embed, view=view)
+            return await destination.send(content, **kwargs)
 
-        kwargs = {"embed": embed, "view": view, "ephemeral": ephemeral}
+        interaction_kwargs = {**kwargs, "ephemeral": ephemeral}
         try:
             if not target.response.is_done():
-                return await target.response.send_message(content, **kwargs)
-            return await target.followup.send(content, **kwargs)
+                return await target.response.send_message(content, **interaction_kwargs)
+            return await target.followup.send(content, **interaction_kwargs)
         except discord.NotFound:
             # Interaction webhooks expire; preserve the result by sending it privately.
-            return await target.user.send(content, embed=embed, view=view)
+            return await target.user.send(content, **kwargs)
 
     async def _read_attachment_text(self, attachment):
         try:
