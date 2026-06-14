@@ -30,3 +30,10 @@ production servers.
 
 Never treat a successful local test or test-server deployment as approval to
 release a feature globally.
+
+## Verified Map Library
+
+Run `python scripts/build_verified_map_library.py` to rebuild the reviewed map
+manifest. An accepted map must be a direct bitmap, have a source page and
+explicit reusable-license metadata, and identify the requested map subject in
+its title. Collection pages and personal-use-only images are excluded.

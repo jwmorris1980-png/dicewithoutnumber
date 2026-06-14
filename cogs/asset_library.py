@@ -6,6 +6,7 @@ import random
 import os
 
 from services.image_catalog_service import ImageCatalogService, _load_admin_key
+from services.verified_map_library import find_verified_map
 
 
 class AssetLibraryCog(commands.Cog):
@@ -109,6 +110,10 @@ class AssetLibraryCog(commands.Cog):
             local_map = self._find_local_map(query)
             if local_map:
                 await self._send_local_map(target, *local_map)
+                return
+            verified_map = find_verified_map(query)
+            if verified_map:
+                await self._send_catalog_result(target, verified_map)
                 return
             openverse_map = await self.catalog.search_openverse_map(query)
             if openverse_map:
