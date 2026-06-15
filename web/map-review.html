@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RPG Map Review Board</title>
+  <style>
+    :root {
+      --ink: #172019;
+      --paper: #f2eddf;
+      --panel: #fffaf0;
+      --line: #b7ab8f;
+      --moss: #315f46;
+      --gold: #d39742;
+      --shadow: 0 10px 24px rgb(32 39 29 / 18%);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(rgb(255 255 255 / 45%), rgb(255 255 255 / 45%)),
+        repeating-linear-gradient(45deg, #ded6c3 0 1px, transparent 1px 9px),
+        var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    button, input { font: inherit; }
+    header {
+      height: 112px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 22px;
+      border-bottom: 2px solid var(--line);
+      background: rgb(255 250 240 / 92%);
+    }
+    h1 { margin: 0; font-size: clamp(22px, 2.4vw, 38px); letter-spacing: -.04em; }
+    .sub { margin: 3px 0 0; color: #626858; font: 600 12px/1.2 Arial, sans-serif; }
+    .pager { display: flex; align-items: center; gap: 8px; }
+    #page-status {
+      min-width: 110px;
+      text-align: center;
+      font: 800 14px Arial, sans-serif;
+    }
+    #map-jump {
+      width: 92px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 9px;
+      background: #fffdf7;
+      font: 700 13px Arial, sans-serif;
+    }
+    .page-button, .nav-button {
+      min-width: 108px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fffdf7;
+      cursor: pointer;
+      font: 800 16px Arial, sans-serif;
+    }
+    #read-status, #voice-help, #reset-review {
+      min-width: 110px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: white;
+      background: var(--moss);
+      cursor: pointer;
+      font: 800 13px Arial, sans-serif;
+    }
+    .page-button.active { color: white; background: var(--moss); border-color: var(--moss); }
+    .instructions {
+      grid-column: 1 / -1;
+      width: 100%;
+      padding: 7px 12px;
+      border-radius: 7px;
+      color: white;
+      background: var(--moss);
+      text-align: center;
+      font: 800 14px/1.25 Arial, sans-serif;
+    }
+    main {
+      height: calc(100vh - 112px);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .map-card {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      cursor: zoom-in;
+    }
+    .map-card img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #e8e1d1;
+      transition: transform 160ms ease;
+    }
+    .map-card:hover img { transform: scale(1.025); }
+    .map-number {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      min-width: 54px;
+      padding: 7px 10px;
+      border: 2px solid white;
+      border-radius: 7px;
+      color: white;
+      background: var(--moss);
+      box-shadow: 0 3px 12px rgb(0 0 0 / 35%);
+      text-align: center;
+      font: 900 20px Arial, sans-serif;
+    }
+    .map-title {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      left: 7px;
+      padding: 7px 9px;
+      border-radius: 6px;
+      color: white;
+      background: rgb(23 32 25 / 88%);
+      font: 700 12px/1.2 Arial, sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    dialog {
+      width: min(96vw, 1500px);
+      height: 94vh;
+      padding: 0;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 30px 80px rgb(0 0 0 / 45%);
+    }
+    dialog::backdrop { background: rgb(15 20 16 / 78%); }
+    .preview {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 58px minmax(0, 1fr);
+    }
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line);
+      font: 700 15px Arial, sans-serif;
+    }
+    .preview-bar strong { color: white; background: var(--moss); border-radius: 6px; padding: 7px 10px; }
+    .preview-bar a { margin-left: auto; color: var(--moss); }
+    .preview-bar button { border: 0; background: var(--ink); color: white; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+    .preview-bar .approve { background: var(--moss); }
+    .preview-bar .reject { background: #8b332c; }
+    #preview-image { width: 100%; height: 100%; object-fit: contain; background: #e8e1d1; }
+    #voice-status {
+      position: fixed;
+      z-index: 20;
+      right: 12px;
+      bottom: 12px;
+      left: 12px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 15px;
+      border: 2px solid white;
+      border-radius: 10px;
+      color: white;
+      background: rgb(23 32 25 / 94%);
+      box-shadow: var(--shadow);
+      text-align: center;
+      font: 800 16px/1.25 Arial, sans-serif;
+      pointer-events: none;
+    }
+    #review-summary {
+      position: fixed;
+      z-index: 21;
+      top: 8px;
+      right: 8px;
+      padding: 6px 9px;
+      border-radius: 6px;
+      color: white;
+      background: var(--gold);
+      font: 800 12px Arial, sans-serif;
+    }
+    #voice-review-controls {
+      position: fixed;
+      z-index: 22;
+      right: 12px;
+      bottom: 64px;
+      display: flex;
+      gap: 8px;
+    }
+    #voice-review-controls button {
+      min-height: 48px;
+      padding: 8px 14px;
+      border: 2px solid white;
+      border-radius: 9px;
+      color: white;
+      cursor: pointer;
+      font: 900 14px Arial, sans-serif;
+      box-shadow: var(--shadow);
+    }
+    #approve-current { background: var(--moss); }
+    #reject-current { background: #8b332c; }
+    #seen-warning {
+      position: fixed;
+      z-index: 30;
+      inset: 122px 12px 64px;
+      display: none;
+      place-content: center;
+      padding: 24px;
+      border: 3px solid var(--gold);
+      border-radius: 14px;
+      color: var(--ink);
+      background: rgb(255 250 240 / 97%);
+      box-shadow: 0 30px 80px rgb(0 0 0 / 35%);
+      text-align: center;
+    }
+    #seen-warning h2 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 60px); }
+    #seen-warning p { max-width: 760px; margin: 5px auto; font: 700 18px/1.4 Arial, sans-serif; }
+    @media (max-width: 1100px) {
+      main { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .instructions { display: none; }
+      header { grid-template-columns: 1fr auto; }
+    }
+    @media (max-width: 720px) {
+      header { height: 108px; padding: 8px 10px; }
+      .sub { display: none; }
+      main { height: calc(100vh - 108px); grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px 8px 58px; gap: 8px; }
+      .map-number { min-width: 42px; font-size: 16px; padding: 5px 7px; }
+      .map-title { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>RPG Map Review Board</h1>
+      <p class="sub">Every map is numbered. Click one to inspect it at full size.</p>
+    </div>
+    <nav class="pager" aria-label="Map pages">
+      <button class="nav-button" id="previous">Previous maps</button>
+      <span id="page-status"></span>
+      <button class="nav-button" id="next">Next maps</button>
+      <input id="map-jump" type="number" min="1" placeholder="Map #"
+        aria-label="Go directly to map number">
+      <button id="read-status">Read status</button>
+      <button id="voice-help">Voice help</button>
+      <button id="reset-review">Reset review</button>
+    </nav>
+    <div class="instructions">Say: “next maps”, “previous maps”, “show map fifty”, “approve map fifty”, “reject map fifty”, “close map”, or “read status”.</div>
+  </header>
+  <main id="gallery" aria-live="polite"></main>
+  <section id="seen-warning" role="alert">
+    <h2>These maps were already reviewed.</h2>
+    <p>I will not make you review maps 1 through 52 again.</p>
+    <p>Maps 32, 34, and 52 are permanently rejected.</p>
+    <p>The next review board will begin with new map 53.</p>
+  </section>
+  <div id="review-summary">Approved: 0 | Rejected: 0</div>
+  <div id="voice-review-controls">
+    <button id="approve-current">Approve current map</button>
+    <button id="reject-current">Reject current map</button>
+  </div>
+  <div id="voice-status" role="status" aria-live="assertive">Voice control is starting. Say “voice help” for commands.</div>
+
+  <dialog id="preview-dialog">
+    <div class="preview">
+      <div class="preview-bar">
+        <strong id="preview-number"></strong>
+        <span id="preview-title"></span>
+        <a id="preview-source" target="_blank" rel="noreferrer">Source and credit</a>
+        <button class="approve" id="approve-preview">Approve map</button>
+        <button class="reject" id="reject-preview">Reject map</button>
+        <button id="close-preview">Close</button>
+      </div>
+      <img id="preview-image" alt="">
+    </div>
+  </dialog>
+
+  <script>
+    const legacyMaps = [
+      { id: 1, title: 'The Spiral Sink - Map Set 2', image: 'https://dysonlogos.blog/wp-content/uploads/2025/11/spiral-sink-2.jpg', source: 'https://dysonlogos.blog/2025/11/12/the-spiral-sink-map-set-2/' },
+      { id: 2, title: 'The Spiral Sink - Map Set 1', image: 'https://dysonlogos.blog/wp-content/uploads/2025/11/spiral-sink-1.jpg', source: 'https://dysonlogos.blog/2025/11/11/the-spiral-sink-map-set-1/' },
+      { id: 3, title: 'A Deep Cut', image: 'https://dysonlogos.blog/wp-content/uploads/2026/05/the-cut-below.jpg', source: 'https://dysonlogos.blog/2026/05/15/a-deep-cut-the-cut-map-3/' },
+      { id: 4, title: 'A Cut Above', image: 'https://dysonlogos.blog/wp-content/uploads/2026/05/the-cut-above.jpg', source: 'https://dysonlogos.blog/2026/05/13/a-cut-above-the-cut-map-2/' },
+      { id: 5, title: 'The Cut - Ground Level', image: 'https://dysonlogos.blog/wp-content/uploads/2026/05/the-cut-ground-level.jpg', source: 'https://dysonlogos.blog/2026/05/12/the-cut-ground-level/' },
+      { id: 6, title: 'Return to Metivier Manor', image: 'https://dysonlogos.blog/wp-content/uploads/2026/05/return-to-metivier-manor.jpg', source: 'https://dysonlogos.blog/2026/05/08/return-to-metivier-manor/' },
+      { id: 7, title: 'Blackglass Vein - North', image: 'https://dysonlogos.blog/wp-content/uploads/2025/12/blackglass-vein-north.jpg', source: 'https://dysonlogos.blog/2025/12/08/blackglass-vein-north/' },
+      { id: 8, title: 'The Serpent Lands - Hex Map 4', image: 'https://dysonlogos.blog/wp-content/uploads/2026/04/serpent-lands-map-4.jpg', source: 'https://dysonlogos.blog/2026/04/13/the-serpent-lands-hex-map-4/' },
+      { id: 9, title: 'The Caves of Still Grotto', image: 'https://dysonlogos.blog/wp-content/uploads/2026/04/return-to-still-grotto.jpg', source: 'https://dysonlogos.blog/2026/04/10/the-caves-of-still-grotto/' },
+      { id: 10, title: 'The Pilgrim’s Mug', image: 'https://dysonlogos.blog/wp-content/uploads/2026/04/the-pilgrims-mug-1.jpg', source: 'https://dysonlogos.blog/2026/04/08/the-pilgrims-mug/' },
+      { id: 11, title: 'Ziggurat of Shadows - Upper Levels', image: 'https://dysonlogos.blog/wp-content/uploads/2026/03/ziggurat-of-shadows-1.jpg', source: 'https://dysonlogos.blog/2026/03/13/the-ziggurat-of-shadows-top-view-and-upper-levels/' },
+      { id: 12, title: 'Ziggurat of Shadows - Main Level', image: 'https://dysonlogos.blog/wp-content/uploads/2026/03/ziggurat-of-shadows-2.jpg', source: 'https://dysonlogos.blog/2026/03/11/the-ziggurat-of-shadows-main-level-isometric/' },
+      { id: 13, title: 'Sewer Connector 2026 B', image: 'https://dysonlogos.blog/wp-content/uploads/2026/03/sewer-connections-2026-b.jpg', source: 'https://dysonlogos.blog/2026/03/09/sewer-connector-2026-b/' },
+      { id: 14, title: 'The Font of Violet Flames', image: 'https://dysonlogos.blog/wp-content/uploads/2025/11/font-of-violet-flames.jpg', source: 'https://dysonlogos.blog/2025/11/14/the-font-of-violet-flames/' },
+      { id: 15, title: 'Sparrow’s Tower', image: 'https://dysonlogos.blog/wp-content/uploads/2026/02/sparrows-tower.jpg', source: 'https://dysonlogos.blog/2026/02/11/sparrows-tower/' },
+      { id: 16, title: 'Domur’s Refuge', image: 'https://dysonlogos.blog/wp-content/uploads/2026/02/domurs-refuge.jpg', source: 'https://dysonlogos.blog/2026/02/09/domurs-refuge/' },
+      { id: 17, title: 'The Flying Swine Tavern', image: 'https://dysonlogos.blog/wp-content/uploads/2026/02/the-flying-swine.jpg', source: 'https://dysonlogos.blog/2026/02/06/the-flying-swine-a-fine-drinking-establishment/' },
+      { id: 18, title: 'Sewer Connectors 2026 A', image: 'https://dysonlogos.blog/wp-content/uploads/2026/02/sewer-connections-2026-a.jpg', source: 'https://dysonlogos.blog/2026/02/04/sewer-connectors-2026-a/' },
+      { id: 19, title: 'Brethen’s Hall', image: 'https://dysonlogos.blog/wp-content/uploads/2026/01/brethens-hall.jpg', source: 'https://dysonlogos.blog/2026/01/14/brethens-hall/' },
+      { id: 20, title: 'Brethen’s Sky Island Archipelago', image: 'https://dysonlogos.blog/wp-content/uploads/2026/01/sky-islands-brethens-archipelago.jpg', source: 'https://dysonlogos.blog/2026/01/12/brethens-sky-island-archipelago/' },
+      { id: 21, title: 'Valgrena’s Vault', image: 'https://dysonlogos.blog/wp-content/uploads/2026/01/walgrenas-vault.jpg', source: 'https://dysonlogos.blog/2026/01/09/valgrenas-vault/' },
+      { id: 22, title: 'The Warped Crucible', image: 'https://dysonlogos.blog/wp-content/uploads/2025/10/warped-crucible.jpg', source: 'https://dysonlogos.blog/2025/10/15/the-warped-crucible/' },
+      { id: 23, title: 'Fallen Temple of Sekhmet', image: 'https://dysonlogos.blog/wp-content/uploads/2025/12/fallen-temple-of-sekhmet.jpg', source: 'https://dysonlogos.blog/2025/12/12/fallen-temple-of-sekhmet/' },
+      { id: 24, title: 'Blackglass Vein - South', image: 'https://dysonlogos.blog/wp-content/uploads/2025/12/blackglass-vein-south.jpg', source: 'https://dysonlogos.blog/2025/12/10/blackglass-vein-south/' },
+      { id: 25, title: 'The Serpent Lands - Hex Map 3', image: 'https://dysonlogos.blog/wp-content/uploads/2025/12/serpent-lands-3.jpg', source: 'https://dysonlogos.blog/2025/12/05/the-serpent-lands-hex-map-3/' },
+      { id: 26, title: 'The Serpent Lands - Hex Map 2', image: 'https://dysonlogos.blog/wp-content/uploads/2025/11/serpent-lands-2.jpg', source: 'https://dysonlogos.blog/2025/11/07/the-serpent-lands-hex-map-2/' },
+      { id: 27, title: 'The Serpent Lands - Hex Map 1', image: 'https://dysonlogos.blog/wp-content/uploads/2025/10/serpent-lands-1.jpg', source: 'https://dysonlogos.blog/2025/10/10/the-serpent-lands-hex-map-1/' },
+      { id: 28, title: 'The Hollow Spire', image: 'https://dysonlogos.blog/wp-content/uploads/2025/10/hollow-spire.jpg', source: 'https://dysonlogos.blog/2025/10/08/the-hollow-spire/' },
+      { id: 29, title: 'Tideworn Grotto', image: 'https://dysonlogos.blog/wp-content/uploads/2025/09/tideworn-grotto.jpg', source: 'https://dysonlogos.blog/2025/09/10/tideworn-grotto/' },
+      { id: 30, title: 'Pool of Drifting Lights', image: 'https://dysonlogos.blog/wp-content/uploads/2025/09/index-card-dungeon-ii-map-15.jpg', source: 'https://dysonlogos.blog/2025/09/08/index-card-dungeon-ii-map-15-pool-of-drifting-lights/' },
+      { id: 31, title: 'Cave of the Candleman', image: 'https://dysonlogos.blog/wp-content/uploads/2025/09/index-card-dungeon-ii-map-14.jpg', source: 'https://dysonlogos.blog/2025/09/05/index-card-dungeon-ii-map-14-cave-of-the-candleman/' },
+      { id: 32, title: 'Sorcerer’s Tomb', image: 'https://dysonlogos.blog/wp-content/uploads/2025/09/index-card-13.jpg', source: 'https://dysonlogos.blog/2025/09/03/index-card-dungeon-ii-map-13-sorcerers-tomb/' },
+      { id: 33, title: 'The DreadWarren', image: 'https://dysonlogos.blog/wp-content/uploads/2025/08/dreadwarren-lowres.jpg', source: 'https://dysonlogos.blog/2025/08/13/the-dreadwarren/' },
+      { id: 34, title: 'Hexatomb', image: 'https://dysonlogos.blog/wp-content/uploads/2025/07/hexatomb-1.jpg', source: 'https://dysonlogos.blog/2025/07/16/hexatomb/' },
+      { id: 35, title: 'Ancient Sewers', image: 'https://dysonlogos.blog/wp-content/uploads/2025/07/ruined-sewers.jpg', source: 'https://dysonlogos.blog/2025/07/14/index-card-dungeon-ii-map-9-ancient-sewers/' },
+      { id: 36, title: 'Shrine on the Mosswater', image: 'https://dysonlogos.blog/wp-content/uploads/2025/06/shrine-on-the-mosswater-painted.jpg', source: 'https://dysonlogos.blog/2025/06/20/shrine-on-the-mosswater/' },
+      { id: 37, title: 'Dungeon Ruins', image: 'https://dysonlogos.blog/wp-content/uploads/2025/06/index-card-dungeon-ii-map-6.jpg', source: 'https://dysonlogos.blog/2025/06/19/index-card-dungeon-ii-map-6-dungeon-ruins/' },
+      { id: 38, title: 'Tower Dungeons', image: 'https://dysonlogos.blog/wp-content/uploads/2025/06/index-card-dungeon-ii-map-5.jpg', source: 'https://dysonlogos.blog/2025/06/18/index-card-dungeon-ii-map-5-tower-dungeons/' },
+      { id: 39, title: 'Tower Ruins', image: 'https://dysonlogos.blog/wp-content/uploads/2025/06/index-card-dungeon-ii-map-4.jpg', source: 'https://dysonlogos.blog/2025/06/16/index-card-dungeon-ii-map-4-tower-ruins/' },
+      { id: 40, title: 'The Ghost Tower', image: 'https://dysonlogos.blog/wp-content/uploads/2025/05/index-card-dungeon-ii-map-3.jpg', source: 'https://dysonlogos.blog/2025/05/14/index-card-dungeon-ii-map-3-the-ghost-tower/' },
+      { id: 41, title: 'Northern Ruins', image: 'https://dysonlogos.blog/wp-content/uploads/2025/05/index-card-dungeon-ii-map-2.jpg', source: 'https://dysonlogos.blog/2025/05/12/index-card-dungeon-ii-map-2-northern-ruins/' },
+      { id: 42, title: 'Tower Base', image: 'https://dysonlogos.blog/wp-content/uploads/2025/05/index-card-dungeon-ii-map-1.jpg', source: 'https://dysonlogos.blog/2025/05/09/index-card-dungeon-ii-map-1-tower-base/' },
+      { id: 43, title: 'Village of Millbrook', image: 'https://dysonlogos.blog/wp-content/uploads/2025/05/village-of-the-odd.jpg', source: 'https://dysonlogos.blog/2025/05/07/the-village-of-millbrook-weird-boring-versions/' },
+      { id: 44, title: 'Under Eastmeadow Manor', image: 'https://dysonlogos.blog/wp-content/uploads/2025/04/under-eastmeadow-manor.jpg', source: 'https://dysonlogos.blog/2025/04/10/under-eastmeadow-manor/' },
+      { id: 45, title: 'Far Beneath the Finger', image: 'https://dysonlogos.blog/wp-content/uploads/2025/04/far-beneath-the-finger.jpg', source: 'https://dysonlogos.blog/2025/04/07/the-deeps-far-below-the-finger/' },
+      { id: 46, title: 'The Autumn Lands - Hex Map I', image: 'https://dysonlogos.blog/wp-content/uploads/2025/04/autumn-lands-map-i.jpg', source: 'https://dysonlogos.blog/2025/04/04/the-autumn-lands-hex-map-i/' },
+      { id: 47, title: 'Deeper Beneath the Finger', image: 'https://dysonlogos.blog/wp-content/uploads/2025/03/deeper-under-the-finger.jpg', source: 'https://dysonlogos.blog/2025/03/14/deeper-beneath-the-finger/' },
+      { id: 48, title: 'Beneath the Finger', image: 'https://dysonlogos.blog/wp-content/uploads/2025/03/under-the-finger.jpg', source: 'https://dysonlogos.blog/2025/03/13/beneath-the-finger/' },
+      { id: 49, title: 'The Finger', image: 'https://dysonlogos.blog/wp-content/uploads/2025/03/the-finger.jpg', source: 'https://dysonlogos.blog/2025/03/10/the-finger/' },
+      { id: 50, title: 'The Autumn Lands - Hex Map H', image: 'https://dysonlogos.blog/wp-content/uploads/2025/03/autumn-lands-map-8.jpg', source: 'https://dysonlogos.blog/2025/03/07/the-autumn-lands-hex-map-h/' },
+      { id: 51, title: 'Eastmeadow Manor', image: 'https://dysonlogos.blog/wp-content/uploads/2025/02/eastmeadow-manor.jpg', source: 'https://dysonlogos.blog/2025/02/12/eastmeadow-manor/' },
+      { id: 52, title: 'Allerton Hold', image: 'https://dysonlogos.blog/wp-content/uploads/2025/02/allerton-hold-1.jpg', source: 'https://dysonlogos.blog/2025/02/10/allerton-hold/' }
+    ];
+    const repeatedMaps = [
+      { id: 53, title: 'Knotty Nets', image: 'https://dysonlogos.blog/wp-content/uploads/2025/04/building-13-nets.jpg', source: 'https://dysonlogos.blog/2025/04/11/building-13-knotty-nets-net-making-repairs-and-sales/' },
+      { id: 54, title: 'Everything’s Good General Store', image: 'https://dysonlogos.blog/wp-content/uploads/2025/03/building-12-general-goods.jpg', source: 'https://dysonlogos.blog/2025/03/17/building-12-everythings-good-general-goods-store/' },
+      { id: 55, title: 'A Dungeon In Two Parts', image: 'https://dysonlogos.blog/wp-content/uploads/2025/02/tomb-steps.jpg', source: 'https://dysonlogos.blog/2025/02/14/a-dungeon-in-two-parts/' },
+      { id: 56, title: 'The Autumn Lands - Hex Map G', image: 'https://dysonlogos.blog/wp-content/uploads/2025/02/autumn-lands-7.jpg', source: 'https://dysonlogos.blog/2025/02/07/the-autumn-lands-hex-map-g/' },
+      { id: 57, title: 'Crumbling Gate', image: 'https://dysonlogos.blog/wp-content/uploads/2025/01/crumbling-gate-final.jpg', source: 'https://dysonlogos.blog/2025/01/17/crumbling-gate/' },
+      { id: 58, title: 'The Autumn Lands - Hex Map F', image: 'https://dysonlogos.blog/wp-content/uploads/2025/01/autumn-lands-map-6.jpg', source: 'https://dysonlogos.blog/2025/01/15/the-autumn-lands-hex-map-f/' },
+      { id: 59, title: 'The Ruined Temple', image: 'https://dysonlogos.blog/wp-content/uploads/2025/01/the-ruined-temple.jpg', source: 'https://dysonlogos.blog/2025/01/14/the-ruined-temple/' },
+      { id: 60, title: 'Beneath the Black Cairn', image: 'https://dysonlogos.blog/wp-content/uploads/2025/01/beneath-the-black-cairn-1.jpg', source: 'https://dysonlogos.blog/2025/01/10/beneath-the-black-cairn/' },
+      { id: 61, title: 'The Autumn Lands - Hex Map E', image: 'https://dysonlogos.blog/wp-content/uploads/2024/12/autumn-lands-5.jpg', source: 'https://dysonlogos.blog/2024/12/13/the-autumn-lands-hex-map-e/' },
+      { id: 62, title: 'The Pipeworks', image: 'https://dysonlogos.blog/wp-content/uploads/2024/12/volcanic-pipes.jpg', source: 'https://dysonlogos.blog/2024/12/11/the-pipeworks/' },
+      { id: 63, title: 'The Sinkhole Crypt', image: 'https://dysonlogos.blog/wp-content/uploads/2024/12/engine-sinkhole.jpg', source: 'https://dysonlogos.blog/2024/12/09/the-sinkhole-crypt/' },
+      { id: 64, title: 'Lumbering Hank’s Carpentry', image: 'https://dysonlogos.blog/wp-content/uploads/2024/12/building-11-carpenter.jpg', source: 'https://dysonlogos.blog/2024/12/06/building-11-lumering-hanks-carpentry/' },
+      { id: 65, title: 'The Greywater Temple', image: 'https://dysonlogos.blog/wp-content/uploads/2024/11/pxl_20240925_161847028.jpg', source: 'https://dysonlogos.blog/2024/11/15/the-greywater-temple/' },
+      { id: 66, title: 'Griffon Tower Dungeons', image: 'https://dysonlogos.blog/wp-content/uploads/2024/11/griffon-tower-dungeons.jpg', source: 'https://dysonlogos.blog/2024/11/13/griffon-tower-dungeons/' },
+      { id: 67, title: 'Griffon Tower', image: 'https://dysonlogos.blog/wp-content/uploads/2024/11/griffon-tower.jpg', source: 'https://dysonlogos.blog/2024/11/11/griffon-tower/' },
+      { id: 68, title: 'The Autumn Lands - Hex Map D', image: 'https://dysonlogos.blog/wp-content/uploads/2024/11/autumn-lands.jpg', source: 'https://dysonlogos.blog/2024/11/08/the-autumn-lands-hex-map-d/' },
+      { id: 69, title: 'Ruined Waste Treatment Facility', image: 'https://dysonlogos.blog/wp-content/uploads/2024/10/waste-treatment.jpg', source: 'https://dysonlogos.blog/2024/10/17/ruined-waste-treatment-facility/' },
+      { id: 70, title: 'Wit and Wisdom Apothecary', image: 'https://dysonlogos.blog/wp-content/uploads/2024/10/shop-10-apothecary.jpg', source: 'https://dysonlogos.blog/2024/10/15/building-10-wit-wisdom-apothecary/' },
+      { id: 71, title: 'Crypts and Worms', image: 'https://dysonlogos.blog/wp-content/uploads/2024/10/crypts-and-worms.jpg', source: 'https://dysonlogos.blog/2024/10/08/crypts-and-worms/' },
+      { id: 72, title: 'The Autumn Lands - Hex Map C', image: 'https://dysonlogos.blog/wp-content/uploads/2024/10/autumn-lands-map-3.jpg', source: 'https://dysonlogos.blog/2024/10/07/the-autumn-lands-hex-map-c/' },
+      { id: 73, title: 'The Cinereous Basilica', image: 'https://dysonlogos.blog/wp-content/uploads/2024/09/basilica.jpg', source: 'https://dysonlogos.blog/2024/09/13/the-cinereous-basilica/' },
+      { id: 74, title: 'The Riddle of Steel', image: 'https://dysonlogos.blog/wp-content/uploads/2024/09/shop-9-fortune-and-smith.jpg', source: 'https://dysonlogos.blog/2024/09/11/the-riddle-of-steel/' },
+      { id: 75, title: 'The Autumn Lands - Hex Map B', image: 'https://dysonlogos.blog/wp-content/uploads/2024/09/random-hexmap-b.jpg', source: 'https://dysonlogos.blog/2024/09/09/the-autumn-lands-hex-map-b/' },
+      { id: 76, title: 'The Autumn Lands - Hex Map A', image: 'https://dysonlogos.blog/wp-content/uploads/2024/09/random-hexmap-a.jpg', source: 'https://dysonlogos.blog/2024/09/06/the-autumn-lands-hex-map-a/' },
+      { id: 77, title: 'Temple of the Worm - Upper Levels', image: 'https://dysonlogos.blog/wp-content/uploads/2024/08/sarku-temple-upper-floors.jpg', source: 'https://dysonlogos.blog/2024/08/15/temple-of-the-worm-upper-levels/' },
+      { id: 78, title: 'Temple of the Worm', image: 'https://dysonlogos.blog/wp-content/uploads/2024/08/sarku-temple-ground-floor.jpg', source: 'https://dysonlogos.blog/2024/08/12/temple-of-the-worm/' },
+      { id: 79, title: 'Red’s Leather Works', image: 'https://dysonlogos.blog/wp-content/uploads/2024/08/shop-8-reds-leather.jpg', source: 'https://dysonlogos.blog/2024/08/08/reds-leather-works/' },
+      { id: 80, title: 'Iseldec’s Drop - Levels 20-23', image: 'https://dysonlogos.blog/wp-content/uploads/2024/08/iseldecs-drop-20-23.jpg', source: 'https://dysonlogos.blog/2024/08/06/iseldecs-drop-levels-20-23/' }
+    ];
+    const maps = [
+      { id: 81, title: 'Forest Cave Entrance Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2026/05/ForestCaveEntranceVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 82, title: 'Forest Pond Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2026/04/ForestPondVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 83, title: 'Forest Wilderness Vol. 8', image: 'https://dicegrimorium.com/wp-content/uploads/2026/03/ForestWildernessVol8Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 84, title: 'Flooded Forest Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2026/02/FloodedForestVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 85, title: 'Forest Path Vol. 9', image: 'https://dicegrimorium.com/wp-content/uploads/2026/01/ForestPathVol9Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 86, title: 'Snowy City Streets Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2025/12/SnowyCityStreetsVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 87, title: 'Flooded City', image: 'https://dicegrimorium.com/wp-content/uploads/2025/09/FloodedCityThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 88, title: 'Forest Crystal Path', image: 'https://dicegrimorium.com/wp-content/uploads/2025/08/ForestCrystalPathThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 89, title: 'Burning City Streets Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2025/08/BurningCityStreetsVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 90, title: 'Floating Forest Islands', image: 'https://dicegrimorium.com/wp-content/uploads/2025/07/FloatingForestIslandsThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 91, title: 'Forest Encampment', image: 'https://dicegrimorium.com/wp-content/uploads/2025/06/ForestEncampmentThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 92, title: 'Bottomless Pit Castle Room', image: 'https://dicegrimorium.com/wp-content/uploads/2025/03/BottomlessPitCastleRoomThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 93, title: 'Kingdom Forest Roads Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2025/03/KingdomForestRoadsVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 94, title: 'Cave Fortress', image: 'https://dicegrimorium.com/wp-content/uploads/2025/02/CaveFortressThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 95, title: 'Autumn Forest Path', image: 'https://dicegrimorium.com/wp-content/uploads/2024/10/AutumnForestPathThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 96, title: 'Snowy Ruined Fortress', image: 'https://dicegrimorium.com/wp-content/uploads/2024/08/SnowyRuinedFortressThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 97, title: 'City Streets Vol. 2', image: 'https://dicegrimorium.com/wp-content/uploads/2024/04/CityStreetsVol2Thumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 98, title: 'Desert Market Streets', image: 'https://dicegrimorium.com/wp-content/uploads/2024/03/DesertMarketStreetsThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 99, title: 'City Gates', image: 'https://dicegrimorium.com/wp-content/uploads/2023/10/CityGatesThumb.jpg', source: 'https://dicegrimorium.com/free-rpg-map-library/' },
+      { id: 100, title: 'Cyberpunk Headquarters', image: 'https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2021/08/BluBerreys-Cyberpunk-Battle-Maps-Headquarters.jpg?resize=795%2C530&ssl=1', source: 'https://2minutetabletop.com/cyberpunk-battle-maps-by-bluberrey/' },
+      { id: 101, title: 'Cyberpunk Castle Floor 1', image: 'https://i0.wp.com/mk0a2minutetabl7hq7i.kinstacdn.com/wp-content/uploads/2021/08/BluBerreys-Cyberpunk-Castle-battle-map-Floor-1.jpg?resize=795%2C500&ssl=1', source: 'https://2minutetabletop.com/cyberpunk-battle-maps-by-bluberrey/' },
+      { id: 102, title: 'Cyberpunk Bar', image: 'https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2021/08/BluBerreys-Cyberpunk-Battle-Maps-Bar.jpg?resize=795%2C489&ssl=1', source: 'https://2minutetabletop.com/cyberpunk-battle-maps-by-bluberrey/' },
+      { id: 103, title: 'Cyberpunk Metro', image: 'https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2021/08/BluBerreys-Cyberpunk-Battle-Maps-Metro.jpg?resize=795%2C331&ssl=1', source: 'https://2minutetabletop.com/cyberpunk-battle-maps-by-bluberrey/' },
+      { id: 104, title: 'Colored Elven City', image: 'https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2021/08/BluBerreys-City-Maps-Elven-City-Colored.jpg?resize=795%2C795&ssl=1', source: 'https://2minutetabletop.com/cyberpunk-battle-maps-by-bluberrey/' }
+    ];
+
+    const gallery = document.querySelector('#gallery');
+    const dialog = document.querySelector('#preview-dialog');
+    const voiceStatus = document.querySelector('#voice-status');
+    const reviewSummary = document.querySelector('#review-summary');
+    let page = 0;
+    let perPage = 8;
+    let activeMap = maps[0];
+    const approved = new Set(JSON.parse(localStorage.getItem('approvedRpgMaps') || '[]'));
+    const rejected = new Set(JSON.parse(localStorage.getItem('rejectedRpgMaps') || '[]'));
+    const reviewed = new Set(JSON.parse(localStorage.getItem('reviewedRpgMaps') || '[]'));
+    legacyMaps.forEach(map => reviewed.add(map.id));
+    repeatedMaps.forEach(map => reviewed.add(map.id));
+    legacyMaps.forEach(map => {
+      if (![32, 34, 52].includes(map.id)) approved.add(map.id);
+    });
+    [32, 34, 52].forEach(id => {
+      rejected.add(id);
+      approved.delete(id);
+    });
+    rejected.add(60);
+    approved.delete(60);
+
+    function speak(message) {
+      voiceStatus.textContent = message;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.rate = 0.95;
+      speechSynthesis.speak(utterance);
+    }
+
+    function saveReview() {
+      localStorage.setItem('approvedRpgMaps', JSON.stringify([...approved]));
+      localStorage.setItem('rejectedRpgMaps', JSON.stringify([...rejected]));
+      localStorage.setItem('reviewedRpgMaps', JSON.stringify([...reviewed]));
+      reviewSummary.textContent = `Approved: ${approved.size} | Rejected: ${rejected.size} | Seen: ${reviewed.size}`;
+    }
+
+    function pageSize() {
+      if (innerWidth <= 720) return 4;
+      if (innerWidth <= 1100) return 6;
+      return 8;
+    }
+
+    function showPreview(map) {
+      activeMap = map;
+      document.querySelector('#preview-number').textContent = `Map ${map.id}`;
+      document.querySelector('#preview-title').textContent = map.title;
+      document.querySelector('#preview-image').src = map.image;
+      document.querySelector('#preview-image').alt = `Map ${map.id}: ${map.title}`;
+      document.querySelector('#preview-source').href = map.source;
+      dialog.showModal();
+      speak(`Showing map ${map.id}, ${map.title}. Say approve map, reject map, or close map.`);
+    }
+
+    function render() {
+      perPage = pageSize();
+      const pageCount = Math.ceil(maps.length / perPage);
+      page = Math.min(page, pageCount - 1);
+      gallery.innerHTML = '';
+      maps.slice(page * perPage, page * perPage + perPage).forEach(map => {
+        const card = document.createElement('button');
+        card.className = 'map-card';
+        card.setAttribute('aria-label', `Open map ${map.id}: ${map.title}`);
+        card.innerHTML = `<img loading="eager" src="${map.image}" alt="${map.title}">
+          <span class="map-number">${String(map.id).padStart(3, '0')}</span>
+          <span class="map-title">${map.title}</span>`;
+        card.addEventListener('focus', () => { activeMap = map; });
+        card.addEventListener('click', () => showPreview(map));
+        gallery.append(card);
+      });
+      document.querySelector('#page-status').textContent = `Batch ${page + 1} of ${pageCount}`;
+      document.querySelector('#previous').disabled = page === 0;
+      document.querySelector('#next').disabled = page === pageCount - 1;
+      const first = maps[page * perPage]?.id;
+      const last = maps[Math.min(page * perPage + perPage - 1, maps.length - 1)]?.id;
+      voiceStatus.textContent = `Showing maps ${first} through ${last}. Say “next maps”, “show map” and a number, or “voice help”.`;
+    }
+
+    document.querySelector('#previous').addEventListener('click', () => { page -= 1; render(); });
+    document.querySelector('#next').addEventListener('click', () => { page += 1; render(); });
+    document.querySelector('#read-status').addEventListener('click', () => {
+      speak(`You approved ${approved.size} maps and rejected ${rejected.size} maps.`);
+    });
+    document.querySelector('#voice-help').addEventListener('click', () => {
+      speak('Use Windows Voice Access and say click next maps, click previous maps, click a map number, click approve map, click reject map, click close, or click read status.');
+    });
+    document.querySelector('#reset-review').addEventListener('click', () => {
+      maps.forEach(map => {
+        approved.delete(map.id);
+        rejected.delete(map.id);
+      });
+      saveReview();
+      speak('The new map batch is reset. Your completed review of maps 1 through 52 remains unchanged.');
+    });
+    document.querySelector('#map-jump').addEventListener('input', event => {
+      const mapNumber = Number(event.target.value);
+      const mapIndex = maps.findIndex(map => map.id === mapNumber);
+      if (mapIndex >= 0) {
+        activeMap = maps[mapIndex];
+        page = Math.floor(mapIndex / perPage);
+        render();
+      }
+    });
+    document.querySelector('#close-preview').addEventListener('click', () => dialog.close());
+    document.querySelector('#approve-preview').addEventListener('click', () => reviewMap(activeMap, 'approved'));
+    document.querySelector('#reject-preview').addEventListener('click', () => reviewMap(activeMap, 'rejected'));
+    document.querySelector('#approve-current').addEventListener('click', () => reviewMap(activeMap, 'approved'));
+    document.querySelector('#reject-current').addEventListener('click', () => reviewMap(activeMap, 'rejected'));
+    dialog.addEventListener('close', () => {});
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+    addEventListener('resize', render);
+    addEventListener('keydown', event => {
+      if (dialog.open) return;
+      if (event.key === 'ArrowRight') document.querySelector('#next').click();
+      if (event.key === 'ArrowLeft') document.querySelector('#previous').click();
+    });
+    const numberWords = {
+      one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9,
+      ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16,
+      seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50
+    };
+    function spokenNumber(text) {
+      const digits = text.match(/\d+/);
+      if (digits) return Number(digits[0]);
+      let total = 0;
+      for (const word of text.split(/\s+/)) total += numberWords[word] || 0;
+      return total || null;
+    }
+    function findRequestedMap(text) {
+      if (activeMap && !spokenNumber(text)) return activeMap;
+      const id = spokenNumber(text);
+      return maps.find(map => map.id === id);
+    }
+    function reviewMap(map, decision) {
+      if (!map) return speak('I could not identify that map number. Please say show map and the number.');
+      if (decision === 'approved') {
+        approved.add(map.id);
+        rejected.delete(map.id);
+      } else {
+        rejected.add(map.id);
+        approved.delete(map.id);
+      }
+      reviewed.add(map.id);
+      saveReview();
+      speak(`Map ${map.id}, ${map.title}, marked ${decision}.`);
+    }
+    function handleVoice(rawText) {
+      const text = rawText.toLowerCase().replace(/[.,!?]/g, '').trim();
+      voiceStatus.textContent = `Heard: “${text}”`;
+      if (text.includes('voice help') || text === 'help') {
+        return speak('Say next maps, previous maps, show map and a number, approve map and a number, reject map and a number, close map, or read status.');
+      }
+      if (text.includes('next')) {
+        if (!document.querySelector('#next').disabled) document.querySelector('#next').click();
+        return speak('Showing the next maps.');
+      }
+      if (text.includes('previous') || text.includes('back')) {
+        if (!document.querySelector('#previous').disabled) document.querySelector('#previous').click();
+        return speak('Showing the previous maps.');
+      }
+      if (text.includes('close')) {
+        if (dialog.open) dialog.close();
+        return speak('Map preview closed.');
+      }
+      if (text.includes('read status') || text.includes('review status')) {
+        return speak(`You approved ${approved.size} maps and rejected ${rejected.size} maps.`);
+      }
+      if (text.includes('approve') || text.includes('use') || text.includes('keep')) {
+        return reviewMap(findRequestedMap(text), 'approved');
+      }
+      if (text.includes('reject') || text.includes('remove') || text.includes('delete')) {
+        return reviewMap(findRequestedMap(text), 'rejected');
+      }
+      if (text.includes('show') || text.includes('open') || text.includes('map')) {
+        const map = findRequestedMap(text);
+        if (map) {
+          page = Math.floor(maps.indexOf(map) / perPage);
+          render();
+          return showPreview(map);
+        }
+      }
+      speak('I did not understand. Say voice help for the available commands.');
+    }
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (Recognition) {
+      const recognition = new Recognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      recognition.onresult = event => handleVoice(event.results[event.results.length - 1][0].transcript);
+      recognition.onend = () => {
+        try { recognition.start(); } catch {}
+      };
+      recognition.onerror = event => {
+        voiceStatus.textContent = 'Use Windows Voice Access: say “click voice help” to hear every hands-free command.';
+      };
+      try {
+        recognition.start();
+        voiceStatus.textContent = 'Voice control ready. Say “voice help” for commands.';
+      } catch {
+        voiceStatus.textContent = 'Voice control could not start. Reload the page, then allow microphone access.';
+      }
+    } else {
+      voiceStatus.textContent = 'Browser voice recognition is unavailable. Windows Voice Access can still say button names and map numbers.';
+    }
+    saveReview();
+    render();
+  </script>
+</body>
+</html>

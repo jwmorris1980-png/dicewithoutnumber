@@ -45,3 +45,12 @@ def test_institutional_floor_plan_is_not_treated_as_rpg_map():
 def test_only_approved_manifest_is_user_searchable():
     assert verified_map_library.find_verified_map("dungeon") is not None
     assert verified_map_library.find_verified_map("battle") is None
+
+
+def test_approved_color_maps_include_attribution_and_license():
+    entries = verified_map_library.load_verified_maps()
+    color_maps = [entry for entry in entries if "color" in entry.get("tags", [])]
+
+    assert len(color_maps) == 5
+    assert all(entry.get("attribution") for entry in color_maps)
+    assert all(entry.get("license_url") for entry in color_maps)
