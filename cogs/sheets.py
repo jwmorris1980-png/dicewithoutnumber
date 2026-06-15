@@ -157,12 +157,43 @@ class CharacterSheetCog(commands.Cog):
         if not isinstance(stress, dict):
             stress = {}
 
+        hp_value = (
+            data.get('hp')
+            or data.get('hit_points')
+            or data.get('hitPoints')
+            or data.get('currentHp')
+            or data.get('currentHP')
+        )
+        if isinstance(hp_value, dict):
+            hp_value = (
+                hp_value.get('current')
+                or hp_value.get('value')
+                or hp_value.get('max')
+            )
+
+        raw_skills = data.get('skills')
+        skills = raw_skills if isinstance(raw_skills, dict) else {}
+        if isinstance(raw_skills, list):
+            skills = {}
+            for skill in raw_skills:
+                if not isinstance(skill, dict):
+                    continue
+                skill_name = str(skill.get('name') or skill.get('skill') or "").strip()
+                if not skill_name:
+                    continue
+                skill_value = skill.get('rank')
+                if skill_value is None:
+                    skill_value = skill.get('level')
+                if skill_value is None:
+                    skill_value = skill.get('value')
+                skills[skill_name] = self._coerce_int(skill_value, 0)
+
         normalized = {
             **data,
             'name': name,
             'level': self._coerce_int(data.get('level'), 1),
             'class': data.get('class') or data.get('role') or data.get('background') or 'Hero',
-            'hp': self._coerce_int(data.get('hp') or data.get('hit_points'), 0),
+            'hp': self._coerce_int(hp_value, 0),
             'ac': self._coerce_int(data.get('ac') or data.get('armor_class'), 10),
             'attack_bonus': self._coerce_int(data.get('attack_bonus') or data.get('attackBonus'), 0),
             'attributes': {
@@ -173,7 +204,7 @@ class CharacterSheetCog(commands.Cog):
                 'wisdom': self._coerce_int(attributes.get('wisdom') or attributes.get('wis'), 0),
                 'charisma': self._coerce_int(attributes.get('charisma') or attributes.get('cha'), 0),
             },
-            'skills': data.get('skills') if isinstance(data.get('skills'), dict) else {},
+            'skills': skills,
             'weapons': data.get('weapons') if isinstance(data.get('weapons'), list) else [],
             'strain': data.get('strain') or data.get('system_strain') or data.get('systemStrain'),
             'stress': stress,
@@ -726,11 +757,40 @@ class CharacterSheetCog(commands.Cog):
         lines = text.split('\n')
         char_data = {'name': lines[0].strip(), 'level': 1, 'class': 'Expert', 'hp': 0, 'ac': 10, 'attack_bonus': 0, 'attributes': {}, 'skills': {}, 'weapons': [], 'system': system}
         try:
+            normalized_text = re.sub(
+                r'\s+(?=(?:HP|AC|AB|ATTRIBUTES|SAVING THROWS|SKILLS|FOCI|CONTACTS|EQUIPMENT)\s*:?)',
+                '\n',
+                text,
+                flags=re.IGNORECASE,
+            )
+            lines = [line.strip() for line in normalized_text.splitlines() if line.strip()]
+            char_data['name'] = re.sub(r'\s+\[(?:SWN|CWN|WWN|AWN)\].*$', '', lines[0], flags=re.IGNORECASE).strip()
+
+            section = None
             for line in lines:
-                if 'HP:' in line: char_data['hp'] = int(re.search(r'HP:\s*(\d+)', line).group(1))
-                if 'AC:' in line: char_data['ac'] = int(re.search(r'AC:\s*(\d+)', line).group(1))
-                if 'Attack Bonus:' in line: char_data['attack_bonus'] = int(re.search(r'Attack Bonus:\s*\+?(-?\d+)', line).group(1))
-            return char_data, None
+                upper = line.upper()
+                for heading in ('ATTRIBUTES', 'SAVING THROWS', 'SKILLS', 'FOCI', 'CONTACTS', 'EQUIPMENT'):
+                    if upper == heading or upper.startswith(heading + ' '):
+                        section = heading
+                        line = line[len(heading):].strip()
+                        upper = line.upper()
+                        break
+                if not line:
+                    continue
+                if match := re.search(r'\bLevel\s+(\d+)\s+(.+?)(?:\s*\||$)', line, re.IGNORECASE):
+                    char_data['level'] = int(match.group(1))
+                    char_data['class'] = match.group(2).strip()
+                if match := re.search(r'\bHP:\s*(\d+)', line, re.IGNORECASE):
+                    char_data['hp'] = int(match.group(1))
+                if match := re.search(r'\bAC:\s*(\d+)', line, re.IGNORECASE):
+                    char_data['ac'] = int(match.group(1))
+                if match := re.search(r'\b(?:AB|Attack Bonus):\s*\+?(-?\d+)', line, re.IGNORECASE):
+                    char_data['attack_bonus'] = int(match.group(1))
+                if section == 'SKILLS':
+                    for skill_name, skill_value in re.findall(r'([A-Za-z][A-Za-z ]*?)-(-?\d+)(?=,|$)', line):
+                        char_data['skills'][skill_name.strip()] = int(skill_value)
+
+            return self._normalize_character_data(char_data)
         except Exception as e: return None, str(e)
 
 async def setup(bot):
