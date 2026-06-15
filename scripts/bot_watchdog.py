@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -15,6 +16,8 @@ SERVICE = os.getenv("WATCHDOG_SERVICE", "dicewithoutnumber.service")
 STATE_FILE = Path(os.getenv("WATCHDOG_STATE_FILE", "/var/lib/dicewithoutnumber-watchdog/state.json"))
 BOT_HEALTH_FILE = Path(os.getenv("BOT_HEALTH_FILE", "/tmp/dicewithoutnumber-bot-health.json"))
 BOT_HEALTH_MAX_AGE = int(os.getenv("BOT_HEALTH_MAX_AGE", "90"))
+UPDATE_MARKER_FILE = Path(os.getenv("WATCHDOG_UPDATE_MARKER_FILE", "/tmp/dicewithoutnumber-update.json"))
+UPDATE_GRACE_SECONDS = int(os.getenv("WATCHDOG_UPDATE_GRACE_SECONDS", "180"))
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 ENV_FILES = (
     Path.home() / ".dicewithoutnumber" / ".env",
@@ -137,6 +140,29 @@ def write_state(state: dict) -> None:
     STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
+def mark_update(now: int | None = None) -> None:
+    UPDATE_MARKER_FILE.write_text(
+        json.dumps({"started_at": now or int(time.time())}),
+        encoding="utf-8",
+    )
+
+
+def update_in_progress(now: int | None = None) -> bool:
+    now = now or int(time.time())
+    try:
+        payload = json.loads(UPDATE_MARKER_FILE.read_text(encoding="utf-8"))
+        return now - int(payload.get("started_at", 0)) <= UPDATE_GRACE_SECONDS
+    except (FileNotFoundError, json.JSONDecodeError, TypeError, ValueError):
+        return False
+
+
+def announce_update() -> int:
+    load_env()
+    mark_update()
+    notify("DICEwithoutNumber is being updated right now. No action is needed; it should be back shortly.")
+    return 0
+
+
 def restart_and_verify() -> tuple[bool, int, str]:
     BOT_HEALTH_FILE.unlink(missing_ok=True)
     restart = systemctl("restart", SERVICE)
@@ -162,6 +188,7 @@ def main() -> int:
     responsive, health_details = bot_health()
 
     if active and responsive:
+        UPDATE_MARKER_FILE.unlink(missing_ok=True)
         if restarts > previous_restarts:
             restart_delta = restarts - previous_restarts
             if restart_delta > 1:
@@ -186,6 +213,10 @@ def main() -> int:
         write_state({"restarts": restarts, "active": True, "checked_at": int(time.time())})
         return 0
 
+    if update_in_progress():
+        write_state({"restarts": restarts, "active": active, "checked_at": int(time.time())})
+        return 0
+
     failure = "down" if not active else f"unresponsive ({health_details})"
     notify(f"DICEwithoutNumber is {failure}. The Oracle watchdog is attempting an automatic restart now.")
     recovered, new_restarts, details = restart_and_verify()
@@ -203,4 +234,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(announce_update() if "--announce-update" in sys.argv else main())
