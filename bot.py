@@ -8,6 +8,7 @@ import asyncio
 import json
 import copy
 import re
+from pathlib import Path
 from services.database import DatabaseService
 from services.web_service import WebService
 from services.localization_service import LocalizationService
@@ -42,6 +43,7 @@ GUILD_ID = os.getenv('GUILD_ID')
 # When set, all slash commands are synced ONLY to this guild (instant).
 # Leave blank to sync globally (production).
 TEST_GUILD_ID = os.getenv('TEST_GUILD_ID')
+BOT_HEALTH_FILE = Path(os.getenv('BOT_HEALTH_FILE', '/tmp/dicewithoutnumber-bot-health.json'))
 
 class WithoutNumberBot(commands.Bot):
     def __init__(self):
@@ -73,6 +75,23 @@ class WithoutNumberBot(commands.Bot):
         # Add tree error handler
         self.tree.on_error = self.on_tree_error
         self.tree.interaction_check = self._feature_interaction_check
+        self._health_writer_task = None
+
+    async def _write_health_loop(self):
+        """Expose gateway readiness to the independent Oracle watchdog."""
+        while not self.is_closed():
+            payload = {
+                "updated_at": int(datetime.datetime.now().timestamp()),
+                "ready": self.is_ready(),
+                "latency": self.latency,
+            }
+            try:
+                temp_path = BOT_HEALTH_FILE.with_suffix(".tmp")
+                temp_path.write_text(json.dumps(payload), encoding="utf-8")
+                temp_path.replace(BOT_HEALTH_FILE)
+            except OSError as exc:
+                logger.warning(f"Could not write bot health file: {exc}")
+            await asyncio.sleep(20)
 
     async def sync_identity(self):
         """Update bot nickname in all guilds and sync global username."""
@@ -252,6 +271,7 @@ class WithoutNumberBot(commands.Bot):
                 pass
 
     async def setup_hook(self):
+        self._health_writer_task = asyncio.create_task(self._write_health_loop())
         # Initial identity sync in background so it doesn't block web service
         asyncio.create_task(self.sync_identity())
         
@@ -334,6 +354,8 @@ class WithoutNumberBot(commands.Bot):
                 except discord.Forbidden:
                     logger.warning(f"Error: Missing permissions to remove role {role.name} in {guild.name}")
     async def close(self):
+        if self._health_writer_task:
+            self._health_writer_task.cancel()
         await self.web_service.stop()
         await super().close()
 

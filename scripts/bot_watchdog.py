@@ -13,6 +13,8 @@ from pathlib import Path
 
 SERVICE = os.getenv("WATCHDOG_SERVICE", "dicewithoutnumber.service")
 STATE_FILE = Path(os.getenv("WATCHDOG_STATE_FILE", "/var/lib/dicewithoutnumber-watchdog/state.json"))
+BOT_HEALTH_FILE = Path(os.getenv("BOT_HEALTH_FILE", "/tmp/dicewithoutnumber-bot-health.json"))
+BOT_HEALTH_MAX_AGE = int(os.getenv("BOT_HEALTH_MAX_AGE", "90"))
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 ENV_FILES = (
     Path.home() / ".dicewithoutnumber" / ".env",
@@ -54,6 +56,22 @@ def service_status() -> tuple[bool, int]:
     except ValueError:
         restarts = 0
     return active, restarts
+
+
+def bot_health(now: int | None = None) -> tuple[bool, str]:
+    now = now or int(time.time())
+    try:
+        payload = json.loads(BOT_HEALTH_FILE.read_text(encoding="utf-8"))
+        age = now - int(payload.get("updated_at", 0))
+        if age > BOT_HEALTH_MAX_AGE:
+            return False, f"health heartbeat is {age}s old"
+        if not payload.get("ready"):
+            return False, "Discord gateway is not ready"
+        return True, "Discord gateway is ready"
+    except FileNotFoundError:
+        return False, "health heartbeat file is missing"
+    except (json.JSONDecodeError, TypeError, ValueError) as exc:
+        return False, f"health heartbeat is invalid: {exc}"
 
 
 def api_request(method: str, path: str, token: str, payload: dict | None = None) -> dict:
@@ -120,17 +138,20 @@ def write_state(state: dict) -> None:
 
 
 def restart_and_verify() -> tuple[bool, int, str]:
+    BOT_HEALTH_FILE.unlink(missing_ok=True)
     restart = systemctl("restart", SERVICE)
     details = (restart.stderr or restart.stdout or "No systemd error details.").strip()[-800:]
     time.sleep(12)
     first_active, first_restarts = service_status()
-    if not first_active:
+    first_responsive, _ = bot_health()
+    if not first_active or not first_responsive:
         return False, first_restarts, details
 
     # A crash-looping process can briefly appear active, so verify it remains stable.
     time.sleep(12)
     stable_active, stable_restarts = service_status()
-    return stable_active and stable_restarts == first_restarts, stable_restarts, details
+    stable_responsive, _ = bot_health()
+    return stable_active and stable_responsive and stable_restarts == first_restarts, stable_restarts, details
 
 
 def main() -> int:
@@ -138,8 +159,9 @@ def main() -> int:
     state = read_state()
     active, restarts = service_status()
     previous_restarts = int(state.get("restarts", restarts))
+    responsive, health_details = bot_health()
 
-    if active:
+    if active and responsive:
         if restarts > previous_restarts:
             restart_delta = restarts - previous_restarts
             if restart_delta > 1:
@@ -164,7 +186,8 @@ def main() -> int:
         write_state({"restarts": restarts, "active": True, "checked_at": int(time.time())})
         return 0
 
-    notify("DICEwithoutNumber is down. The Oracle watchdog is attempting an automatic restart now.")
+    failure = "down" if not active else f"unresponsive ({health_details})"
+    notify(f"DICEwithoutNumber is {failure}. The Oracle watchdog is attempting an automatic restart now.")
     recovered, new_restarts, details = restart_and_verify()
 
     if recovered:
