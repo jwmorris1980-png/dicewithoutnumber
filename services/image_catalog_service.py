@@ -184,7 +184,7 @@ class ImageCatalogService:
                     "tags": [query, "openverse", "open-license"],
                 }
             )
-        return random.choice(usable) if usable else None
+        return usable[0] if usable else None
 
     async def search_google_map_candidate(self, query: str) -> Optional[dict]:
         """

@@ -114,13 +114,13 @@ class AssetLibraryCog(commands.Cog):
                 if local_map:
                     await self._send_local_map(target, *local_map)
                     return
-            verified_map = find_verified_map(query)
-            if verified_map:
-                await self._send_catalog_result(target, verified_map)
-                return
             openverse_map = await self.catalog.search_openverse_map(query)
             if openverse_map:
                 await self._send_catalog_result(target, openverse_map)
+                return
+            verified_map = find_verified_map(query)
+            if verified_map:
+                await self._send_catalog_result(target, verified_map)
                 return
             google_candidate = await self.catalog.search_google_map_candidate(query)
             if google_candidate:
@@ -128,9 +128,8 @@ class AssetLibraryCog(commands.Cog):
                 return
             await _reply(
                 target,
-                f"No hand-reviewed RPG map is approved yet for **{query or 'that request'}**. "
-                "I checked the approved library and free open-license search, but I will not "
-                "substitute a generated, reference, or questionable map.",
+                f"I could not find a displayable open-license RPG map for **{query or 'that request'}**. "
+                "Try a simpler phrase like `forest`, `dungeon`, `city`, or `space station`.",
             )
             return
 
@@ -295,6 +294,7 @@ class AssetLibraryCog(commands.Cog):
         lower = text.lower()
         for prefix, kind in (
             ("find map ", "map"),
+            ("search map ", "map"),
             ("show map ", "map"),
             ("map ", "map"),
             ("give me a map ", "map"),
