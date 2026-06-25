@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, patch
 import discord
 
 from cogs.asset_library import AssetLibraryCog
-from services.image_catalog_service import ImageCatalogService
+from services.image_catalog_service import ImageCatalogService, _google_map_candidate
 
 
 def test_explicit_builtin_map_shows_generated_map():
@@ -76,3 +76,24 @@ def test_openverse_relevance_rejects_unrelated_results():
     assert ImageCatalogService.relevant_openverse_map(florida, "fantasy") is False
     assert ImageCatalogService.relevant_openverse_map(wrong_subject, "space station") is False
     assert ImageCatalogService.relevant_openverse_map(reference_map, "forest") is False
+
+
+def test_google_candidate_requires_rpg_map_language():
+    items = [
+        {
+            "title": "Forest reference map",
+            "link": "https://example.com/forest.jpg",
+            "image": {"contextLink": "https://example.com/reference"},
+        },
+        {
+            "title": "Forest Battlemap for VTT",
+            "link": "https://example.com/forest-battlemap.jpg",
+            "image": {"contextLink": "https://example.com/rpg"},
+        },
+    ]
+
+    candidate = _google_map_candidate(items, "forest")
+
+    assert candidate is not None
+    assert candidate["license"] == "Needs review"
+    assert candidate["url"].endswith("forest-battlemap.jpg")

@@ -6,10 +6,12 @@ This service queries it to retrieve curated free maps & portraits for SWN/CWN/WW
 each carrying full attribution/source info.
 """
 
+import json
 import logging
 import os
 import random
 import re
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -28,6 +30,7 @@ log = logging.getLogger(__name__)
 # Bot connects internally; set IMAGE_CATALOG_URL to override (e.g. for local dev).
 _DEFAULT_URL = "http://127.0.0.1:8001"
 CATALOG_URL = os.environ.get("IMAGE_CATALOG_URL", _DEFAULT_URL).rstrip("/")
+GOOGLE_SEARCH_URL = "https://www.googleapis.com/customsearch/v1"
 
 
 class ImageCatalogService:
@@ -183,6 +186,59 @@ class ImageCatalogService:
             )
         return random.choice(usable) if usable else None
 
+    async def search_google_map_candidate(self, query: str) -> Optional[dict]:
+        """
+        Search Google Custom Search for a candidate RPG map.
+
+        This is intentionally disabled unless keys are configured. Google Custom
+        Search has a small free daily allowance for existing customers, so the
+        bot also applies a local daily cap before making any network request.
+        Results are candidates, not approved catalog entries, because Google
+        results do not prove redistribution rights.
+        """
+        api_key = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY", "").strip()
+        cx = os.getenv("GOOGLE_CUSTOM_SEARCH_CX", "").strip()
+        if not api_key or not cx:
+            return None
+
+        cache_path = _google_cache_path()
+        cache = _read_json(cache_path)
+        day = time.strftime("%Y-%m-%d", time.gmtime())
+        usage = cache.setdefault("usage", {})
+        used_today = int(usage.get(day, 0))
+        daily_limit = int(os.getenv("GOOGLE_CUSTOM_SEARCH_DAILY_LIMIT", "90"))
+        if used_today >= daily_limit:
+            return None
+
+        normalized = " ".join(str(query or "").lower().split())
+        cached = (cache.get("results") or {}).get(normalized)
+        if cached:
+            return cached
+
+        params = {
+            "key": api_key,
+            "cx": cx,
+            "q": f"{query} RPG battlemap".strip(),
+            "searchType": "image",
+            "safe": "active",
+            "num": "5",
+        }
+        try:
+            session = await self._get_session()
+            async with session.get(GOOGLE_SEARCH_URL, params=params) as resp:
+                resp.raise_for_status()
+                items = (await resp.json()).get("items", [])
+        except Exception as exc:
+            log.warning("Google map search failed: %s", exc)
+            return None
+
+        usage[day] = used_today + 1
+        candidate = _google_map_candidate(items, query)
+        if candidate:
+            cache.setdefault("results", {})[normalized] = candidate
+        _write_json(cache_path, cache)
+        return candidate
+
     async def get_by_id(self, image_id: str) -> Optional[dict]:
         """Fetch a specific image by ID."""
         try:
@@ -316,3 +372,59 @@ class ImageCatalogService:
             if word not in {"a", "an", "the", "map", "please", "show", "find", "give", "me"}
         }
         return not requested or bool(requested.intersection(title_words))
+
+
+def _google_cache_path() -> Path:
+    configured = os.getenv("GOOGLE_CUSTOM_SEARCH_CACHE_FILE", "").strip()
+    if configured:
+        return Path(configured)
+    if os.name == "nt":
+        return Path(".cache") / "google_map_search_cache.json"
+    return Path("/var/lib/dicewithoutnumber/google_map_search_cache.json")
+
+
+def _read_json(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"usage": {}, "results": {}}
+
+
+def _write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _google_map_candidate(items: list[dict], query: str) -> Optional[dict]:
+    for item in items:
+        title = str(item.get("title") or "")
+        image_url = str(item.get("link") or "")
+        source_page = str(item.get("image", {}).get("contextLink") or item.get("displayLink") or "")
+        haystack = f"{title} {source_page}".lower()
+        if not ImageCatalogService.displayable_image_url({"url": image_url}):
+            continue
+        if not any(term in haystack for term in ("battlemap", "battle map", "dungeon map", "rpg map", "vtt")):
+            continue
+        requested = {
+            word
+            for word in re.findall(r"[a-z0-9]+", str(query).lower())
+            if word not in {"a", "an", "the", "map", "please", "show", "find", "give", "me"}
+        }
+        if requested and not requested.intersection(set(re.findall(r"[a-z0-9]+", haystack))):
+            continue
+        return {
+            "id": f"google-candidate-{abs(hash(image_url))}",
+            "type": "map",
+            "name": title or "Google map candidate",
+            "description": "Candidate RPG map found through Google Custom Search. Review the source license before adding it to the approved catalog.",
+            "url": image_url,
+            "thumbnail_url": image_url,
+            "source_page": source_page,
+            "artist": "Unknown creator",
+            "license": "Needs review",
+            "license_url": "",
+            "attribution": "Google result candidate only. Confirm permission and attribution before reuse.",
+            "system": ["General RPG"],
+            "tags": [query, "google-candidate", "needs-review"],
+        }
+    return None

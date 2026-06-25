@@ -17,6 +17,7 @@ node_modules/
 dist/
 build/
 .test-area/
+.cache/
 .cursorrules
 data/*.db
 data/*.sqlite

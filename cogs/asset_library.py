@@ -118,10 +118,19 @@ class AssetLibraryCog(commands.Cog):
             if verified_map:
                 await self._send_catalog_result(target, verified_map)
                 return
+            openverse_map = await self.catalog.search_openverse_map(query)
+            if openverse_map:
+                await self._send_catalog_result(target, openverse_map)
+                return
+            google_candidate = await self.catalog.search_google_map_candidate(query)
+            if google_candidate:
+                await self._send_catalog_result(target, google_candidate)
+                return
             await _reply(
                 target,
                 f"No hand-reviewed RPG map is approved yet for **{query or 'that request'}**. "
-                "I will not substitute a generated, reference, or questionable map.",
+                "I checked the approved library and free open-license search, but I will not "
+                "substitute a generated, reference, or questionable map.",
             )
             return
 
