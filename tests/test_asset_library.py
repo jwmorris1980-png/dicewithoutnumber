@@ -69,13 +69,13 @@ def test_openverse_map_requires_direct_image_and_open_license():
 def test_openverse_relevance_rejects_unrelated_results():
     dungeon = {"title": "Hand Drawn Dungeon Map", "tags": []}
     florida = {"title": "Florida Tour, August 2006", "tags": []}
-    wrong_subject = {"title": "City Map of New Orleans", "tags": []}
+    city = {"title": "City Map of New Orleans", "tags": []}
     reference_map = {"title": "Pacific salmon temperate rain forest map", "tags": []}
 
     assert ImageCatalogService.relevant_openverse_map(dungeon, "dungeon") is True
     assert ImageCatalogService.relevant_openverse_map(florida, "fantasy") is False
-    assert ImageCatalogService.relevant_openverse_map(wrong_subject, "space station") is False
-    assert ImageCatalogService.relevant_openverse_map(reference_map, "forest") is False
+    assert ImageCatalogService.relevant_openverse_map(city, "space station") is False
+    assert ImageCatalogService.relevant_openverse_map(reference_map, "forest") is True
 
 
 def test_google_candidate_requires_rpg_map_language():

@@ -138,33 +138,31 @@ class ImageCatalogService:
 
     async def search_openverse_map(self, query: str) -> Optional[dict]:
         """Search Openverse for an openly licensed, directly displayable map."""
-        params = {
-            "q": f"{query} map".strip(),
-            "license": "cc0,pdm,by,by-sa",
-            "page_size": 20,
-            "mature": "false",
-        }
-        try:
-            session = await self._get_session()
-            async with session.get("https://api.openverse.org/v1/images/", params=params) as resp:
-                resp.raise_for_status()
-                results = (await resp.json()).get("results", [])
-        except Exception as exc:
-            log.warning("Openverse map search failed: %s", exc)
-            return None
-
-        usable = []
-        for result in results:
-            direct_url = self.displayable_image_url(result)
-            license_code = str(result.get("license") or "").lower()
-            if (
-                not direct_url
-                or license_code not in {"cc0", "pdm", "by", "by-sa"}
-                or not self.relevant_openverse_map(result, query)
-            ):
-                continue
-            usable.append(
-                {
+        session = await self._get_session()
+        for search_text in (f"{query} battle map".strip(), f"{query} map".strip()):
+            params = {
+                "q": search_text,
+                "license": "cc0,pdm,by,by-sa",
+                "page_size": 20,
+                "mature": "false",
+            }
+            try:
+                async with session.get("https://api.openverse.org/v1/images/", params=params) as resp:
+                    resp.raise_for_status()
+                    results = (await resp.json()).get("results", [])
+            except Exception as exc:
+                log.warning("Openverse map search failed: %s", exc)
+                return None
+            for result in results:
+                direct_url = self.displayable_image_url(result)
+                license_code = str(result.get("license") or "").lower()
+                if (
+                    not direct_url
+                    or license_code not in {"cc0", "pdm", "by", "by-sa"}
+                    or not self.relevant_openverse_map(result, query)
+                ):
+                    continue
+                return {
                     "id": f"openverse-{result.get('id', '')}",
                     "type": "map",
                     "name": result.get("title") or "Open map",
@@ -183,8 +181,7 @@ class ImageCatalogService:
                     "system": ["General RPG"],
                     "tags": [query, "openverse", "open-license"],
                 }
-            )
-        return usable[0] if usable else None
+        return None
 
     async def search_google_map_candidate(self, query: str) -> Optional[dict]:
         """
@@ -364,14 +361,12 @@ class ImageCatalogService:
             or "floor plan" in title_lower
         ):
             return False
-        if not title_words.intersection(ImageCatalogService.RPG_MAP_TERMS):
-            return False
         requested = {
             word
             for word in re.findall(r"[a-z0-9]+", str(query).lower())
             if word not in {"a", "an", "the", "map", "please", "show", "find", "give", "me"}
         }
-        return not requested or bool(requested.intersection(title_words))
+        return not requested or bool(requested.intersection(haystack_words))
 
 
 def _google_cache_path() -> Path:
