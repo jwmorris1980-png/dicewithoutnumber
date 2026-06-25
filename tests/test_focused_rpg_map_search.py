@@ -38,3 +38,11 @@ def test_focused_search_finds_existing_color_map():
     assert result
     assert "Cyberpunk" in result[0]["name"]
     assert result[0]["url"].startswith("https://")
+
+
+def test_focused_search_finds_forest_battlemap():
+    result = focused_map_search("forest")
+
+    assert result
+    assert "forest" in " ".join(result[0]["tags"]).lower()
+    assert "battlemap" in " ".join(result[0]["tags"]).lower()

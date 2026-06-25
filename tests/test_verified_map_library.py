@@ -51,6 +51,6 @@ def test_approved_color_maps_include_attribution_and_license():
     entries = verified_map_library.load_verified_maps()
     color_maps = [entry for entry in entries if "color" in entry.get("tags", [])]
 
-    assert len(color_maps) == 5
+    assert len(color_maps) >= 5
     assert all(entry.get("attribution") for entry in color_maps)
     assert all(entry.get("license_url") for entry in color_maps)

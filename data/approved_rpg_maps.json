@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-14",
   "policy": "Only visually reviewed, clearly playable RPG maps may be listed here.",
-  "count": 6,
+  "count": 10,
   "images": [
     {
       "id": "commons-77722803",
@@ -110,6 +110,74 @@
       "added": "2026-06-15",
       "attribution": "Map by BluBerrey, shared by 2-Minute Tabletop under CC BY-NC 4.0.",
       "verified_source": "2-Minute Tabletop licensing page; owner visually approved"
+    },
+    {
+      "id": "2mt-bandit-ambush",
+      "type": "map",
+      "name": "Bandit Ambush Battle Map",
+      "description": "A forest road ambush battlemap with a felled tree, tents, campfire, and dense woods.",
+      "tags": ["forest", "woods", "road", "path", "ambush", "camp", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2025/06/Bandit-Ambush-battle-map-Large-Preview-B.jpg?resize=1080%2C1485&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2025/06/Bandit-Ambush-battle-map-Large-Preview-B.jpg?resize=1080%2C1485&ssl=1",
+      "source_page": "https://2minutetabletop.com/bandit-ambush-battle-map/",
+      "artist": "Connor Johnston / 2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-25",
+      "attribution": "Map by Connor Johnston, shared by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop forest tag and licensing page; visually RPG battlemap"
+    },
+    {
+      "id": "2mt-jungle-river",
+      "type": "map",
+      "name": "Jungle River Battle Map",
+      "description": "A vibrant jungle river battlemap with forest cover, water, roots, and ruins.",
+      "tags": ["forest", "jungle", "river", "stream", "tropical", "water", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2025/06/Jungle-River-32x32-Large-Preview.jpg?resize=1080%2C1080&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2025/06/Jungle-River-32x32-Large-Preview.jpg?resize=1080%2C1080&ssl=1",
+      "source_page": "https://2minutetabletop.com/jungle-river-uchideshi/",
+      "artist": "Uchideshi / 2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-25",
+      "attribution": "Map by Uchideshi, shared by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop forest tag and licensing page; visually RPG battlemap"
+    },
+    {
+      "id": "2mt-gloomy-forest-motojoto",
+      "type": "map",
+      "name": "Gloomy Forest Battle Maps",
+      "description": "A set of gloomy forest battle maps including forest paths and wilderness encounters.",
+      "tags": ["forest", "woods", "wilderness", "path", "road", "gloomy", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2025/08/The-Forest-by-Motojoto-Large-Preview.jpg?resize=1029%2C1920&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2025/08/The-Forest-by-Motojoto-Large-Preview.jpg?resize=1029%2C1920&ssl=1",
+      "source_page": "https://2minutetabletop.com/forest-set-motojoto/",
+      "artist": "Motojoto / 2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-25",
+      "attribution": "Map by Motojoto, shared by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop forest tag and licensing page; visually RPG battlemap"
+    },
+    {
+      "id": "2mt-witchs-herbgarden",
+      "type": "map",
+      "name": "Witch's Herbgarden Battle Map",
+      "description": "A sunny forest glade garden battlemap with a witch's hut and dense greenery.",
+      "tags": ["forest", "glade", "garden", "hut", "witch", "woods", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2026/01/Witchs-Herbgarden-battle-map-Large-Preview-B.jpg?resize=1080%2C1571&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2026/01/Witchs-Herbgarden-battle-map-Large-Preview-B.jpg?resize=1080%2C1571&ssl=1",
+      "source_page": "https://2minutetabletop.com/witchs-herbgarden-battle-map/",
+      "artist": "2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-25",
+      "attribution": "Map by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop forest tag and licensing page; visually RPG battlemap"
     }
   ]
 }
