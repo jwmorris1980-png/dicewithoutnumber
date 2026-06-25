@@ -345,7 +345,7 @@ class ImageCatalogService:
         return embed_dict
     @staticmethod
     def relevant_openverse_map(result: dict, query: str) -> bool:
-        """Reject loosely related search results rather than guessing they are maps."""
+        """Reject loosely related Openverse results rather than guessing they are RPG maps."""
         title = str(result.get("title") or "")
         tags = " ".join(
             str(tag.get("name") if isinstance(tag, dict) else tag)
@@ -355,11 +355,8 @@ class ImageCatalogService:
         title_words = set(re.findall(r"[a-z0-9]+", title_lower))
         haystack = f"{title} {tags}".lower()
         haystack_words = set(re.findall(r"[a-z0-9]+", haystack))
-        if not (
-            title_words.intersection({"map", "maps", "battlemap", "battlemaps", "floorplan", "floorplans"})
-            or "battle map" in title_lower
-            or "floor plan" in title_lower
-        ):
+        rpg_map_terms = {"battlemap", "battlemaps", "floorplan", "floorplans", "vtt", "dungeon"}
+        if not (title_words.intersection(rpg_map_terms) or "battle map" in title_lower or "floor plan" in title_lower):
             return False
         requested = {
             word

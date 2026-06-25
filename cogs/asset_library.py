@@ -1,9 +1,11 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+import json
 from pathlib import Path
 import random
 import os
+import time
 
 from services.image_catalog_service import ImageCatalogService, _load_admin_key
 from services.focused_rpg_map_search import focused_map_search
@@ -20,6 +22,12 @@ class AssetLibraryCog(commands.Cog):
         "forest": ("map_forest.png", {"forest", "woods", "wilderness"}),
         "space": ("map_space.png", {"space", "station", "ship", "starship", "sector"}),
     }
+    WATCH_FILE = Path(
+        os.getenv(
+            "MAP_SEARCH_WATCH_FILE",
+            ".cache/map_search_watch.jsonl" if os.name == "nt" else "/var/lib/dicewithoutnumber/map_search_watch.jsonl",
+        )
+    )
 
     def __init__(self, bot):
         self.bot = bot
@@ -103,9 +111,10 @@ class AssetLibraryCog(commands.Cog):
 
         await _reply(target, embed=embed, view=view)
 
-    async def _search_and_send(self, target, kind: str, query: str):
+    async def _search_and_send(self, target, kind: str, query: str, actor=None):
         """Query the catalog and send the best match, or a clear 'not found' message."""
         await _defer(target)
+        actor = actor or getattr(target, "user", None) or getattr(target, "author", None)
 
         if kind == "map" and self._is_test_area(target):
             normalized_query = " ".join(str(query or "").lower().split())
@@ -114,28 +123,34 @@ class AssetLibraryCog(commands.Cog):
                 local_map = self._find_local_map(local_query)
                 if local_map:
                     await self._send_local_map(target, *local_map)
+                    await self._audit_map_search(target, actor, query, "built-in", {"name": local_map[0], "source_page": "Built-in library"})
                     return
             focused_maps = focused_map_search(query)
             if focused_maps:
                 await self._send_catalog_result(target, focused_maps[0])
+                await self._audit_map_search(target, actor, query, "focused index", focused_maps[0])
                 return
             verified_map = find_verified_map(query)
             if verified_map:
                 await self._send_catalog_result(target, verified_map)
+                await self._audit_map_search(target, actor, query, "approved library", verified_map)
                 return
             openverse_map = await self.catalog.search_openverse_map(query)
             if openverse_map:
                 await self._send_catalog_result(target, openverse_map)
+                await self._audit_map_search(target, actor, query, "Openverse fallback", openverse_map)
                 return
             google_candidate = await self.catalog.search_google_map_candidate(query)
             if google_candidate:
                 await self._send_catalog_result(target, google_candidate)
+                await self._audit_map_search(target, actor, query, "Google candidate", google_candidate)
                 return
             await _reply(
                 target,
                 f"I could not find a displayable open-license RPG map for **{query or 'that request'}**. "
                 "Try a simpler phrase like `forest`, `dungeon`, `city`, or `space station`.",
             )
+            await self._audit_map_search(target, actor, query, "no match", None)
             return
 
         # Parse query words into tags + free-text
@@ -179,12 +194,12 @@ class AssetLibraryCog(commands.Cog):
     @app_commands.command(name="maplibrary", description="Find a free map from the SWN/CWN/WWN image catalog.")
     @app_commands.describe(query="Keywords to search for, e.g. 'space station' or 'ruins'")
     async def maplibrary_slash(self, interaction: discord.Interaction, query: str = ""):
-        await self._search_and_send(interaction, "map", query)
+        await self._search_and_send(interaction, "map", query, actor=interaction.user)
 
     @app_commands.command(name="portraitlibrary", description="Find a free portrait from the SWN/CWN/WWN image catalog.")
     @app_commands.describe(query="Keywords to search for, e.g. 'psychic female' or 'corporate npc'")
     async def portraitlibrary_slash(self, interaction: discord.Interaction, query: str = ""):
-        await self._search_and_send(interaction, "portrait", query)
+        await self._search_and_send(interaction, "portrait", query, actor=interaction.user)
 
     @app_commands.command(name="randomimage", description="Get a random free map or portrait from the catalog.")
     @app_commands.describe(
@@ -284,11 +299,11 @@ class AssetLibraryCog(commands.Cog):
 
     @commands.command(name="maplibrary", aliases=["findmap"])
     async def maplibrary_prefix(self, ctx, *, query: str = ""):
-        await self._search_and_send(ctx, "map", query)
+        await self._search_and_send(ctx, "map", query, actor=ctx.author)
 
     @commands.command(name="portraitlibrary", aliases=["findportrait"])
     async def portraitlibrary_prefix(self, ctx, *, query: str = ""):
-        await self._search_and_send(ctx, "portrait", query)
+        await self._search_and_send(ctx, "portrait", query, actor=ctx.author)
 
     # ------------------------------------------------------------------
     # Natural-language message handler (called from bot.py if wired up)
@@ -307,9 +322,40 @@ class AssetLibraryCog(commands.Cog):
             ("show portrait ", "portrait"),
         ):
             if lower.startswith(prefix):
-                await self._search_and_send(message.channel, kind, text[len(prefix):])
+                await self._search_and_send(message.channel, kind, text[len(prefix):], actor=getattr(message, "author", None))
                 return True
         return False
+
+    async def _audit_map_search(self, target, actor, query: str, source: str, entry: dict | None):
+        """Quiet local watch log for improving map search quality without DMs."""
+        if os.getenv("MAP_SEARCH_WATCH", "1").strip().lower() in {"0", "false", "off", "no"}:
+            return
+        guild = getattr(target, "guild", None)
+        if guild is None:
+            guild = getattr(target, "guild_id", None)
+        guild_id = getattr(guild, "id", guild)
+        if not self._is_test_area(target):
+            return
+        name = entry.get("name", "No map selected") if entry else "No map selected"
+        link = (entry or {}).get("source_page") or (entry or {}).get("url") or "No source"
+        user = str(actor or "Unknown user")
+        record = {
+            "checked_at": int(time.time()),
+            "query": query or "",
+            "source": source,
+            "picked": name,
+            "user": user,
+            "guild_id": str(guild_id),
+            "source_link": link,
+            "image_url": (entry or {}).get("url") or "",
+            "license": (entry or {}).get("license") or "",
+        }
+        try:
+            self.WATCH_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with self.WATCH_FILE.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(record, ensure_ascii=True) + "\n")
+        except OSError:
+            pass
 
 
 # ---------------------------------------------------------------------------

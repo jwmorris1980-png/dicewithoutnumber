@@ -1,4 +1,5 @@
 import asyncio
+import json
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
@@ -71,11 +72,13 @@ def test_openverse_relevance_rejects_unrelated_results():
     florida = {"title": "Florida Tour, August 2006", "tags": []}
     city = {"title": "City Map of New Orleans", "tags": []}
     reference_map = {"title": "Pacific salmon temperate rain forest map", "tags": []}
+    forest_battlemap = {"title": "Forest Battlemap for VTT", "tags": []}
 
     assert ImageCatalogService.relevant_openverse_map(dungeon, "dungeon") is True
     assert ImageCatalogService.relevant_openverse_map(florida, "fantasy") is False
     assert ImageCatalogService.relevant_openverse_map(city, "space station") is False
-    assert ImageCatalogService.relevant_openverse_map(reference_map, "forest") is True
+    assert ImageCatalogService.relevant_openverse_map(reference_map, "forest") is False
+    assert ImageCatalogService.relevant_openverse_map(forest_battlemap, "forest") is True
 
 
 def test_google_candidate_requires_rpg_map_language():
@@ -97,3 +100,29 @@ def test_google_candidate_requires_rpg_map_language():
     assert candidate is not None
     assert candidate["license"] == "Needs review"
     assert candidate["url"].endswith("forest-battlemap.jpg")
+
+
+def test_map_watch_writes_local_log_without_dm(tmp_path, monkeypatch):
+    watch_file = tmp_path / "map_search_watch.jsonl"
+    monkeypatch.setenv("TEST_GUILD_ID", "1437247431560400928")
+    monkeypatch.setattr(AssetLibraryCog, "WATCH_FILE", watch_file)
+    bot = SimpleNamespace(alert_owner=AsyncMock(side_effect=AssertionError("No DM")))
+    cog = AssetLibraryCog(bot)
+    target = SimpleNamespace(guild=SimpleNamespace(id=1437247431560400928))
+    actor = SimpleNamespace(__str__=lambda self: "tester")
+
+    asyncio.run(
+        cog._audit_map_search(
+            target,
+            actor,
+            "forest",
+            "no match",
+            None,
+        )
+    )
+
+    lines = watch_file.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 1
+    record = json.loads(lines[0])
+    assert record["query"] == "forest"
+    assert record["source"] == "no match"
