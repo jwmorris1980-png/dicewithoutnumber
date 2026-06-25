@@ -91,9 +91,9 @@ CATEGORIES = {
         "color": discord.Color.teal(),
         "fields": [
             ("Maps", (
-                "`/maplibrary [query]` `!findmap [query]` — Search free maps\n"
+                "`/maplibrary [query]` `!findmap [query]` — Search trusted free RPG maps\n"
                 "e.g. `/maplibrary space station` or `/maplibrary ruins`\n"
-                "`find map forest` — Natural-language shortcut"
+                "`find map forest` — Expands into RPG terms like battlemap, VTT, and encounter"
             )),
             ("Portraits", (
                 "`/portraitlibrary [query]` `!findportrait [query]` — Search free portraits\n"

@@ -6,6 +6,7 @@ import random
 import os
 
 from services.image_catalog_service import ImageCatalogService, _load_admin_key
+from services.focused_rpg_map_search import focused_map_search
 from services.verified_map_library import find_verified_map
 
 
@@ -114,13 +115,17 @@ class AssetLibraryCog(commands.Cog):
                 if local_map:
                     await self._send_local_map(target, *local_map)
                     return
-            openverse_map = await self.catalog.search_openverse_map(query)
-            if openverse_map:
-                await self._send_catalog_result(target, openverse_map)
+            focused_maps = focused_map_search(query)
+            if focused_maps:
+                await self._send_catalog_result(target, focused_maps[0])
                 return
             verified_map = find_verified_map(query)
             if verified_map:
                 await self._send_catalog_result(target, verified_map)
+                return
+            openverse_map = await self.catalog.search_openverse_map(query)
+            if openverse_map:
+                await self._send_catalog_result(target, openverse_map)
                 return
             google_candidate = await self.catalog.search_google_map_candidate(query)
             if google_candidate:
