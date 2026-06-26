@@ -126,3 +126,23 @@ def test_map_watch_writes_local_log_without_dm(tmp_path, monkeypatch):
     record = json.loads(lines[0])
     assert record["query"] == "forest"
     assert record["source"] == "no match"
+
+
+def test_voice_filler_before_map_command_is_ignored(monkeypatch):
+    sent = []
+
+    async def send(*args, **kwargs):
+        sent.append((args, kwargs))
+
+    cog = AssetLibraryCog(SimpleNamespace())
+    message = SimpleNamespace(
+        content="and map town",
+        author=SimpleNamespace(name="tester"),
+        guild=SimpleNamespace(id=1437247431560400928),
+        channel=SimpleNamespace(send=send, guild=SimpleNamespace(id=1437247431560400928)),
+    )
+
+    monkeypatch.setenv("TEST_GUILD_ID", "1437247431560400928")
+    assert asyncio.run(cog.handle_message(message)) is True
+    assert sent
+    assert "Town" in sent[0][1]["embed"].title

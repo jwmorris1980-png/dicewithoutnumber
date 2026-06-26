@@ -46,3 +46,13 @@ def test_focused_search_finds_forest_battlemap():
     assert result
     assert "forest" in " ".join(result[0]["tags"]).lower()
     assert "battlemap" in " ".join(result[0]["tags"]).lower()
+
+
+def test_focused_search_finds_town_and_village_battlemaps():
+    town = focused_map_search("town")
+    village = focused_map_search("village")
+
+    assert town
+    assert "town" in " ".join(town[0]["tags"]).lower()
+    assert village
+    assert "village" in " ".join(village[0]["tags"]).lower()

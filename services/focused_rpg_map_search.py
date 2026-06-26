@@ -47,6 +47,8 @@ QUERY_EXPANSIONS = {
     "dungeon": {"dungeon", "crypt", "ruin", "ruins", "temple", "tomb"},
     "forest": {"forest", "woods", "wilderness", "path", "camp", "encampment"},
     "space": {"space", "station", "ship", "starship", "deckplan", "sector"},
+    "town": {"town", "village", "settlement", "city", "street", "market", "center", "centre"},
+    "village": {"village", "town", "settlement", "hamlet", "city", "market"},
 }
 
 QUALITY_TERMS = {
@@ -78,12 +80,16 @@ BAD_TERMS = {
 }
 
 
-def expand_map_query(query: str) -> list[str]:
-    words = [
+def requested_map_terms(query: str) -> list[str]:
+    return [
         word
         for word in re.findall(r"[a-z0-9-]+", str(query or "").lower())
         if word not in STOPWORDS
     ]
+
+
+def expand_map_query(query: str) -> list[str]:
+    words = requested_map_terms(query)
     expanded: set[str] = set(words)
     for word in words:
         expanded.update(QUERY_EXPANSIONS.get(word, set()))
@@ -93,9 +99,10 @@ def expand_map_query(query: str) -> list[str]:
 
 def focused_map_search(query: str, limit: int = 1) -> list[dict]:
     terms = expand_map_query(query)
+    explicit_terms = set(requested_map_terms(query))
     matches = []
     for entry in _load_entries():
-        score = score_map_entry(entry, terms)
+        score = score_map_entry(entry, terms, explicit_terms=explicit_terms)
         if score > 0:
             matches.append((score, entry))
     matches.sort(key=lambda item: (-item[0], str(item[1].get("name") or "")))
@@ -107,7 +114,7 @@ def focused_map_search(query: str, limit: int = 1) -> list[dict]:
     return best
 
 
-def score_map_entry(entry: dict, terms: list[str]) -> int:
+def score_map_entry(entry: dict, terms: list[str], explicit_terms: set[str] | None = None) -> int:
     if str(entry.get("type") or "").lower() != "map":
         return 0
     if not _is_trusted_source(entry):
@@ -121,10 +128,17 @@ def score_map_entry(entry: dict, terms: list[str]) -> int:
 
     words = set(re.findall(r"[a-z0-9-]+", searchable))
     requested = set(terms)
+    explicit_terms = explicit_terms or set()
+    explicit_specific = explicit_terms - GENERIC_RPG_TERMS
+    if explicit_specific and not all(term in words or term in searchable for term in explicit_specific):
+        return 0
     specific_terms = requested - GENERIC_RPG_TERMS
     if specific_terms and not any(term in words or term in searchable for term in specific_terms):
         return 0
     score = 0
+    for term in explicit_terms:
+        if term in words or term in searchable:
+            score += 25
     for term in requested:
         if term in words or term in searchable:
             score += 12 if term not in GENERIC_RPG_TERMS else 4

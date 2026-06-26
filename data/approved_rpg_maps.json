@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-14",
   "policy": "Only visually reviewed, clearly playable RPG maps may be listed here.",
-  "count": 10,
+  "count": 13,
   "images": [
     {
       "id": "commons-77722803",
@@ -178,6 +178,57 @@
       "added": "2026-06-25",
       "attribution": "Map by 2-Minute Tabletop under CC BY-NC 4.0.",
       "verified_source": "2-Minute Tabletop forest tag and licensing page; visually RPG battlemap"
+    },
+    {
+      "id": "2mt-town-center",
+      "type": "map",
+      "name": "Town Center City Battle Map",
+      "description": "A large fantasy town center battlemap with roads, rooftops, alleys, market tents, and an event stage.",
+      "tags": ["town", "city", "village", "settlement", "market", "street", "urban", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2021/07/Town-Center-battle-map-Banner-1.jpg?w=795&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2021/07/Town-Center-battle-map-Banner-1.jpg?w=795&ssl=1",
+      "source_page": "https://2minutetabletop.com/town-center-city-battle-map/",
+      "artist": "Ross McConnell / 2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-26",
+      "attribution": "Map by Ross McConnell, shared by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop town page and licensing page; visually RPG battlemap"
+    },
+    {
+      "id": "2mt-mushroom-village",
+      "type": "map",
+      "name": "Mushroom Village Battle Map",
+      "description": "A colorful fantasy mushroom village battlemap set in a forest settlement.",
+      "tags": ["village", "town", "settlement", "mushroom", "forest", "fantasy", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2024/11/Mushroom-Village-battle-map-Large-Preview-Portrait.jpg?resize=1080%2C1601&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2024/11/Mushroom-Village-battle-map-Large-Preview-Portrait.jpg?resize=1080%2C1601&ssl=1",
+      "source_page": "https://2minutetabletop.com/mushroom-village-battle-map/",
+      "artist": "2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-26",
+      "attribution": "Map by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop village page and licensing page; visually RPG battlemap"
+    },
+    {
+      "id": "2mt-fairy-tale-village",
+      "type": "map",
+      "name": "Fairy-Tale Village Battle Map",
+      "description": "A whimsical village battlemap with colorful buildings, paths, and fantasy settlement details.",
+      "tags": ["village", "town", "settlement", "fairy-tale", "market", "fantasy", "battlemap", "vtt", "color", "hand-reviewed"],
+      "url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2024/12/Dimsum-Pot-Village-36x40-Large-Preview.jpg?resize=1080%2C1200&ssl=1",
+      "thumbnail_url": "https://i0.wp.com/2minutetabletop.com/wp-content/uploads/2024/12/Dimsum-Pot-Village-36x40-Large-Preview.jpg?resize=1080%2C1200&ssl=1",
+      "source_page": "https://2minutetabletop.com/fairy-tale-village-maps/",
+      "artist": "Olette / 2-Minute Tabletop",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "system": ["General RPG"],
+      "added": "2026-06-26",
+      "attribution": "Map by Olette, shared by 2-Minute Tabletop under CC BY-NC 4.0.",
+      "verified_source": "2-Minute Tabletop village page and licensing page; visually RPG battlemap"
     }
   ]
 }

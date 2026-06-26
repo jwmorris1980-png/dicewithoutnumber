@@ -312,6 +312,9 @@ class AssetLibraryCog(commands.Cog):
     async def handle_message(self, message):
         text = " ".join(str(message.content or "").strip().split())
         lower = text.lower()
+        while lower.startswith(("and ", "ok ", "okay ", "um ", "uh ")):
+            text = text.split(" ", 1)[1] if " " in text else ""
+            lower = text.lower()
         for prefix, kind in (
             ("find map ", "map"),
             ("search map ", "map"),
