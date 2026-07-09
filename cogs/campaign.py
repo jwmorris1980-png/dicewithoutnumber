@@ -27,6 +27,19 @@ class CampaignCog(commands.GroupCog, group_name="campaign", description="Track c
         """Saves a guild's campaign to the database."""
         self.bot.db.save_campaign(guild_id, data)
 
+    async def _get_campaign_character(self, ctx_or_int):
+        """Use the same active character resolution as /sheet and rolls."""
+        sheet_cog = self.bot.get_cog("CharacterSheetCog")
+        if sheet_cog and hasattr(sheet_cog, "get_active_character_data"):
+            return await sheet_cog.get_active_character_data(ctx_or_int, allow_none=True)
+
+        is_int = isinstance(ctx_or_int, discord.Interaction)
+        user_id = ctx_or_int.user.id if is_int else ctx_or_int.author.id
+        channel = ctx_or_int.channel
+        channel_id = str(channel.id)
+        category_id = str(getattr(channel, "category_id", None)) if getattr(channel, "category_id", None) else None
+        return self.bot.db.get_active_character(user_id, channel_id, category_id)
+
     @app_commands.command(name="start", description="Start a new campaign and become the GM.")
     @app_commands.describe(name="Name of your campaign")
     async def start(self, interaction: discord.Interaction, name: str):
@@ -58,13 +71,7 @@ class CampaignCog(commands.GroupCog, group_name="campaign", description="Track c
             await interaction.response.send_message("❌ There is no active campaign running on this server. A GM must `/campaign start` one!", ephemeral=True)
             return
 
-        char_data = None
-        try:
-            cog = self.bot.get_cog("CharacterSheetCog")
-            if cog:
-                char_data = cog.load_character(interaction.user.id)
-        except Exception:
-            pass
+        char_data = await self._get_campaign_character(interaction)
 
         if not char_data:
             await interaction.response.send_message("❌ Please `!importsheet` and load a character before joining the campaign!", ephemeral=True)
@@ -142,13 +149,7 @@ class CampaignCog(commands.GroupCog, group_name="campaign", description="Track c
             await ctx.send("❌ There is no active campaign running on this server. A GM must `!campaign start` one!")
             return
 
-        char_data = None
-        try:
-            cog = self.bot.get_cog("CharacterSheetCog")
-            if cog:
-                char_data = cog.load_character(ctx.author.id)
-        except Exception:
-            pass
+        char_data = await self._get_campaign_character(ctx)
 
         if not char_data:
             await ctx.send("❌ Please `!importsheet` and load a character before joining the campaign!")
