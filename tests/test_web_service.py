@@ -61,6 +61,6 @@ def test_homepage_commands_lead_with_drop_and_discord_help():
     page = Path(__file__).resolve().parents[1] / "web" / "index.html"
     text = page.read_text(encoding="utf-8")
     assert 'id="commands"' in text
-    assert "Drop .json" in text
+    assert "Drop .json or paste Copy Text" in text
     assert "Build → Export → Drop → Play" in text
     assert "Sheets &amp; Characters" in text
