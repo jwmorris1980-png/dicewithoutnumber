@@ -9,9 +9,20 @@ inactivity. Using a help category button resets the inactivity timer.
 Commands work with `/`, `!`, or no prefix when the bot is installed in the server. No-prefix commands must begin with an exact command name and stay on one line.
 
 ## 1. Character Management
+
+**How to play a character or ship (about 20 seconds)**
+
+1. **Build** at [characterswithoutnumber.app](https://characterswithoutnumber.app) — SWN, CWN, WWN, AWN, or the ship builder.
+2. **Export** → JSON (best) or Copy Text. A share-page `/c/` or `/s/` link is not enough.
+3. **Drop it in Discord** — drag the `.json` file into the channel where this bot already lives, or paste Copy Text. No command required.
+4. **Play** — `sheet` shows the character. `skill` and `attack` roll from it. `ship` shows a dropped starship.
+
+Drop the same filename again to update. In Discord, `/help` → **Sheets & Characters** walks this path.
+
 | Command | Description |
 |---------|-------------|
 | Paste a Google Sheet link, JSON file, Copy Text, or ship JSON | Automatically syncs it to the Discord bot already in the server. No command required. |
+| `/help` then Sheets & Characters | In-Discord walkthrough: Build → Export → Drop → Play. |
 | `/importsheet <url>` | Optional manual import from Google Sheets. You can also attach a `.csv`, `.txt`, or `.json` file. |
 | `/importjson <url>` | Import a characterswithoutnumber.app JSON export (character or starship). You can also attach a `.json` file. |
 | `/importship <url>` | Import a starship JSON from the CWN ship builder. |

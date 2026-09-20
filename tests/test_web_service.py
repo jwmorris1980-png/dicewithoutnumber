@@ -51,3 +51,16 @@ def test_character_hub_covers_live_builder_and_paste_preview():
         assert path in text
     assert 'id="paste-box"' in text
     assert "Preview pasted sheet" in text
+    assert "/help" in text
+    assert "Sheets &amp; Characters" in text
+
+
+def test_homepage_commands_lead_with_drop_and_discord_help():
+    from pathlib import Path
+
+    page = Path(__file__).resolve().parents[1] / "web" / "index.html"
+    text = page.read_text(encoding="utf-8")
+    assert 'id="commands"' in text
+    assert "Drop .json" in text
+    assert "Build → Export → Drop → Play" in text
+    assert "Sheets &amp; Characters" in text

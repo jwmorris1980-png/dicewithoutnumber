@@ -25,8 +25,10 @@ class QuickMenuView(discord.ui.View):
     async def characters(self, interaction, button):
         await self._tip(
             interaction,
-            "Build at https://characterswithoutnumber.app then drop the JSON or paste Copy Text here. "
-            "The bot already in this Discord server uses it for `sheet`, `skill`, `attack`, and `ship`.",
+            "1. Build at https://characterswithoutnumber.app\n"
+            "2. Export JSON (or Copy Text) and drop it in this Discord channel — no command needed.\n"
+            "3. Then say `sheet`, `skill`, `attack`, or `ship`. The bot already here uses that export.\n"
+            "Say `help` and open Sheets & Characters for the full path.",
         )
 
     @discord.ui.button(label="Maps", style=discord.ButtonStyle.primary)
@@ -35,7 +37,7 @@ class QuickMenuView(discord.ui.View):
 
     @discord.ui.button(label="Help", style=discord.ButtonStyle.secondary)
     async def help(self, interaction, button):
-        await self._tip(interaction, "Say `help`, `tutorial`, or `setupguide` for the right level of guidance.")
+        await self._tip(interaction, "Say `help` then Sheets & Characters for Build → Drop → Play, or `tutorial` / `setupguide`.")
 
     @discord.ui.button(label="Support", style=discord.ButtonStyle.danger)
     async def support(self, interaction, button):
@@ -85,11 +87,11 @@ class AccessibilityCog(commands.Cog):
         await self._send(
             target,
             "**DICEwithoutNumber Quick Tutorial**\n"
-            "1. Try `roll one d20` - commands work without `/` or `!` when the bot is installed here.\n"
-            "2. Build at https://characterswithoutnumber.app then drop the JSON, paste Copy Text, or use `importsheet <link>`.\n"
-            "3. Say `sheet` to view the active character, then `bind` to remember it in this channel.\n"
+            "1. Try `roll one d20` — commands work without `/` or `!` when the bot is installed here.\n"
+            "2. Build at https://characterswithoutnumber.app. Export JSON or Copy Text, then drop it in this Discord channel (ships too). No command needed.\n"
+            "3. Say `sheet` to view the character, `skill` / `attack` to roll, `ship` for a starship, then `bind` to remember it here.\n"
             "4. Say `map` or use `/tracker map` for interactive tactical maps.\n"
-            "5. Say `help` for every command or `ticket <problem>` if something breaks.",
+            "5. Say `help` then Sheets & Characters for this path, or `ticket <problem>` if something breaks.",
         )
 
     @app_commands.command(name="tutorial", description="Learn the bot with a short voice-friendly walkthrough.")
@@ -108,7 +110,7 @@ class AccessibilityCog(commands.Cog):
             "**Server Setup Guide**\n"
             "1. Give the bot View Channels, Send Messages, Read Message History, Embed Links, Attach Files, and Use Slash Commands.\n"
             "2. Test with `health`, `roll one d20`, and `help`.\n"
-            "3. Start a campaign with `/campaign start`, then import and bind character sheets.\n"
+            "3. Start a campaign with `/campaign start`. Import sheets by dropping a characterswithoutnumber.app JSON (or `/importsheet`), then bind them.\n"
             "4. Open tactical play with `map` or `/tracker map`.\n"
             "5. Use `/heartbeat` and `/backup` for owner diagnostics and backups.\n"
             "If anything fails, use `ticket <what happened>`.",

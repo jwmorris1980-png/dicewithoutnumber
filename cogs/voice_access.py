@@ -14,6 +14,7 @@ class VoiceAccessCog(commands.Cog):
             "**Voice-friendly commands**\n"
             "`roll one d6`, `sheet`, `help`, and other commands can be sent without `/` or `!` "
             "when the bot is installed in the server.\n"
+            "Drop a characterswithoutnumber.app JSON (or paste Copy Text) in this channel, then say `sheet`, `skill`, `attack`, or `ship`.\n"
             "The message must begin with an exact command name and stay on one line.\n"
             "`/voice phrase: roll one d6` - Natural dice command with a personal install.\n"
             "`/voice phrase: roll d20 seven times` - Repeated rolls in order.\n"
