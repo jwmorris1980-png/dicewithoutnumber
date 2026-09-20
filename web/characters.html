@@ -36,7 +36,7 @@
         <div class="container">
             <span class="section-tag">Wired to characterswithoutnumber.app</span>
             <h1>Build it. <span class="text-gradient">Drop it. Play.</span></h1>
-            <p>Use the free Characters Without Number builder for SWN, CWN, WWN, and AWN. Export JSON or Copy Text, paste it in Discord, and the bot is ready to roll skills and attacks.</p>
+            <p>Use the free Characters Without Number builder for SWN, CWN, WWN, and AWN. Export JSON or Copy Text, drop it in the Discord server where this bot already lives, and <code>sheet</code>, <code>skill</code>, <code>attack</code>, and <code>ship</code> use that export.</p>
             <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
                 <a href="https://characterswithoutnumber.app/" class="btn btn-primary" target="_blank" rel="noopener">Open Character Builder</a>
                 <a href="#import" class="btn btn-outline">See the 20-second import</a>
@@ -69,6 +69,11 @@
                     <h3>Ashes Without Number</h3>
                     <p>Survivors, mutants, gearheads, and wasteland edges.</p>
                 </a>
+                <a class="builder-card" style="--card-accent:#38bdf8" href="https://characterswithoutnumber.app/ship-builder/" target="_blank" rel="noopener">
+                    <span class="tag">SHIPS</span>
+                    <h3>Starship Builder</h3>
+                    <p>Hulls, fittings, guns, and defenses. Export JSON and drop it for <code>ship</code>.</p>
+                </a>
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:24px;">
                 <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=swn" target="_blank" rel="noopener">Random SWN</a>
@@ -91,12 +96,12 @@
                 <div class="play-step">
                     <div class="num">2</div>
                     <h3>Drop it</h3>
-                    <p>Drag the <code>.json</code> file into your game channel, or paste Copy Text. No command required.</p>
+                    <p>Drag the <code>.json</code> file into the Discord channel where this bot is already running, or paste Copy Text. No command required. Same-name files update the sheet the bot is using.</p>
                 </div>
                 <div class="play-step">
                     <div class="num">3</div>
                     <h3>Play</h3>
-                    <p>Say <code>sheet</code>, <code>skill notice</code>, or <code>attack</code>. Use <code>update</code> after you change the live sheet.</p>
+                    <p>Say <code>sheet</code>, <code>skill notice</code>, <code>attack</code>, or <code>ship</code>. Use <code>update</code> if the sheet has a linked URL; otherwise drop the new JSON.</p>
                 </div>
             </div>
         </div>
@@ -105,7 +110,7 @@
     <section style="padding-top: 0;">
         <div class="container">
             <h2 class="section-title">Check an export <span class="text-gradient">before you play.</span></h2>
-            <p class="section-desc">Drop a JSON file or paste Copy Text. You will see the same HP, AC, skills, and modifiers the bot uses in Discord. Nothing is uploaded.</p>
+            <p class="section-desc">Drop a JSON file or paste Copy Text. Character and starship exports both work. You will see the same stats the Discord bot will use. Nothing is uploaded.</p>
             <div id="drop-zone" class="drop-zone" tabindex="0">
                 <p style="font-size:1.1rem; font-weight:700;">Drop a .json export here</p>
                 <p style="color:var(--text-muted); margin-top:8px;">or click to choose a file. Ctrl+V also works on this page.</p>
@@ -170,6 +175,53 @@
             return /\bHP:\s*\d+/i.test(text) && (/\[(?:SWN|CWN|WWN|AWN)\]/i.test(text) || /\bLevel\s+\d+/i.test(text));
         }
 
+        function looksLikeShip(data) {
+            if (!data || typeof data !== "object") return false;
+            if (Array.isArray(data)) data = data.find((item) => item && typeof item === "object") || {};
+            if (data.ship && typeof data.ship === "object") data = { ...data, ...data.ship };
+            if (data.hullId || data.hullType || data.hullClass) return true;
+            if (data.classId || data.attributes || data.skills || data.hitPointsCurrent) return false;
+            return Boolean(data.name && Array.isArray(data.fittings) && data.fittings.length);
+        }
+
+        function labelList(raw, idKeys) {
+            return (raw || []).map((entry) => {
+                if (typeof entry === "string") return pretty(entry);
+                if (!entry || typeof entry !== "object") return null;
+                for (const key of idKeys) {
+                    if (entry[key]) return pretty(entry[key]);
+                }
+                return null;
+            }).filter(Boolean);
+        }
+
+        function previewShip(data) {
+            if (Array.isArray(data)) data = data.find((item) => item && typeof item === "object") || {};
+            if (data.ship && typeof data.ship === "object") data = { ...data, ...data.ship };
+            const name = data.name;
+            if (!name) throw new Error("No ship name found in that file.");
+            const hull = pretty(data.hullId || data.hullType || data.hullClass || "Unknown hull");
+            const hp = first(data, ["hp", "hitPoints", "hullPoints"]) ?? "?";
+            const hpMax = first(data, ["maxHp", "hitPointsMax", "hullPointsMax"]) || hp;
+            const ac = first(data, ["ac", "armorClass"]) || 10;
+            const armor = first(data, ["armor"]) || 0;
+            const speed = first(data, ["speed"]) || 0;
+            const weapons = labelList(data.weapons, ["weaponId", "name", "id"]);
+            const fittings = labelList(data.fittings, ["fittingId", "name", "id"]);
+            return {
+                kind: "ship",
+                name,
+                hull,
+                hp,
+                hpMax,
+                ac,
+                armor,
+                speed,
+                weapons,
+                fittings,
+            };
+        }
+
         function previewCopyText(text) {
             const system = (text.match(/\[(SWN|CWN|WWN|AWN)\]/i) || [])[1] || "SWN";
             const name = text.replace(/\s+\[(?:SWN|CWN|WWN|AWN)\].*$/i, "").split("\n")[0].trim();
@@ -192,6 +244,7 @@
                 : [];
             const foci = fociMatch ? fociMatch[1].split(/,\s*/).map((part) => part.trim()).filter(Boolean) : [];
             return {
+                kind: "character",
                 name,
                 system: system.toUpperCase(),
                 level: levelMatch ? levelMatch[1] : "1",
@@ -250,6 +303,7 @@
                 }).filter(Boolean);
             }
             return {
+                kind: "character",
                 name,
                 system,
                 level: data.level || 1,
@@ -269,7 +323,9 @@
             if (!text) throw new Error("Paste Copy Text or drop a JSON export first.");
             if (looksLikeCopyText(text)) return previewCopyText(text);
             try {
-                return previewCharacter(JSON.parse(text));
+                const parsed = JSON.parse(text);
+                if (looksLikeShip(parsed)) return previewShip(parsed);
+                return previewCharacter(parsed);
             } catch (err) {
                 if (looksLikeCopyText(text)) return previewCopyText(text);
                 throw new Error(err.message || "That is not a character JSON export or Copy Text.");
@@ -279,6 +335,22 @@
         function renderPreview(result) {
             const el = document.getElementById("preview");
             el.classList.add("show");
+            if (result.kind === "ship") {
+                el.innerHTML = `
+                    <h3>${escapeHtml(result.name)}</h3>
+                    <div class="preview-meta">Starship · ${escapeHtml(result.hull)}</div>
+                    <div class="preview-stats">
+                        <span>HP ${escapeHtml(result.hp)}${result.hpMax ? "/" + escapeHtml(result.hpMax) : ""}</span>
+                        <span>AC ${escapeHtml(result.ac)}</span>
+                        <span>Armor ${escapeHtml(result.armor)}</span>
+                        <span>Speed ${escapeHtml(result.speed)}</span>
+                    </div>
+                    <p>${escapeHtml((result.weapons || []).join(", ") || "No weapons mounted")}</p>
+                    <p style="margin-top:10px;color:var(--text-muted)">${escapeHtml((result.fittings || []).slice(0, 8).join(", "))}</p>
+                    <p style="margin-top:16px">Looks good. Drop this same export in Discord and say <code>ship</code>.</p>
+                `;
+                return;
+            }
             el.innerHTML = `
                 <h3>${escapeHtml(result.name)}</h3>
                 <div class="preview-meta">Level ${escapeHtml(result.level)} ${escapeHtml(result.system)} ${escapeHtml(result.klass)}</div>

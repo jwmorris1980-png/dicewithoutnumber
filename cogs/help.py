@@ -19,8 +19,9 @@ CATEGORIES = {
         "color": discord.Color.blue(),
         "fields": [
             ("Import", (
-                "Paste a Google Sheet link, a characterswithoutnumber.app JSON, or Copy Text — auto-imports\n"
-                "`/importjson` `!importjson` — JSON export or CWN app URL\n"
+                "Paste a Google Sheet link, a characterswithoutnumber.app JSON, Copy Text, or a ship JSON — auto-syncs to this Discord bot\n"
+                "`/importjson` `!importjson` — Character or ship JSON export\n"
+                "`/importship` `!importship` — Starship JSON from the CWN ship builder\n"
                 "`/importtext` — Paste Copy Text from characterswithoutnumber.app\n"
                 "`/importsheet` `!importsheet` — Google Sheet import\n"
                 "`/link` `!link` — Attach a source URL and sync"
@@ -33,7 +34,7 @@ CATEGORIES = {
                 "`/portrait` `!portrait` — Set character portrait"
             )),
             ("Ships & Generation", (
-                "`/ship` `!ship` `/shiplist` `!shiplist` — Starship sheets\n"
+                "`/ship` `!ship` `/shiplist` `!shiplist` — Starship sheets synced from the builder\n"
                 "`/threshold_wizard` `/swn` `/wwn` `/cwn` `/threshold` — Character generation"
             )),
         ],

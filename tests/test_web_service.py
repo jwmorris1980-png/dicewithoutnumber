@@ -45,6 +45,7 @@ def test_character_hub_covers_live_builder_and_paste_preview():
         "cwn-character-builder/",
         "wwn-character-builder/",
         "awn-character-builder/",
+        "ship-builder/",
         "build/?random=swn",
     ):
         assert path in text

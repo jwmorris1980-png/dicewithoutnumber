@@ -606,30 +606,46 @@ class WithoutNumberBot(commands.Bot):
         if not google_match and not cwn_match and not json_match and not copy_text and not (attachment and not content):
             return False
 
-        await message.channel.send("Character sheet detected. Importing it now...")
+        await message.channel.send("characterswithoutnumber.app export detected. Syncing it to this Discord bot...")
+        kind = "character"
+        payload = None
+        error = None
+        source_url = None
+        source_name = "dropped character sheet"
+
         if copy_text:
-            char_data, error = sheet_cog.parse_cwn_app_text(content, "SWN")
-            source_url = None
+            payload, error = sheet_cog.parse_cwn_app_text(content, "SWN")
             source_name = "characterswithoutnumber.app Copy Text"
-        elif attachment or google_match:
-            url = google_match.group(0) if google_match else None
-            char_data, error, source_url = await sheet_cog._load_sheet_source(url, attachment)
-            source_name = "dropped character sheet"
+        elif attachment and str(attachment.filename or "").lower().endswith(".json"):
+            kind, payload, error, source_url = await sheet_cog.load_export_payload(None, attachment)
+            source_name = attachment.filename or "JSON"
+        elif google_match:
+            payload, error, source_url = await sheet_cog._load_sheet_source(google_match.group(0), None)
+        elif attachment:
+            payload, error, source_url = await sheet_cog._load_sheet_source(None, attachment)
         else:
             url = (cwn_match or json_match).group(0)
-            char_data, error, source_url = await sheet_cog._load_json_source(url, None)
+            kind, payload, error, source_url = await sheet_cog.load_export_payload(url, None)
             source_name = "characterswithoutnumber.app" if cwn_match else "JSON"
 
         if error:
             helper = sheet_cog._sheet_import_error(error)
-            if cwn_match or json_match or copy_text:
+            if cwn_match or json_match or copy_text or (attachment and str(attachment.filename or "").lower().endswith(".json")):
                 helper = sheet_cog._json_import_error(error)
             await message.channel.send(helper)
             return True
 
+        if kind == "ship":
+            ships_cog = self.get_cog("ShipsCog")
+            if not ships_cog:
+                await message.channel.send("Ship import is not loaded on this bot.")
+                return True
+            await ships_cog.import_ship_payload(message, payload, source_name=source_name)
+            return True
+
         await sheet_cog._save_imported_character(
             message,
-            char_data,
+            payload,
             source_url=source_url,
             source_name=source_name,
         )

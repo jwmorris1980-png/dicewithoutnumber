@@ -148,12 +148,46 @@ class CharacterSheetCog(commands.Cog):
         return data, error, url
 
     def _parse_json_text(self, text):
+        data, error = self._decode_json_text(text)
+        if error:
+            return None, error
+        return self._normalize_character_data(data)
+
+    def _decode_json_text(self, text):
         try:
             data = json.loads(text)
         except Exception as e:
             return None, f"Invalid JSON: {e}"
+        if isinstance(data, list):
+            data = next((item for item in data if isinstance(item, dict)), None)
+        if not isinstance(data, dict):
+            return None, "JSON did not contain a character or ship object."
+        return data, None
 
-        return self._normalize_character_data(data)
+    async def load_export_payload(self, url=None, attachment=None):
+        """Return (kind, payload, error, source_url) for a CWN/SWN JSON export."""
+        from cogs.ships import looks_like_ship_payload
+
+        source_url = None
+        if attachment:
+            text, error = await self._read_attachment_text(attachment)
+            if error:
+                return None, None, error, None
+            data, error = self._decode_json_text(text)
+            if error:
+                return None, None, error, None
+        elif url:
+            source_url = url
+            data, error = await self.fetch_json_payload(url)
+            if error:
+                return None, None, error, None
+        else:
+            return None, None, "Provide a JSON URL or attach a .json file.", None
+
+        if looks_like_ship_payload(data):
+            return "ship", data, None, source_url
+        character, error = self._normalize_character_data(data)
+        return "character", character, error, source_url
 
     def _coerce_int(self, value, default=0):
         if value is None or value == "":
@@ -244,10 +278,11 @@ class CharacterSheetCog(commands.Cog):
     def _cwn_app_share_help(self):
         return (
             "That characterswithoutnumber.app link is a live page, not a JSON file.\n"
-            "**Fastest import:**\n"
-            "1. Open the character → **Export → JSON**, then drop the file in this channel.\n"
+            "**Sync it to this Discord bot:**\n"
+            "1. Open the character or ship → **Export → JSON**, then drop the file in this channel.\n"
             "2. Or **Export → Copy Text** and paste it here (or use `/importtext`).\n"
-            "3. A raw `.json` URL still works with `/importjson`."
+            "3. A raw `.json` URL still works with `/importjson` or `/importship`.\n"
+            "The bot already in this server will use it for `sheet`, `skill`, `attack`, and `ship`."
         )
 
     def _equipment_lookup(self, name):
@@ -647,9 +682,9 @@ class CharacterSheetCog(commands.Cog):
         hp_text = self._hp_display(char_data)
         skill_count = len(char_data.get("skills") or {})
         msg = (
-            f"{verb} **{safe_name}** from {source_name} and made them active for this {target_type}.\n"
+            f"{verb} **{safe_name}** from {source_name} and synced them to this Discord bot for this {target_type}.\n"
             f"HP {hp_text} · AC {char_data.get('ac', 10)} · {skill_count} skills ready.\n"
-            f"Try `sheet`, `skill notice`, `attack`, or `bind {safe_name}`."
+            f"Say `sheet`, `skill notice`, or `attack`. Drop a new JSON export (same name) to sync changes."
         )
         await self._send_target(target, msg)
 
@@ -872,23 +907,12 @@ class CharacterSheetCog(commands.Cog):
 
         await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="Google Sheets")
 
-    @app_commands.command(name="sync", description="Sync your active character from its Google Sheet source.")
+    @app_commands.command(name="sync", description="Refresh your active character from its linked URL or tell you how to re-drop JSON.")
     async def sync_slash(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        char_data = await self.get_active_character_data(interaction)
-        if not char_data or not char_data.get('source_url'):
-            await interaction.followup.send("❌ Active character has no Google Sheet link. Use `/importsheet` first.")
-            return
-            
-        new_data, error = await self.fetch_and_parse_sheet(char_data['source_url'])
-        if error:
-            await interaction.followup.send(f"❌ Sync failed: {error}")
-            return
-            
-        self.save_character(interaction.user.id, new_data, source_url=char_data['source_url'])
-        await interaction.followup.send(f"🔄 Synced **{char_data['name']}**!")
+        await self._refresh_active_character(interaction)
 
-    @app_commands.command(name="update", description="Instantly refresh your active character stats from its stored source URL.")
+    @app_commands.command(name="update", description="Refresh your active character from its stored source URL.")
     async def update_slash(self, interaction: discord.Interaction):
         await self.sync_slash(interaction)
 
@@ -898,39 +922,61 @@ class CharacterSheetCog(commands.Cog):
 
     @commands.command(name="sync")
     async def sync_prefix(self, ctx):
-        char_data = await self.get_active_character_data(ctx)
-        if not char_data or not char_data.get('source_url'):
-            await ctx.send("❌ Active character has no Google Sheet link.")
+        await self._refresh_active_character(ctx)
+
+    async def _refresh_active_character(self, target):
+        char_data = await self.get_active_character_data(target)
+        if not char_data:
             return
-            
-        new_data, error = await self.fetch_and_parse_sheet(char_data['source_url'])
+        source_url = char_data.get("source_url")
+        if not source_url:
+            await self._send_target(
+                target,
+                f"**{char_data.get('name', 'That character')}** is already on this Discord bot, but it was imported from a file or Copy Text, so there is no live URL to pull.\n"
+                "Export JSON again from https://characterswithoutnumber.app and drop it here (same name updates the sheet).\n"
+                "`sheet`, `skill`, and `attack` keep using this character. Or `/link` a raw JSON URL if you host the file.",
+            )
+            return
+
+        new_data, error, _ = await self._load_character_url(source_url)
         if error:
-            await ctx.send(f"❌ Sync failed: {error}")
+            await self._send_target(target, f"❌ Sync failed: {error}")
             return
-            
-        self.save_character(ctx.author.id, new_data, source_url=char_data['source_url'])
-        await ctx.send(f"🔄 Synced **{char_data['name']}**!")
+
+        user_id = target.user.id if isinstance(target, discord.Interaction) else target.author.id
+        self.save_character(user_id, new_data, source_url=source_url)
+        await self._send_target(
+            target,
+            f"🔄 Synced **{char_data.get('name')}** from the linked source. "
+            "`sheet`, `skill`, and `attack` now use the updated stats.",
+        )
 
     @app_commands.command(name="importjson", description="Import a characterswithoutnumber.app JSON export or URL.")
     @app_commands.describe(url="JSON URL or characterswithoutnumber.app link", file="Optional uploaded JSON file")
     async def importjson_slash(self, interaction: discord.Interaction, url: str = None, file: discord.Attachment = None):
         await interaction.response.defer()
-        char_data, error, source_url = await self._load_json_source(url, file)
+        kind, payload, error, source_url = await self.load_export_payload(url, file)
         if error:
             await interaction.followup.send(self._json_import_error(error))
             return
-
-        await self._save_imported_character(interaction, char_data, source_url=source_url, source_name="JSON")
+        if kind == "ship":
+            ships_cog = self.bot.get_cog("ShipsCog")
+            await ships_cog.import_ship_payload(interaction, payload, source_name=file.filename if file else "JSON")
+            return
+        await self._save_imported_character(interaction, payload, source_url=source_url, source_name="JSON")
 
     @commands.command(name="importjson", aliases=["uploadjson"])
     async def importjson_prefix(self, ctx, url: str = None):
         attachment = ctx.message.attachments[0] if ctx.message.attachments else None
-        char_data, error, source_url = await self._load_json_source(url, attachment)
+        kind, payload, error, source_url = await self.load_export_payload(url, attachment)
         if error:
             await ctx.send(self._json_import_error(error))
             return
-
-        await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="JSON")
+        if kind == "ship":
+            ships_cog = self.bot.get_cog("ShipsCog")
+            await ships_cog.import_ship_payload(ctx, payload, source_name=attachment.filename if attachment else "JSON")
+            return
+        await self._save_imported_character(ctx, payload, source_url=source_url, source_name="JSON")
 
     def _json_import_error(self, error):
         if error and "characterswithoutnumber.app" in str(error).lower():
@@ -955,9 +1001,20 @@ class CharacterSheetCog(commands.Cog):
         await self._link_character_source(ctx, url)
 
     async def _link_character_source(self, target, url):
-        char_data, error, source_url = await self._load_character_url(url)
+        if self._is_cwn_app_url(url) or url.lower().endswith(".json") or "json" in url.lower():
+            kind, payload, error, source_url = await self.load_export_payload(url, None)
+            if error:
+                await self._send_target(target, self._json_import_error(error))
+                return
+            if kind == "ship":
+                ships_cog = self.bot.get_cog("ShipsCog")
+                await ships_cog.import_ship_payload(target, payload, source_name=url)
+                return
+            await self._save_imported_character(target, payload, source_url=source_url or url, source_name="linked sheet")
+            return
+        char_data, error, source_url = await self._load_sheet_source(url, None)
         if error:
-            await self._send_target(target, self._json_import_error(error) if "sheet" not in str(error).lower() else self._sheet_import_error(error))
+            await self._send_target(target, self._sheet_import_error(error))
             return
         await self._save_imported_character(target, char_data, source_url=source_url or url, source_name="linked sheet")
 
@@ -968,7 +1025,7 @@ class CharacterSheetCog(commands.Cog):
             return await self._load_json_source(url, None)
         return await self._load_sheet_source(url, None)
 
-    async def fetch_json_character(self, url):
+    async def fetch_json_payload(self, url):
         try:
             headers = {"Accept": "application/json,text/plain,*/*"}
             async with aiohttp.ClientSession() as session:
@@ -991,11 +1048,24 @@ class CharacterSheetCog(commands.Cog):
                             data = json.loads(text)
                         except Exception as e:
                             return None, f"Invalid JSON: {e}"
-                    return self._normalize_character_data(data)
+                    if isinstance(data, list):
+                        data = next((item for item in data if isinstance(item, dict)), None)
+                    if not isinstance(data, dict):
+                        return None, "JSON did not contain a character or ship object."
+                    return data, None
         except Exception as e:
             if self._is_cwn_app_url(url):
                 return None, self._cwn_app_share_help()
             return None, str(e)
+
+    async def fetch_json_character(self, url):
+        data, error = await self.fetch_json_payload(url)
+        if error:
+            return None, error
+        from cogs.ships import looks_like_ship_payload
+        if looks_like_ship_payload(data):
+            return None, "That JSON is a starship. Drop it in this channel or use `/importship`."
+        return self._normalize_character_data(data)
 
     async def fetch_and_parse_sheet(self, url):
         # Extract Sheet ID and GID

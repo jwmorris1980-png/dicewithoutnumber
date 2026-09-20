@@ -26,7 +26,7 @@ class QuickMenuView(discord.ui.View):
         await self._tip(
             interaction,
             "Build at https://characterswithoutnumber.app then drop the JSON or paste Copy Text here. "
-            "You can also use `importsheet <link>`, then say `sheet`, `bind`, or `attack`.",
+            "The bot already in this Discord server uses it for `sheet`, `skill`, `attack`, and `ship`.",
         )
 
     @discord.ui.button(label="Maps", style=discord.ButtonStyle.primary)

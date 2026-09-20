@@ -157,6 +157,15 @@ class DatabaseService:
                     PRIMARY KEY (guild_id, user_id)
                 )
             ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS starships (
+                    user_id TEXT,
+                    ship_name TEXT,
+                    data TEXT,
+                    is_active INTEGER DEFAULT 0,
+                    PRIMARY KEY (user_id, ship_name)
+                )
+            ''')
 
             # Persistent support tickets and their conversation history.
             cursor.execute('''
@@ -504,7 +513,7 @@ class DatabaseService:
             # Insert or replace ship
             cursor.execute('''
                 INSERT OR REPLACE INTO starships (user_id, ship_name, data, is_active)
-                VALUES (?, ?, ?, ?, 1)
+                VALUES (?, ?, ?, 1)
             ''', (user_id, ship_name, json.dumps(ship_data)))
             conn.commit()
 

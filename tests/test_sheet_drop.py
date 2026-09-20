@@ -62,7 +62,7 @@ def test_copy_text_drop_is_detected_by_the_bot():
     handled = asyncio.run(bot._handle_character_sheet_drop(message))
 
     assert handled is True
-    assert any(item and "Character sheet detected" in str(item) for item in sent)
+    assert any(item and "export detected" in str(item) for item in sent)
     assert any(item and "Zion Kim" in str(item) for item in sent)
 
 

@@ -11,11 +11,12 @@ Commands work with `/`, `!`, or no prefix when the bot is installed in the serve
 ## 1. Character Management
 | Command | Description |
 |---------|-------------|
-| Paste a Google Sheet link, JSON file, or Copy Text | Automatically import, activate, bind, and register the character. No command is required. |
+| Paste a Google Sheet link, JSON file, Copy Text, or ship JSON | Automatically syncs it to the Discord bot already in the server. No command required. |
 | `/importsheet <url>` | Optional manual import from Google Sheets. You can also attach a `.csv`, `.txt`, or `.json` file. |
-| `/importjson <url>` | Import a characterswithoutnumber.app JSON export (v0.8+). You can also attach a `.json` file. |
+| `/importjson <url>` | Import a characterswithoutnumber.app JSON export (character or starship). You can also attach a `.json` file. |
+| `/importship <url>` | Import a starship JSON from the CWN ship builder. |
 | `/importtext` | Paste Copy Text from characterswithoutnumber.app. |
-| `/update` | Sync your active character with its stored source URL |
+| `/update` | Sync your active character with its stored source URL, or re-drop JSON if it was a file import. |
 | `/link <url>` | Import from or attach a persistent sheet URL for syncing |
 | `/threshold_wizard` | Interactive character creation |
 | `/language [EN|FR|ES|DE|PT|SV]` | Change bot language |
@@ -104,6 +105,7 @@ When the bot is installed in a server, any registered command can be sent withou
 | `/campaign start` | Start a new campaign as GM |
 | `/campaign join` | Join active campaign as a player |
 | `/party info` | View shared party funds and ship status |
+| `/ship` `/shiplist` | View or list starships synced from characterswithoutnumber.app JSON |
 | `/party split <amount>` | Calculate even credit distribution |
 
 ## 5a. Polls

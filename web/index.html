@@ -210,7 +210,7 @@
                 <div class="feature-card">
                     <div class="feature-icon-box"><i class="fas fa-file-invoice"></i></div>
                     <h3>Sheet Sync</h3>
-                    <p>Build on characterswithoutnumber.app, then drop the JSON or paste Copy Text. HP, AC, skills, and foci stay ready for <code>sheet</code>, <code>skill</code>, and <code>attack</code>.</p>
+                    <p>Build on characterswithoutnumber.app, then drop the character or ship JSON in the Discord server where this bot already lives. HP, AC, skills, foci, and starships stay ready for <code>sheet</code>, <code>skill</code>, <code>attack</code>, and <code>ship</code>.</p>
                     <a href="/characters" class="btn btn-outline" style="margin-top: 15px; padding: 8px 15px; font-size: 0.8rem; border-radius: 8px; width: auto;">Open Character Hub</a>
                 </div>
                 <div class="feature-card">
@@ -332,15 +332,19 @@
                 </div>
                 <div class="command-row">
                     <code>/importjson &lt;url&gt;</code> or attach `.json`
-                    <div>Import a characterswithoutnumber.app JSON export. Share pages need Export → JSON or Copy Text.</div>
+                    <div>Import a characterswithoutnumber.app character or starship JSON. Share pages need Export → JSON or Copy Text.</div>
+                </div>
+                <div class="command-row">
+                    <code>/importship</code> or attach ship `.json`
+                    <div>Sync a starship from the CWN ship builder to this Discord bot. Then say <code>ship</code>.</div>
                 </div>
                 <div class="command-row">
                     <code>/importtext</code>
                     <div>Paste Copy Text from the builder. You can also paste it directly in the channel.</div>
                 </div>
                 <div class="command-row">
-                    <code>/update</code><br><code>/sheet update</code>
-                    <div>Instantly sync your active character stats with the stored source URL.</div>
+                    <code>/update</code><br><code>/sync</code>
+                    <div>Refresh the active character from its linked URL, or re-drop JSON if it was imported as a file.</div>
                 </div>
                 <div class="command-row">
                     <code>/link &lt;url&gt;</code>
