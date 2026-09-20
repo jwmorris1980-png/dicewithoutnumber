@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/style.css?v=1.0.3">
+    <link rel="stylesheet" href="/static/style.css?v=1.0.4">
 </head>
 <body>
     <nav id="navbar">
@@ -18,14 +18,17 @@
                 <div class="logo-icon"><i class="fas fa-dice-d20"></i></div>
                 <span class="logo-text">DICEwithoutNumber</span>
             </a>
-            <ul class="nav-links">
-                <li><a href="/characters">Characters</a></li>
+            <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a class="active" href="/characters">Characters</a></li>
                 <li><a href="/#features">Features</a></li>
                 <li><a href="/storyteller">AI Storyteller</a></li>
                 <li><a href="/map">Tactical Map</a></li>
                 <li><a href="/#commands">Commands</a></li>
             </ul>
-            <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary" style="padding: 12px 25px;">Add to Discord</a>
+            <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary nav-cta">Add to Discord</a>
         </div>
     </nav>
 
@@ -68,10 +71,10 @@
                 </a>
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:24px;">
-                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=swn" target="_blank" rel="noopener">Random SWN</a>
-                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=cwn" target="_blank" rel="noopener">Random CWN</a>
-                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=wwn" target="_blank" rel="noopener">Random WWN</a>
-                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=awn" target="_blank" rel="noopener">Random AWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=swn" target="_blank" rel="noopener">Random SWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=cwn" target="_blank" rel="noopener">Random CWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=wwn" target="_blank" rel="noopener">Random WWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=awn" target="_blank" rel="noopener">Random AWN</a>
             </div>
         </div>
     </section>
@@ -102,11 +105,15 @@
     <section style="padding-top: 0;">
         <div class="container">
             <h2 class="section-title">Check an export <span class="text-gradient">before you play.</span></h2>
-            <p class="section-desc">Drop a characterswithoutnumber.app JSON file here to preview HP, AC, skills, and modifiers the bot will use.</p>
+            <p class="section-desc">Drop a JSON file or paste Copy Text. You will see the same HP, AC, skills, and modifiers the bot uses in Discord. Nothing is uploaded.</p>
             <div id="drop-zone" class="drop-zone" tabindex="0">
                 <p style="font-size:1.1rem; font-weight:700;">Drop a .json export here</p>
-                <p style="color:var(--text-muted); margin-top:8px;">or click to choose a file. Nothing is uploaded from this page.</p>
-                <input id="file-input" type="file" accept=".json,application/json" hidden>
+                <p style="color:var(--text-muted); margin-top:8px;">or click to choose a file. Ctrl+V also works on this page.</p>
+                <input id="file-input" type="file" accept=".json,application/json,.txt,text/plain" hidden>
+            </div>
+            <textarea id="paste-box" class="paste-box" placeholder="Or paste Export → Copy Text / JSON here, then press Preview."></textarea>
+            <div style="margin-top:12px;">
+                <button id="preview-paste" class="btn btn-outline" type="button" style="padding:10px 22px;">Preview pasted sheet</button>
             </div>
             <div id="preview" class="preview-sheet" aria-live="polite"></div>
         </div>
@@ -131,6 +138,20 @@
             return 3;
         }
 
+        function signed(value) {
+            const n = Number(value);
+            if (!Number.isFinite(n)) return String(value ?? "");
+            return n >= 0 ? `+${n}` : String(n);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
         function pretty(value) {
             return String(value || "")
                 .replace(/^(swn|cwn|wwn|awn)[-_]/i, "")
@@ -143,6 +164,46 @@
                 if (obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
             }
             return null;
+        }
+
+        function looksLikeCopyText(text) {
+            return /\bHP:\s*\d+/i.test(text) && (/\[(?:SWN|CWN|WWN|AWN)\]/i.test(text) || /\bLevel\s+\d+/i.test(text));
+        }
+
+        function previewCopyText(text) {
+            const system = (text.match(/\[(SWN|CWN|WWN|AWN)\]/i) || [])[1] || "SWN";
+            const name = text.replace(/\s+\[(?:SWN|CWN|WWN|AWN)\].*$/i, "").split("\n")[0].trim();
+            if (!name) throw new Error("No character name found in that Copy Text.");
+            const levelMatch = text.match(/Level\s+(\d+)\s+([^|\n]+)/i);
+            const hpMatch = text.match(/HP:\s*(\d+)(?:\/(\d+))?/i);
+            const acMatch = text.match(/AC:\s*(\d+)/i);
+            const abMatch = text.match(/\b(?:AB|Attack Bonus):\s*\+?(-?\d+)/i);
+            const attrLine = [...text.matchAll(/\b(STR|DEX|CON|INT|WIS|CHA)[A-Z]*:\s*(\d+)\s*(?:\(([+-]?\d+)\))?/gi)]
+                .map((match) => {
+                    const score = Number(match[2]);
+                    const mod = match[3] !== undefined ? Number(match[3]) : modifier(score);
+                    return `${match[1].toUpperCase()} ${score} (${signed(mod)})`;
+                })
+                .join(" · ");
+            const skillsMatch = text.match(/SKILLS\s+(.+?)(?:\s+(?:FOCI|EDGES|EQUIPMENT|WEAPONS|CONTACTS)\b|$)/i);
+            const fociMatch = text.match(/FOCI\s+(.+?)(?:\s+(?:EDGES|EQUIPMENT|WEAPONS|CONTACTS)\b|$)/i);
+            const skills = skillsMatch
+                ? [...skillsMatch[1].matchAll(/([A-Za-z][A-Za-z ]*?)-(-?\d+)/g)].map((match) => `${match[1].trim()} ${signed(match[2])}`)
+                : [];
+            const foci = fociMatch ? fociMatch[1].split(/,\s*/).map((part) => part.trim()).filter(Boolean) : [];
+            return {
+                name,
+                system: system.toUpperCase(),
+                level: levelMatch ? levelMatch[1] : "1",
+                klass: levelMatch ? pretty(levelMatch[2].replace(/\s+Background$/i, "").trim()) : "Hero",
+                hp: hpMatch ? hpMatch[1] : "?",
+                hpMax: hpMatch ? (hpMatch[2] || hpMatch[1]) : "",
+                ac: acMatch ? acMatch[1] : 10,
+                ab: abMatch ? abMatch[1] : 0,
+                attrLine,
+                skills,
+                foci,
+            };
         }
 
         function previewCharacter(data) {
@@ -166,56 +227,99 @@
                 const score = raw && typeof raw === "object" ? (raw.score ?? raw.value) : raw;
                 const n = Number(score);
                 if (!Number.isFinite(n)) return null;
-                if (Math.abs(n) > 5) return `${key.slice(0, 3).toUpperCase()} ${n} (${modifier(n) >= 0 ? "+" : ""}${modifier(n)})`;
-                return `${key.slice(0, 3).toUpperCase()} ${n >= 0 ? "+" : ""}${n}`;
+                if (Math.abs(n) > 5) return `${key.slice(0, 3).toUpperCase()} ${n} (${signed(modifier(n))})`;
+                return `${key.slice(0, 3).toUpperCase()} ${signed(n)}`;
             }).filter(Boolean).join(" · ");
             let skills = [];
             if (Array.isArray(data.skills)) {
                 skills = data.skills.map((skill) => {
                     const label = pretty(skill.name || skill.skill || skill.skillId);
                     const rank = skill.rank ?? skill.level ?? skill.value ?? 0;
-                    return label ? `${label} ${rank >= 0 ? "+" : ""}${rank}` : null;
+                    return label ? `${label} ${signed(rank)}` : null;
                 }).filter(Boolean);
             } else if (data.skills && typeof data.skills === "object") {
-                skills = Object.entries(data.skills).map(([key, value]) => `${pretty(key)} ${Number(value) >= 0 ? "+" : ""}${value}`);
+                skills = Object.entries(data.skills).map(([key, value]) => `${pretty(key)} ${signed(value)}`);
             }
-            return { name, system, klass, hp: hp ?? "?", hpMax: hpMax || hp, ac, ab, attrLine, skills };
+            let foci = [];
+            if (Array.isArray(data.foci)) {
+                foci = data.foci.map((focus) => {
+                    if (typeof focus === "string") return focus;
+                    const label = pretty(focus.name || focus.focusId || focus.id);
+                    const level = focus.level || focus.rank;
+                    return level ? `${label} (Lvl ${level})` : label;
+                }).filter(Boolean);
+            }
+            return {
+                name,
+                system,
+                level: data.level || 1,
+                klass,
+                hp: hp ?? "?",
+                hpMax: hpMax || hp,
+                ac,
+                ab,
+                attrLine,
+                skills,
+                foci,
+            };
         }
 
-        function renderPreview(result, warning) {
+        function previewPayload(raw) {
+            const text = String(raw || "").trim();
+            if (!text) throw new Error("Paste Copy Text or drop a JSON export first.");
+            if (looksLikeCopyText(text)) return previewCopyText(text);
+            try {
+                return previewCharacter(JSON.parse(text));
+            } catch (err) {
+                if (looksLikeCopyText(text)) return previewCopyText(text);
+                throw new Error(err.message || "That is not a character JSON export or Copy Text.");
+            }
+        }
+
+        function renderPreview(result) {
             const el = document.getElementById("preview");
             el.classList.add("show");
             el.innerHTML = `
-                <h3>${result.name}</h3>
-                <div class="preview-meta">Level-ready ${result.system} ${result.klass}</div>
+                <h3>${escapeHtml(result.name)}</h3>
+                <div class="preview-meta">Level ${escapeHtml(result.level)} ${escapeHtml(result.system)} ${escapeHtml(result.klass)}</div>
                 <div class="preview-stats">
-                    <span>HP ${result.hp}${result.hpMax ? "/" + result.hpMax : ""}</span>
-                    <span>AC ${result.ac}</span>
-                    <span>AB +${result.ab}</span>
+                    <span>HP ${escapeHtml(result.hp)}${result.hpMax ? "/" + escapeHtml(result.hpMax) : ""}</span>
+                    <span>AC ${escapeHtml(result.ac)}</span>
+                    <span>AB ${escapeHtml(signed(result.ab))}</span>
                 </div>
-                <p>${result.attrLine || "No attributes found"}</p>
-                <p style="margin-top:10px;color:var(--text-muted)">${result.skills.slice(0, 12).join(", ") || "No skills found"}</p>
-                <p style="margin-top:16px">${warning || "Looks good. Drop this same file in Discord and say <code>sheet</code>."}</p>
+                <p>${escapeHtml(result.attrLine || "No attributes found")}</p>
+                <p style="margin-top:10px;color:var(--text-muted)">${escapeHtml((result.skills || []).slice(0, 12).join(", ") || "No skills found")}</p>
+                <p style="margin-top:10px;color:var(--text-muted)">${escapeHtml((result.foci || []).slice(0, 8).join(", "))}</p>
+                <p style="margin-top:16px">Looks good. Drop this same export in Discord and say <code>sheet</code>, <code>skill notice</code>, or <code>attack</code>.</p>
             `;
+        }
+
+        function showError(message) {
+            const el = document.getElementById("preview");
+            el.classList.add("show");
+            el.innerHTML = `<p>${message}</p>`;
+        }
+
+        function handleText(text) {
+            try {
+                renderPreview(previewPayload(text));
+            } catch (err) {
+                showError(err.message || "That file is not a character export.");
+            }
         }
 
         function handleFile(file) {
             const reader = new FileReader();
-            reader.onload = () => {
-                try {
-                    const parsed = JSON.parse(reader.result);
-                    renderPreview(previewCharacter(parsed));
-                } catch (err) {
-                    const el = document.getElementById("preview");
-                    el.classList.add("show");
-                    el.innerHTML = `<p>${err.message || "That file is not a character JSON export."}</p>`;
-                }
-            };
+            reader.onload = () => handleText(reader.result);
             reader.readAsText(file);
         }
 
         const zone = document.getElementById("drop-zone");
         const input = document.getElementById("file-input");
+        const pasteBox = document.getElementById("paste-box");
+        const previewPaste = document.getElementById("preview-paste");
+        const navToggle = document.querySelector(".nav-toggle");
+        const navLinks = document.getElementById("nav-links");
         zone.addEventListener("click", () => input.click());
         zone.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") input.click(); });
         input.addEventListener("change", () => { if (input.files[0]) handleFile(input.files[0]); });
@@ -225,11 +329,31 @@
             event.preventDefault();
             zone.classList.remove("dragover");
             const file = event.dataTransfer.files[0];
+            const text = event.dataTransfer.getData("text/plain");
             if (file) handleFile(file);
+            else if (text) handleText(text);
+        });
+        previewPaste.addEventListener("click", () => handleText(pasteBox.value));
+        pasteBox.addEventListener("keydown", (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") handleText(pasteBox.value);
+        });
+        window.addEventListener("paste", (event) => {
+            if (["TEXTAREA", "INPUT"].includes((event.target || {}).tagName)) return;
+            const text = event.clipboardData && event.clipboardData.getData("text/plain");
+            if (text) {
+                pasteBox.value = text;
+                handleText(text);
+            }
         });
         window.addEventListener("scroll", () => {
             document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 50);
         });
+        if (navToggle && navLinks) {
+            navToggle.addEventListener("click", () => {
+                const open = navLinks.classList.toggle("open");
+                navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+            });
+        }
     </script>
 </body>
 </html>

@@ -33,3 +33,20 @@ def test_characters_route_is_wired():
     service = WebService(MagicMock(), port=0)
     paths = [route.resource.canonical for route in service.app.router.routes()]
     assert "/characters" in paths
+
+
+def test_character_hub_covers_live_builder_and_paste_preview():
+    from pathlib import Path
+
+    page = Path(__file__).resolve().parents[1] / "web" / "characters.html"
+    text = page.read_text(encoding="utf-8")
+    for path in (
+        "swn-character-builder/",
+        "cwn-character-builder/",
+        "wwn-character-builder/",
+        "awn-character-builder/",
+        "build/?random=swn",
+    ):
+        assert path in text
+    assert 'id="paste-box"' in text
+    assert "Preview pasted sheet" in text
