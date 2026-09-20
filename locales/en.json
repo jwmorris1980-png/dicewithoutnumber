@@ -2,32 +2,32 @@
     "intro": {
         "swn": {
             "title": "🚀 Stars Without Number - Quick Start",
-            "step1_title": "Step 1: Character Creation",
-            "step1_desc": "Use `/swn` for a random character or `/threshold_wizard` to roll stats.\nImport from **[characterswithoutnumber.app](https://characterswithoutnumber.app)** or Sectors Without Number using `/importsheet`.",
+            "step1_title": "Step 1: Build, Export, Drop",
+            "step1_desc": "**Build** at **[characterswithoutnumber.app](https://characterswithoutnumber.app)** (or `/swn` / `/threshold_wizard` in Discord).\n**Export** → JSON (best) or Copy Text. A share-page link is not enough.\n**Drop** the `.json` file (or paste Copy Text) in this Discord channel — no command needed. The bot already here saves it. Ships use the same drop, then `ship`.\nGoogle Sheets still work with `/importsheet`.",
             "step2_title": "Step 2: Core Mechanics",
             "step2_desc": "• **Skill Checks**: Roll `2d6 + Skill + Attribute`. High is better.\n• **Combat**: Roll `1d20 + Attack Bonus + Attribute`. Meet or beat AC.\n• **Saves**: Roll `1d20`. Equal or higher than your Save target.",
-            "step3_title": "Step 3: Bot Commands",
-            "step3_desc": "• `/sheet`: View your stats.\n• `/update`: Sync with source URL.\n• `/roll 2d6+1`: Generic dice roller."
+            "step3_title": "Step 3: Play from that sheet",
+            "step3_desc": "• `sheet` / `/sheet`: View the character you dropped.\n• `skill` / `attack`: Roll from that sheet.\n• `ship`: View a dropped starship.\n• `/update`: Refresh a linked URL, or drop a new JSON export.\n• `/roll 2d6+1`: Generic dice roller."
         },
         "wwn": {
             "title": "⚔️ Worlds Without Number - Quick Start",
-            "step1_title": "Step 1: Character Creation",
-            "step1_desc": "Use `/wwn` for a random character or `/threshold_wizard` for manual stats.\nImport sheets from Google or **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step1_title": "Step 1: Build, Export, Drop",
+            "step1_desc": "**Build** at **[characterswithoutnumber.app](https://characterswithoutnumber.app)** (or `/wwn` / `/threshold_wizard` in Discord).\n**Export** → JSON (best) or Copy Text. A share-page link is not enough.\n**Drop** the `.json` file (or paste Copy Text) in this Discord channel — no command needed. The bot already here saves it.",
             "step2_title": "Step 2: Core Mechanics",
             "step2_desc": "• **Skills**: `2d6 + Skill + Attribute`. Target is usually 6-10.\n• **Combat**: `1d20 + AB + Attribute`. Target is Enemy AC.\n• **Shock**: Melee weapons often deal damage even on a miss!",
-            "step3_title": "Step 3: Bot Commands",
-            "step3_desc": "• `/skill [name]`: Roll a specific skill.\n• `/update`: Sync your character stats.\n• `/attack [weapon]`: Roll attack and damage logic."
+            "step3_title": "Step 3: Play from that sheet",
+            "step3_desc": "• `sheet` / `/sheet`: View the character you dropped.\n• `skill` / `attack`: Roll from that sheet.\n• `/update`: Refresh a linked URL, or drop a new JSON export."
         },
         "cwn": {
             "title": "💾 Cities Without Number - Quick Start",
-            "step1_title": "Step 1: Character Creation",
-            "step1_desc": "Use `/cwn` for a random character or `/threshold_wizard`.\nSync your gear from **[characterswithoutnumber.app](https://characterswithoutnumber.app)** using `/importjson`.",
+            "step1_title": "Step 1: Build, Export, Drop",
+            "step1_desc": "**Build** at **[characterswithoutnumber.app](https://characterswithoutnumber.app)** (or `/cwn` / `/threshold_wizard` in Discord).\n**Export** → JSON (best) or Copy Text. A share-page link is not enough.\n**Drop** the `.json` file (or paste Copy Text) in this Discord channel — no command needed. The bot already here saves it. Ships use the same drop, then `ship`.",
             "step2_title": "Step 2: Core Mechanics",
             "step2_desc": "• **Checks**: `2d6` for skills, `1d20` for combat. Standard OSR base.\n• **Hacking**: Use specialized programs and your cyberdeck.\n• **Trauma**: Watch out for specialized damage types!",
-            "step3_title": "Step 3: Bot Commands",
-            "step3_desc": "• `/gen npc`: Quick cyberpunk flavor.\n• `/update`: Sync stats from online builder.\n• `/tracker damage`: Deal damage by name."
+            "step3_title": "Step 3: Play from that sheet",
+            "step3_desc": "• `sheet` / `/sheet`: View the character you dropped.\n• `skill` / `attack`: Roll from that sheet.\n• `ship`: View a dropped starship.\n• `/update`: Refresh a linked URL, or drop a new JSON export.\n• `/tracker damage`: Deal damage by name."
         },
-        "footer": "Pro-tip: All commands work with !prefix too! Type /help for more."
+        "footer": "Pro-tip: Type /help and open Sheets & Characters for the full Build → Export → Drop → Play path. All commands also work with !prefix."
     },
     "commands": {
         "starthere_desc": "Quick start guide for SWN, WWN, or CWN.",
@@ -39,15 +39,15 @@
     },
     "help": {
         "title": "🎲 Without Number Bot Help",
-        "description": "Welcome! This bot helps you roll dice, check equipment, and manage your character sheet.\n🌐 **Bot Info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatible with:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**New? Type `/swnhelp`, `/wwnhelp`, or `/cwnhelp` for a quick guide!**\n**Change Language:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**All commands work with both `/` (Slash) and `!` (Prefix)!**",
-        "char_imports_title": "1a. Character Imports",
-        "char_imports_body": "**`/update` | `/sync` | `!update`**\nInstantly refresh your active character stats from its stored source URL.\n\n**`/importsheet` | `!importsheet` <url>**\nLink your Google Sheet (SWN, WWN, or CWN). It loads stats and enables sync!\n\n**`/importjson` | `!importjson` <url>**\nImport from a raw JSON URL (fastest way to sync *characterswithoutnumber.app*).\n\n**`/link` | `!link` <url>**\nConnect your character to a persistent URL (JSON or Google Sheet) for easy syncing.\n\n**JSON File Upload**\nSimply drag and drop your `.json` export file into the chat. The bot handles it automatically!\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nView your character. **`/sc`** for Combat view, **`/sf`** for Full view.",
+        "description": "Welcome! This bot helps you roll dice, check equipment, and manage your character sheet.\n🌐 **Bot Info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Characters & ships:** [characterswithoutnumber.app](https://characterswithoutnumber.app) → Export JSON or Copy Text → drop it in this Discord channel → `sheet` / `skill` / `attack` / `ship`.\n\n**New? Type `/help` then Sheets & Characters, or `/swnhelp` / `/wwnhelp` / `/cwnhelp`.**\n**Change Language:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**All commands work with both `/` (Slash) and `!` (Prefix)!**",
+        "char_imports_title": "1a. Build, Drop, Play",
+        "char_imports_body": "**How to sync a character or ship (about 20 seconds)**\n1. **Build** at [characterswithoutnumber.app](https://characterswithoutnumber.app) — SWN, CWN, WWN, AWN, or the ship builder.\n2. **Export** → **JSON** (best) or **Copy Text**. A share-page `/c/` or `/s/` link is not enough.\n3. **Drop it in this Discord channel** — drag the `.json` file, or paste Copy Text. No command needed. The bot already here saves it.\n4. **Play** — `sheet` shows the character. `skill` and `attack` roll from it. `ship` shows a dropped starship.\nDrop the same filename again to update.\n\n**JSON File Upload / Copy Text**\nDrag and drop a `.json` character or ship export, or paste Copy Text into the channel. Same-name files update the sheet this bot is using.\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nView your character. **`/sc`** for Combat view, **`/sf`** for Full view.\n\n**`/update` | `/sync` | `!update`**\nRefresh your active character from its stored source URL, or drop a new JSON export to update a file-based import.\n\n**`/importsheet` | `!importsheet` <url>**\nLink your Google Sheet (SWN, WWN, CWN, or AWN). It loads stats and enables sync!\n\n**`/importjson` | `!importjson` <url>**\nImport a characterswithoutnumber.app JSON export (character or starship). v0.8+ classId/skillId format supported.\n\n**`/importship` | `!importship`**\nImport a starship JSON from the CWN ship builder.\n\n**`/importtext`**\nPaste Copy Text from the builder.\n\n**`/link` | `!link` <url>**\nConnect your character to a persistent URL (JSON or Google Sheet) for easy syncing.",
         "char_mgmt_title": "1b. Character Management",
         "char_mgmt_body": "**`/switchchar` | `!switchchar` <name>**\nSwap between your imported characters.\n\n**`/portrait` | `!portrait` [url]**\nSet an image for any of your characters. Attach a file OR paste a URL. Shows as a thumbnail on `/sheet`!\n\n**`/bind` | `/unbind`**\n🎭 Associate a character with the current channel. The bot will remember which hero you are playing in each game!\n\n**`/awardxp` | `!awardxp` <amount>**\nAward XP to your active character.\n\n**`/swn`, `/wwn`, `/cwn`**\nInstantly generate a random Level 1 character for that system.\n\n**`/threshold` | `/threshold_wizard`**\nRoll 3d6 attributes in order, or use the interactive Wizard!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nQuick-start guides for your chosen system (SWN, WWN, or CWN)!",
         "rolling_title": "2. Rolling & Combat",
         "rolling_body": "**`/attack` | `!attack` [weapon]**\nRolls a 1d20 attack. Adds modifiers automatically from your sheet!\n\n**`/gmroll` | `!gmroll`**\nHidden roll (private/ephemeral) so only you see the result.\n\n**`/skill` | `!skill` [skill_name]**\nRolls a 2d6 skill check. (e.g., `!notice`, `!skill notice dexterity`).\n\n**`/roll` | `!roll` <expression> [comment]**\nSupports complicated rolls: `1d20+1d4+5`, `2d6-1d4`, `4d6kh3`!\n↳ *Specialist:* Use `3d6kh` or `3d6dl` to auto-apply Specialist focus (Keep Highest 2).\n↳ *Multiples:* Use `3x 1d20+5` or `3#2d6` to repeat a roll!\n↳ *Emojis & Combos:* Use commas to roll multiple things at once! (e.g. `!roll ⚔️ 1d20+5, 💥 1d8+2`)\n\n**`/multiroll` | `!multiroll` <amount> <expression>**\nRoll the same expression multiple times with separate detailed lines.",
         "tools_title": "3. Reference & Tools",
-        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nView or list your imported starships from Sectors Without Number JSON files.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\nBrowse items from the compendium! Works for SWN, WWN, and CWN.\n\n**`/rule` | `!rule` <keyword>**\nSearch the core rulebooks for a specific phrase or rule.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheat-sheets for combat, hacking, and space combat.",
+        "tools_body": "**`/ship` | `!ship` | `/shiplist` | `!shiplist`**\nView or list starships synced from characterswithoutnumber.app (or Sectors Without Number) JSON files.\n\n**`/weapon`, `/armor`, `/gear`, `/foci`**\nBrowse items from the compendium! Works for SWN, WWN, and CWN.\n\n**`/rule` | `!rule` <keyword>**\nSearch the core rulebooks for a specific phrase or rule.\n\n**`/combathelp`, `/hack_help`, `/ship_combat`**\nCheat-sheets for combat, hacking, and space combat.",
         "sandbox_title": "4. GM Sandbox Generation",
         "sandbox_body": "**`/gen <planet | npc | corp | alien>`**\nInstantly generate a beautiful reference card with randomized traits.\nNPCs and Aliens come with built-in Attack, AC, and HP stats ready for rolling!",
         "tracker_title": "5. GM Tracker & Tactical Map",

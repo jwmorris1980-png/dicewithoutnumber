@@ -17,22 +17,33 @@ CATEGORIES = {
         "label": "Sheets & Characters",
         "emoji": "📋",
         "color": discord.Color.blue(),
+        "hint": "Build → drop JSON → `sheet` / `ship`",
+        "description": (
+            "Characters and ships from [characterswithoutnumber.app](https://characterswithoutnumber.app) "
+            "sync to the bot already in this Discord. Drop an export here, then play."
+        ),
         "fields": [
-            ("Import", (
-                "Paste a Google Sheet link or attach CSV/TXT/JSON — auto-imports\n"
-                "`/importsheet` `!importsheet` — Manual import\n"
-                "`/importjson` `!importjson` `!uploadjson` — Import JSON from URL or attachment"
+            ("How to sync (about 20 seconds)", (
+                "**1. Build** at characterswithoutnumber.app — a character (SWN, CWN, WWN, or AWN) or a ship.\n"
+                "**2. Export** → **JSON** (best) or **Copy Text**. A share-page `/c/` or `/s/` link is not enough.\n"
+                "**3. Drop it in this channel** — drag the `.json` file, or paste Copy Text. No command needed.\n"
+                "**4. Play** — `sheet` shows the character. `skill` and `attack` roll from it. `ship` shows a dropped starship.\n\n"
+                "Drop the same filename again to update. Google Sheets still work with `/importsheet`."
             )),
-            ("View & Sync", (
-                "`/sheet` `!sheet` `!s` `!sc` `!sf` — Show active sheet\n"
-                "`/update` `!update` `!up` — Refresh active sheet\n"
-                "`/sync` `!sync` — Sync character source\n"
-                "`/bind` `!bind` — Bind character to this channel\n"
-                "`/portrait` `!portrait` — Set character portrait"
+            ("Play commands", (
+                "`sheet` `!sheet` `/sc` `/sf` — Show the character this bot is using\n"
+                "`skill` `/skill` — Skill check from that sheet (never guesses missing skills)\n"
+                "`attack` `/attack` — Weapon attack from that sheet\n"
+                "`ship` `/ship` `/shiplist` — Starships dropped from the ship builder\n"
+                "`bind` — Remember this character in this channel"
             )),
-            ("Ships & Generation", (
-                "`/ship` `!ship` `/shiplist` `!shiplist` — Starship sheets\n"
-                "`/threshold_wizard` `/swn` `/wwn` `/cwn` `/threshold` — Character generation"
+            ("If you need a command", (
+                "`/importjson` `/importtext` `/importship` — Manual import if drop is disabled\n"
+                "`/importsheet` — Google Sheet URL\n"
+                "`/link` — Attach a source URL for later `/update` / `/sync`\n"
+                "`/update` — Refresh a linked URL; for JSON files, drop the new export\n"
+                "`/portrait` — Set a portrait\n"
+                "`/threshold_wizard` `/swn` `/wwn` `/cwn` — Generate a character in Discord"
             )),
         ],
     },
@@ -40,6 +51,7 @@ CATEGORIES = {
         "label": "Dice & Combat",
         "emoji": "🎲",
         "color": discord.Color.red(),
+        "hint": "`roll`, `skill`, `attack`",
         "fields": [
             ("Rolling", (
                 "`/roll` `!roll` `!r` — Roll dice, e.g. `1d20+5` or `3x 2d6`\n"
@@ -49,8 +61,9 @@ CATEGORIES = {
                 "`/multiroll` `!multiroll` `!rr` — Repeat one expression, e.g. `!rr 7 1d20`"
             )),
             ("Sheet-Based Actions", (
-                "`/skill` `!skill` — Exact skill check from active sheet; never guesses missing skills\n"
-                "`/attack` `!attack` — Weapon attack from active sheet"
+                "`/skill` `!skill` — Exact skill check from the character you dropped\n"
+                "`/attack` `!attack` — Weapon attack from that sheet\n"
+                "Need a sheet first? Open **Sheets & Characters** — drop JSON or paste Copy Text."
             )),
             ("Rule Helpers", (
                 "`/combathelp` — Combat cheat-sheet\n"
@@ -63,6 +76,7 @@ CATEGORIES = {
         "label": "Tracker & Map",
         "emoji": "🗺️",
         "color": discord.Color.green(),
+        "hint": "Combat tracker and tactical map",
         "fields": [
             ("GM Mode Setup", (
                 "`game master mode` — Voice/text wizard, uses server sheets\n"
@@ -89,6 +103,7 @@ CATEGORIES = {
         "label": "Free Image Library",
         "emoji": "🖼️",
         "color": discord.Color.teal(),
+        "hint": "Free maps and portraits",
         "fields": [
             ("Maps", (
                 "`/maplibrary [query]` `!findmap [query]` — Search trusted free RPG maps\n"
@@ -111,6 +126,7 @@ CATEGORIES = {
         "label": "World, Rules & Gear",
         "emoji": "📖",
         "color": discord.Color.gold(),
+        "hint": "Gear, rules, generators",
         "fields": [
             ("Equipment Lookup", (
                 "`/weapon` `!weapon` — Weapon stats\n"
@@ -133,6 +149,7 @@ CATEGORIES = {
         "label": "Voice & Accessibility",
         "emoji": "🎙️",
         "color": discord.Color.purple(),
+        "hint": "No-prefix, tutorial, menu",
         "fields": [
             ("No-Prefix Commands", (
                 "`roll one d6`, `sheet`, `help` — Works without `/` or `!`\n"
@@ -147,7 +164,7 @@ CATEGORIES = {
             )),
             ("Navigation", (
                 "`menu` / `open menu` — Button-based quick menu\n"
-                "`tutorial` — Guided walkthrough\n"
+                "`tutorial` — Guided walkthrough, including builder → Discord drop\n"
                 "`setupguide` — Server setup checklist\n"
                 "`/voicehelp` — Voice-friendly tips and supported phrases\n"
                 "`/up` `/down` `/catchup` — Browse recent messages without scrolling\n"
@@ -159,6 +176,7 @@ CATEGORIES = {
         "label": "Campaign, Party & Factions",
         "emoji": "⚔️",
         "color": discord.Color.orange(),
+        "hint": "Party, factions, polls",
         "fields": [
             ("Campaign", (
                 "`/campaign start` `/campaign join` `/campaign leave` `/campaign info`\n"
@@ -182,6 +200,7 @@ CATEGORIES = {
         "label": "Server Tools & Support",
         "emoji": "🔧",
         "color": discord.Color.greyple(),
+        "hint": "`/starthere`, tickets, admin",
         "fields": [
             ("Channel & Roles", (
                 "`/channel role` `/channel setup` `/channel reactionrole` — Role assignment\n"
@@ -194,8 +213,8 @@ CATEGORIES = {
                 "`/errors` — View persisted runtime errors"
             )),
             ("Getting Help", (
-                "`/starthere` `!starthere` — Quick start guide\n"
-                "`/swnhelp` `/wwnhelp` `/cwnhelp` — Game-specific guides\n"
+                "`/starthere` `!starthere` — Quick start, including builder → Discord sync\n"
+                "`/swnhelp` `/wwnhelp` `/cwnhelp` — Game-specific guides (same drop path)\n"
                 "`/ticket` `!ticket` — Open a support ticket\n"
                 "`/tickets` `/ticketview` `/ticketreply` `/ticketclose` — Ticket management"
             )),
@@ -211,6 +230,7 @@ def _category_embed(key: str) -> discord.Embed:
     cat = CATEGORIES[key]
     embed = discord.Embed(
         title=f"{cat['emoji']}  {cat['label']}",
+        description=cat.get("description") or None,
         color=cat["color"],
     )
     for name, value in cat["fields"]:
@@ -224,6 +244,8 @@ def _index_embed() -> discord.Embed:
         title="DICEwithoutNumber — Help",
         description=(
             "Free, open-source, accessibility-focused play tools for SWN, CWN, and WWN.\n\n"
+            "**Characters & ships:** build at [characterswithoutnumber.app](https://characterswithoutnumber.app) "
+            "→ Export JSON or Copy Text → drop it in this channel → `sheet` / `skill` / `attack` / `ship`.\n\n"
             "**Pick a category below** to see its commands.\n"
             "All responses are private — only you can see them."
         ),
@@ -232,7 +254,7 @@ def _index_embed() -> discord.Embed:
     for key, cat in CATEGORIES.items():
         embed.add_field(
             name=f"{cat['emoji']} {cat['label']}",
-            value="\u200b",  # zero-width space keeps columns tidy
+            value=cat.get("hint") or "\u200b",
             inline=True,
         )
     embed.set_footer(text="DICEwithoutNumber • type /help any time")
@@ -391,8 +413,9 @@ class HelpCog(commands.Cog):
             logger.exception("Help command failed")
             fallback = (
                 "Help is available with `/help` or `!help`.\n"
-                "Character import: `/importsheet <url>` or `!importsheet <url>`.\n"
-                "You can also attach a `.csv` or `.json` file to import a character."
+                "Build at characterswithoutnumber.app, Export JSON or Copy Text, then drop it in this Discord channel.\n"
+                "Then use `sheet`, `skill`, `attack`, or `ship`.\n"
+                "You can also attach a `.json` file or use `/importsheet <url>`."
             )
             if isinstance(ctx_or_interaction, discord.Interaction):
                 target = (

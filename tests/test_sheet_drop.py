@@ -40,6 +40,32 @@ def test_dropped_sheet_result_is_sent_to_message_channel():
     assert "Imported **Austin Krow**" in sent[0]
 
 
+def test_copy_text_drop_is_detected_by_the_bot():
+    from bot import WithoutNumberBot
+
+    sent = []
+
+    async def send(content=None, **_kwargs):
+        sent.append(content)
+
+    bot = object.__new__(WithoutNumberBot)
+    cog = CharacterSheetCog(SimpleNamespace(db=FakeDatabase()))
+    bot.get_cog = lambda _name: cog
+    message = SimpleNamespace(
+        content="Zion Kim [SWN] Level 1 Warrior HP: 11/11 SKILLS Punch-1, Notice-0",
+        author=SimpleNamespace(id=12),
+        channel=SimpleNamespace(id=34, category_id=None, send=send),
+        guild=SimpleNamespace(id=56),
+        attachments=[],
+    )
+
+    handled = asyncio.run(bot._handle_character_sheet_drop(message))
+
+    assert handled is True
+    assert any(item and "export detected" in str(item) for item in sent)
+    assert any(item and "Zion Kim" in str(item) for item in sent)
+
+
 def test_sheet_response_omits_missing_optional_view_and_embed():
     sent = []
 

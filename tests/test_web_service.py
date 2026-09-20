@@ -27,3 +27,40 @@ async def test_server_starts_and_stops():
     assert service.runner is not None
 
     await service.stop()
+
+
+def test_characters_route_is_wired():
+    service = WebService(MagicMock(), port=0)
+    paths = [route.resource.canonical for route in service.app.router.routes()]
+    assert "/characters" in paths
+
+
+def test_character_hub_covers_live_builder_and_paste_preview():
+    from pathlib import Path
+
+    page = Path(__file__).resolve().parents[1] / "web" / "characters.html"
+    text = page.read_text(encoding="utf-8")
+    for path in (
+        "swn-character-builder/",
+        "cwn-character-builder/",
+        "wwn-character-builder/",
+        "awn-character-builder/",
+        "ship-builder/",
+        "build/?random=swn",
+    ):
+        assert path in text
+    assert 'id="paste-box"' in text
+    assert "Preview pasted sheet" in text
+    assert "/help" in text
+    assert "Sheets &amp; Characters" in text
+
+
+def test_homepage_commands_lead_with_drop_and_discord_help():
+    from pathlib import Path
+
+    page = Path(__file__).resolve().parents[1] / "web" / "index.html"
+    text = page.read_text(encoding="utf-8")
+    assert 'id="commands"' in text
+    assert "Drop .json or paste Copy Text" in text
+    assert "Build → Export → Drop → Play" in text
+    assert "Sheets &amp; Characters" in text

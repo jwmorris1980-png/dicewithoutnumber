@@ -18,6 +18,7 @@ class WebService:
         
         # Setup routes
         self.app.router.add_get('/', self.handle_index)
+        self.app.router.add_get('/characters', self.handle_characters)
         self.app.router.add_get('/map', self.handle_map)
         self.app.router.add_get('/storyteller', self.handle_storyteller)
         self.app.router.add_get('/voice', self.handle_voice)
@@ -132,6 +133,19 @@ class WebService:
         if not os.path.exists(path):
             return await self.handle_map(request)
             
+        with open(path, 'r', encoding='utf-8') as f:
+            html = f.read()
+        client_id = DISCORD_CLIENT_ID
+        invite_url = f"https://discord.com/api/oauth2/authorize?client_id={client_id}&permissions=8&scope=bot%20applications.commands"
+        html = html.replace('{{CLIENT_ID}}', client_id)
+        html = html.replace('{{INVITE_URL}}', invite_url)
+        return web.Response(text=html, content_type='text/html')
+
+    async def handle_characters(self, request):
+        path = os.path.join(self.web_dir, 'characters.html')
+        if not os.path.exists(path):
+            return web.Response(text="Character builder page not found", status=404)
+
         with open(path, 'r', encoding='utf-8') as f:
             html = f.read()
         client_id = DISCORD_CLIENT_ID

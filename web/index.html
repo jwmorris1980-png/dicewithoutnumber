@@ -77,7 +77,7 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="/static/style.css?v=1.0.2">
+    <link rel="stylesheet" href="/static/style.css?v=1.0.4">
 </head>
 <body>
 
@@ -88,7 +88,11 @@
                 <div class="logo-icon"><i class="fas fa-dice-d20"></i></div>
                 <span class="logo-text">DICEwithoutNumber</span>
             </a>
-            <ul class="nav-links">
+            <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/characters">Characters</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="/storyteller">AI Storyteller</a></li>
                 <li><a href="/map">Tactical Map</a></li>
@@ -102,11 +106,7 @@
             }
             </script>
             <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-            <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary" style="padding: 12px 25px;">Add to Discord</a>
-            <span style="display:block; margin-top:8px; font-size:0.85rem; color: var(--text-muted);">
-                Invite link:
-                <a href="{{INVITE_URL}}" style="color:#5865f2; word-break:break-all;">{{INVITE_URL}}</a>
-            </span>
+            <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary nav-cta">Add to Discord</a>
         </div>
     </nav>
 
@@ -120,6 +120,7 @@
                     <p>DICEwithoutNumber brings voice-friendly commands, multilingual tools, character sheets, support tickets, campaign management, and interactive tactical maps to your Discord table. In Game Master Mode, players only import their sheets in the server; no campaign join is required. Enemy HP and AC stay private, and the GM can say <strong>skip</strong> to leave out any setup section.</p>
                     <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px;">
                         <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary">Add to Discord</a>
+                        <a href="/characters" class="btn btn-outline"><i class="fas fa-user-astronaut" style="margin-right: 8px;"></i> Build a Character</a>
                         <a href="/storyteller" class="btn btn-outline" style="border-color: #5865f2; color: #5865f2;"><i class="fas fa-brain" style="margin-right: 8px;"></i> Try AI Storyteller</a>
                         <a href="#commands" class="btn btn-outline">View Commands</a>
                     </div>
@@ -209,7 +210,8 @@
                 <div class="feature-card">
                     <div class="feature-icon-box"><i class="fas fa-file-invoice"></i></div>
                     <h3>Sheet Sync</h3>
-                    <p>Import from Google Sheets or characterswithoutnumber.app. Your HP, AC, and gear stay in sync.</p>
+                    <p>Build on characterswithoutnumber.app, then drop the character or ship JSON in the Discord server where this bot already lives. HP, AC, skills, foci, and starships stay ready for <code>sheet</code>, <code>skill</code>, <code>attack</code>, and <code>ship</code>.</p>
+                    <a href="/characters" class="btn btn-outline" style="margin-top: 15px; padding: 8px 15px; font-size: 0.8rem; border-radius: 8px; width: auto;">Open Character Hub</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: rgba(88, 101, 242, 0.2); color: #5865f2;"><i class="fas fa-brain"></i></div>
@@ -319,26 +321,42 @@
     <section id="commands" style="background: rgba(255,255,255,0.01);">
         <div class="container">
             <h2 class="section-title" style="text-align: center;">Master the <span class="text-gradient">Commands.</span></h2>
-            <p style="text-align: center; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px;">All commands are available as both slash commands and prefix commands.</p>
+            <p style="text-align: center; color: var(--text-muted); max-width: 720px; margin: 0 auto 40px;">In Discord, type <code>/help</code> and open <strong>Sheets &amp; Characters</strong> for the same walkthrough. All commands also work with <code>!</code> prefix, or with no prefix when the bot is installed.</p>
             
             <div style="max-width: 1000px; margin: 0 auto; background: var(--bg-card); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden;">
                 <!-- Category: Character -->
                 <div style="padding: 20px 30px; background: rgba(var(--primary-rgb), 0.1); font-weight: 800; color: var(--primary); letter-spacing: 1px; font-family: 'Outfit';">CHARACTER MANAGEMENT</div>
+                <div class="command-row">
+                    <code>Drop .json or paste Copy Text</code>
+                    <div>Build at characterswithoutnumber.app → Export JSON or Copy Text → drop it in Discord. Then <code>sheet</code>, <code>skill</code>, <code>attack</code>, or <code>ship</code>. No command required. Same-name files update the saved sheet.</div>
+                </div>
+                <div class="command-row">
+                    <code>/help → Sheets &amp; Characters</code>
+                    <div>In-Discord help for that Build → Export → Drop → Play path, plus every character and ship command.</div>
+                </div>
                 <div class="command-row">
                     <code>/importsheet &lt;url&gt;</code> or attach `.csv`/`.txt`/`.json`
                     <div>Link your Google Sheet (SWN, WWN, or CWN) for automated stats and sync.</div>
                 </div>
                 <div class="command-row">
                     <code>/importjson &lt;url&gt;</code> or attach `.json`
-                    <div>Import raw JSON from characterswithoutnumber.app and enable auto-sync.</div>
+                    <div>Import a characterswithoutnumber.app character or starship JSON. Share pages need Export → JSON or Copy Text.</div>
                 </div>
                 <div class="command-row">
-                    <code>/update</code><br><code>/sheet update</code>
-                    <div>Instantly sync your active character stats with the stored source URL.</div>
+                    <code>/importship</code> or attach ship `.json`
+                    <div>Sync a starship from the CWN ship builder to this Discord bot. Then say <code>ship</code>.</div>
+                </div>
+                <div class="command-row">
+                    <code>/importtext</code>
+                    <div>Paste Copy Text from the builder. You can also paste it directly in the channel.</div>
+                </div>
+                <div class="command-row">
+                    <code>/update</code><br><code>/sync</code>
+                    <div>Refresh the active character from its linked URL, or re-drop JSON if it was imported as a file.</div>
                 </div>
                 <div class="command-row">
                     <code>/link &lt;url&gt;</code>
-                    <div>Set or change the sync source (JSON or Google Sheet) for your active character.</div>
+                    <div>Import or attach a Google Sheet, JSON, or characterswithoutnumber.app source for later sync.</div>
                 </div>
                 <div class="command-row">
                     <code>/sheet</code>
@@ -476,15 +494,18 @@
     </footer>
 
     <script>
-        // Navbar scroll effect
+        const nav = document.getElementById('navbar');
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.getElementById('nav-links');
         window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
+            nav.classList.toggle('scrolled', window.scrollY > 50);
         });
+        if (navToggle && navLinks) {
+            navToggle.addEventListener('click', () => {
+                const open = navLinks.classList.toggle('open');
+                navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        }
     </script>
 </body>
 </html>

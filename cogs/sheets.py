@@ -10,11 +10,34 @@ import re
 from cogs.ui.character_selector import CharacterSelectorView
 import urllib.parse
 
+CWN_APP_HOST = "characterswithoutnumber.app"
+CWN_APP_BUILDERS = {
+    "SWN": "https://characterswithoutnumber.app/swn-character-builder/",
+    "CWN": "https://characterswithoutnumber.app/cwn-character-builder/",
+    "WWN": "https://characterswithoutnumber.app/wwn-character-builder/",
+    "AWN": "https://characterswithoutnumber.app/awn-character-builder/",
+}
+ATTR_KEYS = ("strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma")
+ATTR_ALIASES = {
+    "strength": "strength", "str": "strength",
+    "dexterity": "dexterity", "dex": "dexterity",
+    "constitution": "constitution", "con": "constitution",
+    "intelligence": "intelligence", "int": "intelligence",
+    "wisdom": "wisdom", "wis": "wisdom",
+    "charisma": "charisma", "cha": "charisma",
+}
+WEAPON_HINTS = (
+    "pistol", "rifle", "shotgun", "smg", "carbine", "revolver", "cannon",
+    "sword", "blade", "knife", "dagger", "axe", "spear", "bow", "crossbow",
+    "staff", "club", "mace", "hammer", "whip", "stun", "laser", "mag ",
+    "monoblade", "monowhip", "unarmed", "punch", "grenade", "launcher",
+)
+
 class ImportTextModal(discord.ui.Modal, title='Import from characterswithoutnumber.app'):
     character_text = discord.ui.TextInput(
         label='Paste "Copy Text" Output Here',
         style=discord.TextStyle.paragraph,
-        placeholder='e.g. Rey Chen\nLevel 1 Expert\nSpacer\n\nHP: 1\nAC: 10\n...',
+        placeholder='e.g. Rey Chen [SWN] Level 1 Expert | Spacer Background\nHP: 8/8 | AC: 13 | AB: +0\n...',
         required=True,
         max_length=4000
     )
@@ -96,12 +119,17 @@ class CharacterSheetCog(commands.Cog):
             filename = (attachment.filename or "").lower()
             if filename.endswith(".json"):
                 data, error = self._parse_json_text(text)
+            elif self._looks_like_cwn_app_text(text):
+                data, error = self.parse_cwn_app_text(text, "SWN")
             else:
                 data, error = self.parse_awn_google_sheet(text)
             return data, error, None
 
         if not url:
             return None, "Provide a Google Sheet URL or attach a .csv/.txt/.json file.", None
+
+        if self._is_cwn_app_url(url):
+            return await self._load_json_source(url, None)
 
         data, error = await self.fetch_and_parse_sheet(url)
         return data, error, url
@@ -120,95 +148,461 @@ class CharacterSheetCog(commands.Cog):
         return data, error, url
 
     def _parse_json_text(self, text):
+        data, error = self._decode_json_text(text)
+        if error:
+            return None, error
+        return self._normalize_character_data(data)
+
+    def _decode_json_text(self, text):
         try:
             data = json.loads(text)
         except Exception as e:
             return None, f"Invalid JSON: {e}"
+        if isinstance(data, list):
+            data = next((item for item in data if isinstance(item, dict)), None)
+        if not isinstance(data, dict):
+            return None, "JSON did not contain a character or ship object."
+        return data, None
 
-        return self._normalize_character_data(data)
+    async def load_export_payload(self, url=None, attachment=None):
+        """Return (kind, payload, error, source_url) for a CWN/SWN JSON export."""
+        from cogs.ships import looks_like_ship_payload
+
+        source_url = None
+        if attachment:
+            text, error = await self._read_attachment_text(attachment)
+            if error:
+                return None, None, error, None
+            data, error = self._decode_json_text(text)
+            if error:
+                return None, None, error, None
+        elif url:
+            source_url = url
+            data, error = await self.fetch_json_payload(url)
+            if error:
+                return None, None, error, None
+        else:
+            return None, None, "Provide a JSON URL or attach a .json file.", None
+
+        if looks_like_ship_payload(data):
+            return "ship", data, None, source_url
+        character, error = self._normalize_character_data(data)
+        return "character", character, error, source_url
 
     def _coerce_int(self, value, default=0):
         if value is None or value == "":
             return default
+        if isinstance(value, bool):
+            return default
         if isinstance(value, int):
             return value
+        if isinstance(value, float):
+            return int(value)
         match = re.search(r"-?\d+", str(value))
         return int(match.group(0)) if match else default
 
+    def _swn_modifier(self, score):
+        if score is None:
+            return 0
+        try:
+            score = int(score)
+        except (TypeError, ValueError):
+            return 0
+        if score <= 3:
+            return -2
+        if score <= 7:
+            return -1
+        if score <= 13:
+            return 0
+        if score <= 17:
+            return 1
+        if score <= 18:
+            return 2
+        return 3
+
+    def _pretty_label(self, value):
+        text = str(value or "").strip()
+        if not text:
+            return ""
+        text = re.sub(r'^(swn|cwn|wwn|awn)[-_]', '', text, flags=re.IGNORECASE)
+        text = re.sub(r'[-_]+', ' ', text)
+        return " ".join(part.capitalize() if part.lower() != "ai" else "AI" for part in text.split() if part)
+
+    def _unwrap_character_payload(self, data):
+        if isinstance(data, list) and data:
+            data = next((item for item in data if isinstance(item, dict)), None)
+        if not isinstance(data, dict):
+            return None
+        for key in ('character', 'sheet', 'data', 'actor'):
+            nested = data.get(key)
+            if isinstance(nested, dict) and (nested.get('name') or nested.get('classId') or nested.get('system')):
+                merged = {**data, **nested}
+                merged.pop(key, None)
+                data = merged
+                break
+        foundry = data.get('system')
+        if isinstance(foundry, dict) and isinstance(foundry.get('health'), dict) and 'classId' not in data:
+            health = foundry.get('health') or {}
+            data = {
+                **data,
+                'name': data.get('name'),
+                'hp': health.get('value'),
+                'hp_max': health.get('max'),
+                'hitPointsCurrent': health.get('value'),
+                'hitPointsMax': health.get('max'),
+                'attackBonus': foundry.get('ab') or foundry.get('meleeAb'),
+                'ac': foundry.get('ac') or foundry.get('baseAc'),
+                'system': data.get('gameSystem') or 'SWN',
+            }
+        return data
+
+    def _looks_like_cwn_app_text(self, text):
+        if not text or len(text) > 8000:
+            return False
+        has_hp = re.search(r'\bHP:\s*\d+', text, re.IGNORECASE)
+        has_system = re.search(r'\[(?:SWN|CWN|WWN|AWN)\]', text, re.IGNORECASE)
+        has_level = re.search(r'\bLevel\s+\d+', text, re.IGNORECASE)
+        has_skills = re.search(r'\bSKILLS\b', text, re.IGNORECASE)
+        return bool(has_hp and (has_system or (has_level and has_skills)))
+
+    def _is_cwn_app_url(self, url):
+        if not url:
+            return False
+        try:
+            parsed = urllib.parse.urlparse(url)
+        except Exception:
+            return False
+        host = (parsed.hostname or "").lower()
+        return host == CWN_APP_HOST or host.endswith("." + CWN_APP_HOST)
+
+    def _cwn_app_share_help(self):
+        return (
+            "That characterswithoutnumber.app link is a live page, not a JSON file.\n"
+            "**Sync it to this Discord bot:**\n"
+            "1. Open the character or ship → **Export → JSON**, then drop the file in this channel.\n"
+            "2. Or **Export → Copy Text** and paste it here (or use `/importtext`).\n"
+            "3. A raw `.json` URL still works with `/importjson` or `/importship`.\n"
+            "The bot already in this server will use it for `sheet`, `skill`, `attack`, and `ship`."
+        )
+
+    def _equipment_lookup(self, name):
+        if not hasattr(self, "_equipment_by_name"):
+            index = {}
+            path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "equipment.json")
+            try:
+                with open(path, "r", encoding="utf-8") as handle:
+                    for item in json.load(handle):
+                        item_name = str(item.get("name") or "").strip()
+                        if item_name:
+                            index[item_name.lower()] = item
+            except Exception:
+                index = {}
+            self._equipment_by_name = index
+        return self._equipment_by_name.get(str(name or "").strip().lower())
+
+    def _split_attribute(self, raw):
+        score = None
+        modifier = None
+        if isinstance(raw, dict):
+            score = raw.get("score") or raw.get("value") or raw.get("base")
+            modifier = raw.get("mod") or raw.get("modifier")
+        else:
+            score = raw
+        score = self._coerce_int(score, None)
+        modifier = self._coerce_int(modifier, None)
+        if score is not None and (isinstance(raw, dict) or abs(score) > 5):
+            if modifier is None:
+                modifier = self._swn_modifier(score)
+            return score, modifier
+        if modifier is None:
+            modifier = score if score is not None else 0
+            score = None
+        return score, modifier
+
+    def _normalize_attributes(self, attributes):
+        scores = {}
+        modifiers = {key: 0 for key in ATTR_KEYS}
+        if not isinstance(attributes, dict):
+            return scores, modifiers
+
+        parsed = {}
+        for raw_key, raw_value in attributes.items():
+            key = ATTR_ALIASES.get(str(raw_key).strip().lower())
+            if not key:
+                continue
+            parsed[key] = raw_value
+
+        treat_as_scores = any(isinstance(value, dict) for value in parsed.values())
+        if not treat_as_scores:
+            numbers = [self._coerce_int(value, None) for value in parsed.values()]
+            numbers = [value for value in numbers if value is not None]
+            if any(abs(value) > 5 for value in numbers):
+                treat_as_scores = True
+            elif numbers and min(numbers) >= 3 and max(numbers) <= 18 and len(numbers) >= 4:
+                treat_as_scores = True
+
+        for key, raw_value in parsed.items():
+            if treat_as_scores:
+                score, modifier = self._split_attribute(raw_value if isinstance(raw_value, dict) else {"score": raw_value})
+            else:
+                score, modifier = self._split_attribute(raw_value)
+            if score is not None:
+                scores[key] = score
+            modifiers[key] = modifier if modifier is not None else 0
+        return scores, modifiers
+
+    def _normalize_skills(self, raw_skills):
+        skills = {}
+        if isinstance(raw_skills, dict):
+            for name, value in raw_skills.items():
+                label = self._pretty_label(name) or str(name).strip()
+                if label:
+                    skills[label] = self._coerce_int(value, 0)
+            return skills
+        if not isinstance(raw_skills, list):
+            return skills
+        for skill in raw_skills:
+            if isinstance(skill, str):
+                match = re.match(r'(.+?)[-:](-?\d+)$', skill.strip())
+                if match:
+                    skills[self._pretty_label(match.group(1)) or match.group(1).strip()] = int(match.group(2))
+                continue
+            if not isinstance(skill, dict):
+                continue
+            skill_name = str(
+                skill.get("name")
+                or skill.get("skill")
+                or skill.get("skillId")
+                or skill.get("id")
+                or ""
+            ).strip()
+            if not skill_name:
+                continue
+            skill_value = skill.get("rank")
+            if skill_value is None:
+                skill_value = skill.get("level")
+            if skill_value is None:
+                skill_value = skill.get("value")
+            skills[self._pretty_label(skill_name) or skill_name] = self._coerce_int(skill_value, 0)
+        return skills
+
+    def _normalize_name_list(self, values, id_keys=("name", "id", "focusId", "edgeId")):
+        names = []
+        if isinstance(values, str) and values.strip():
+            return [values.strip()]
+        if not isinstance(values, list):
+            return names
+        for item in values:
+            if isinstance(item, str) and item.strip():
+                if " " in item or "(" in item:
+                    names.append(item.strip())
+                else:
+                    names.append(self._pretty_label(item) or item.strip())
+                continue
+            if not isinstance(item, dict):
+                continue
+            label = None
+            for key in id_keys:
+                if item.get(key):
+                    label = self._pretty_label(item.get(key)) or str(item.get(key)).strip()
+                    break
+            if not label:
+                continue
+            level = item.get("level") or item.get("rank")
+            if level not in (None, "", 0, "0"):
+                label = f"{label} (Lvl {self._coerce_int(level, 1)})"
+            names.append(label)
+        return names
+
+    def _normalize_weapons(self, data, attack_bonus=0):
+        weapons = []
+        raw_weapons = data.get("weapons")
+        if isinstance(raw_weapons, list):
+            for weapon in raw_weapons:
+                if isinstance(weapon, str) and weapon.strip():
+                    catalog = self._equipment_lookup(weapon)
+                    weapons.append({
+                        "name": weapon.strip(),
+                        "to_hit": attack_bonus,
+                        "damage": (catalog or {}).get("damage") or "1d6",
+                        "range": (catalog or {}).get("range") or "",
+                    })
+                    continue
+                if not isinstance(weapon, dict):
+                    continue
+                name = str(weapon.get("name") or weapon.get("itemId") or "").strip()
+                if not name:
+                    continue
+                catalog = self._equipment_lookup(self._pretty_label(name) or name)
+                weapons.append({
+                    "name": self._pretty_label(name) or name,
+                    "to_hit": self._coerce_int(weapon.get("to_hit") or weapon.get("ab") or weapon.get("attackBonus"), attack_bonus),
+                    "damage": weapon.get("damage") or weapon.get("customDamage") or (catalog or {}).get("damage") or "1d6",
+                    "range": weapon.get("range") or (catalog or {}).get("range") or "",
+                    "shock": weapon.get("shock") or "",
+                    "trauma_die": weapon.get("trauma_die") or weapon.get("traumaDie") or "",
+                    "trauma_rating": weapon.get("trauma_rating") or weapon.get("traumaRating") or "",
+                })
+
+        inventory = data.get("inventory")
+        if isinstance(inventory, list):
+            existing = {weapon["name"].lower() for weapon in weapons}
+            for item in inventory:
+                if not isinstance(item, dict):
+                    continue
+                name = str(item.get("customName") or item.get("name") or item.get("itemId") or "").strip()
+                pretty = self._pretty_label(name) or name
+                if not pretty or pretty.lower() in existing:
+                    continue
+                catalog = self._equipment_lookup(pretty)
+                category = str(item.get("customCategory") or item.get("category") or (catalog or {}).get("type") or "").lower()
+                damage = item.get("customDamage") or item.get("damage") or (catalog or {}).get("damage")
+                looks_like_weapon = (
+                    category in {"weapon", "weapons"}
+                    or bool(damage)
+                    or any(hint in pretty.lower() for hint in WEAPON_HINTS)
+                )
+                if not looks_like_weapon:
+                    continue
+                weapons.append({
+                    "name": pretty,
+                    "to_hit": attack_bonus,
+                    "damage": damage or "1d6",
+                    "range": item.get("range") or (catalog or {}).get("range") or "",
+                    "shock": item.get("shock") or "",
+                    "trauma_die": item.get("traumaDie") or "",
+                    "trauma_rating": item.get("traumaRating") or "",
+                })
+                existing.add(pretty.lower())
+        return weapons
+
+    def _first_present(self, data, keys):
+        for key in keys:
+            if key in data and data[key] not in (None, ""):
+                return data[key]
+        return None
+
+    def _hp_values(self, data):
+        current = self._first_present(data, (
+            "hp", "hit_points", "hitPoints", "hitPointsCurrent", "currentHp", "currentHP",
+        ))
+        maximum = self._first_present(data, ("hp_max", "max_hp", "maxHp", "hitPointsMax", "maxHP"))
+        if isinstance(current, dict):
+            maximum = maximum if maximum not in (None, "") else current.get("max")
+            current = self._first_present(current, ("current", "value", "max"))
+        if isinstance(maximum, dict):
+            maximum = self._first_present(maximum, ("max", "value"))
+        current = self._coerce_int(current, 0)
+        maximum = self._coerce_int(maximum, current)
+        return current, maximum if maximum else current
+
+    def _class_label(self, data):
+        raw = data.get("class") or data.get("role") or data.get("classId") or data.get("class_id")
+        background = data.get("background") or data.get("backgroundId")
+        label = self._pretty_label(raw) if raw else ""
+        if isinstance(data.get("partialClasses"), list) and data.get("partialClasses"):
+            parts = [self._pretty_label(part) for part in data["partialClasses"] if part]
+            if parts:
+                label = "/".join(parts)
+        if not label and background:
+            label = self._pretty_label(background)
+        return label or "Hero"
+
+    def _system_code(self, data):
+        raw = str(data.get("system") or data.get("gameSystem") or data.get("ruleset") or "SWN").strip()
+        raw = re.sub(r'[^A-Za-z]', '', raw).upper()
+        if raw in {"SWN", "CWN", "WWN", "AWN"}:
+            return raw
+        lowered = str(data.get("gameSystem") or data.get("system") or "").lower()
+        for code in ("swn", "cwn", "wwn", "awn"):
+            if code in lowered:
+                return code.upper()
+        return "SWN"
+
+    def _strain_text(self, data):
+        strain = data.get("strain") or data.get("system_strain") or data.get("systemStrain")
+        if isinstance(strain, dict):
+            current = strain.get("current") or strain.get("value") or strain.get("systemStrainCurrent")
+            maximum = strain.get("max") or strain.get("maximum") or strain.get("systemStrainMax")
+            current = self._coerce_int(current, 0)
+            maximum = self._coerce_int(maximum, current)
+            return f"{current}/{maximum}" if maximum else str(current)
+        if strain not in (None, ""):
+            return str(strain)
+        current = data.get("systemStrainCurrent")
+        maximum = data.get("systemStrainMax")
+        if current is None and maximum is None:
+            return None
+        current = self._coerce_int(current, 0)
+        maximum = self._coerce_int(maximum, current)
+        return f"{current}/{maximum}" if maximum else str(current)
+
     def _normalize_character_data(self, data):
+        data = self._unwrap_character_payload(data)
         if not isinstance(data, dict):
             return None, "Character data must be a JSON object."
 
-        if 'character_name' in data and 'name' not in data:
-            data['name'] = data['character_name']
-        if 'Name' in data and 'name' not in data:
-            data['name'] = data['Name']
+        if "character_name" in data and "name" not in data:
+            data["name"] = data["character_name"]
+        if "Name" in data and "name" not in data:
+            data["name"] = data["Name"]
 
-        name = str(data.get('name') or "").strip()
+        name = str(data.get("name") or "").strip()
         if not name:
             return None, "I could not find a character name. Add a `name` field or use the AWN character sheet template."
 
-        attributes = data.get('attributes') or data.get('stats') or {}
-        if not isinstance(attributes, dict):
-            attributes = {}
-        stress = data.get('stress') or {}
+        attributes = data.get("attributes") or data.get("stats") or {}
+        scores, modifiers = self._normalize_attributes(attributes)
+        stress = data.get("stress") or {}
         if isinstance(stress, str):
-            stress = {'general': stress}
+            stress = {"general": stress}
         if not isinstance(stress, dict):
             stress = {}
 
-        hp_value = (
-            data.get('hp')
-            or data.get('hit_points')
-            or data.get('hitPoints')
-            or data.get('currentHp')
-            or data.get('currentHP')
+        hp_value, hp_max = self._hp_values(data)
+        attack_bonus = self._coerce_int(
+            self._first_present(data, ("attack_bonus", "attackBonus", "ab")),
+            0,
         )
-        if isinstance(hp_value, dict):
-            hp_value = (
-                hp_value.get('current')
-                or hp_value.get('value')
-                or hp_value.get('max')
-            )
+        skills = self._normalize_skills(data.get("skills"))
+        foci = self._normalize_name_list(data.get("foci") or data.get("selectedFoci"), ("name", "focusId", "id"))
+        edges = self._normalize_name_list(data.get("edges") or data.get("selectedEdges"), ("name", "edgeId", "id"))
+        equipment = data.get("equipment")
+        if not isinstance(equipment, list):
+            equipment = []
+        equipment = [self._pretty_label(item) if isinstance(item, str) else str(item.get("name") or item.get("itemId") or "") for item in equipment]
+        equipment = [item for item in equipment if item]
+        if not equipment and isinstance(data.get("inventory"), list):
+            for item in data["inventory"]:
+                if isinstance(item, dict):
+                    label = self._pretty_label(item.get("customName") or item.get("name") or item.get("itemId"))
+                    if label:
+                        equipment.append(label)
 
-        raw_skills = data.get('skills')
-        skills = raw_skills if isinstance(raw_skills, dict) else {}
-        if isinstance(raw_skills, list):
-            skills = {}
-            for skill in raw_skills:
-                if not isinstance(skill, dict):
-                    continue
-                skill_name = str(skill.get('name') or skill.get('skill') or "").strip()
-                if not skill_name:
-                    continue
-                skill_value = skill.get('rank')
-                if skill_value is None:
-                    skill_value = skill.get('level')
-                if skill_value is None:
-                    skill_value = skill.get('value')
-                skills[skill_name] = self._coerce_int(skill_value, 0)
-
+        melee_ac = data.get("melee_ac") or data.get("meleeArmorClass") or data.get("meleeAc")
         normalized = {
             **data,
-            'name': name,
-            'level': self._coerce_int(data.get('level'), 1),
-            'class': data.get('class') or data.get('role') or data.get('background') or 'Hero',
-            'hp': self._coerce_int(hp_value, 0),
-            'ac': self._coerce_int(data.get('ac') or data.get('armor_class'), 10),
-            'attack_bonus': self._coerce_int(data.get('attack_bonus') or data.get('attackBonus'), 0),
-            'attributes': {
-                'strength': self._coerce_int(attributes.get('strength') or attributes.get('str'), 0),
-                'dexterity': self._coerce_int(attributes.get('dexterity') or attributes.get('dex'), 0),
-                'constitution': self._coerce_int(attributes.get('constitution') or attributes.get('con'), 0),
-                'intelligence': self._coerce_int(attributes.get('intelligence') or attributes.get('int'), 0),
-                'wisdom': self._coerce_int(attributes.get('wisdom') or attributes.get('wis'), 0),
-                'charisma': self._coerce_int(attributes.get('charisma') or attributes.get('cha'), 0),
-            },
-            'skills': skills,
-            'weapons': data.get('weapons') if isinstance(data.get('weapons'), list) else [],
-            'strain': data.get('strain') or data.get('system_strain') or data.get('systemStrain'),
-            'stress': stress,
-            'system': data.get('system') or 'SWN',
+            "name": name,
+            "level": self._coerce_int(data.get("level"), 1),
+            "class": self._class_label(data),
+            "background": self._pretty_label(data.get("background") or data.get("backgroundId")) or data.get("background"),
+            "hp": hp_value,
+            "hp_max": hp_max,
+            "ac": self._coerce_int(data.get("ac") or data.get("armor_class") or data.get("armorClass"), 10),
+            "melee_ac": self._coerce_int(melee_ac, None) if melee_ac not in (None, "") else None,
+            "attack_bonus": attack_bonus,
+            "attribute_scores": scores,
+            "attributes": modifiers,
+            "skills": skills,
+            "foci": foci,
+            "edges": edges,
+            "equipment": equipment,
+            "weapons": self._normalize_weapons(data, attack_bonus),
+            "saves": data.get("saves") or data.get("savingThrows") or {},
+            "credits": self._coerce_int(data.get("credits") or data.get("experience"), None) if data.get("credits") is not None else data.get("credits"),
+            "strain": self._strain_text(data),
+            "stress": stress,
+            "system": self._system_code(data),
         }
         return normalized, None
         
@@ -226,7 +620,11 @@ class CharacterSheetCog(commands.Cog):
         if not char_names:
             if allow_none: return None
             
-            msg = "❌ You have no characters! Use `/importtext` or drag-and-drop a JSON to load one."
+            msg = (
+                "❌ You have no characters yet. Fastest path: build at "
+                "https://characterswithoutnumber.app then drop the JSON export here, "
+                "paste Copy Text, or use `/importjson`."
+            )
             await self._send_target(ctx_or_int, msg, ephemeral=is_int)
             return None
 
@@ -281,9 +679,12 @@ class CharacterSheetCog(commands.Cog):
         target_type = "category" if category_id else "channel"
         self.bot.db.bind_character(user_id, target_id, target_type, safe_name)
         self.bot.db.register_server_character(getattr(getattr(target, "guild", None), "id", None), user_id, safe_name)
+        hp_text = self._hp_display(char_data)
+        skill_count = len(char_data.get("skills") or {})
         msg = (
-            f"{verb} **{safe_name}** from {source_name} and made them active for this {target_type}.\n"
-            f"Try `!sheet`, `!roll 1d20`, `!skill notice`, or `!bind {safe_name}` in this channel."
+            f"{verb} **{safe_name}** from {source_name} and synced them to this Discord bot for this {target_type}.\n"
+            f"HP {hp_text} · AC {char_data.get('ac', 10)} · {skill_count} skills ready.\n"
+            f"Say `sheet`, `skill notice`, or `attack`. Drop a new JSON export (same name) to sync changes."
         )
         await self._send_target(target, msg)
 
@@ -299,21 +700,52 @@ class CharacterSheetCog(commands.Cog):
         char_data = await self.get_active_character_data(ctx)
         if char_data: await self._send_sheet_embed(ctx, char_data, view)
 
+    def _hp_display(self, char_data):
+        current = char_data.get("hp", 0)
+        maximum = char_data.get("hp_max")
+        if maximum not in (None, "", current):
+            return f"{current}/{maximum}"
+        if maximum not in (None, ""):
+            return f"{current}/{maximum}"
+        return str(current)
+
+    def _attribute_display(self, char_data):
+        modifiers = char_data.get("attributes") or {}
+        scores = char_data.get("attribute_scores") or {}
+        parts = []
+        for key in ATTR_KEYS:
+            modifier = self._coerce_int(modifiers.get(key), 0)
+            score = scores.get(key)
+            if score not in (None, ""):
+                parts.append(f"**{key[:3].upper()}**: {score} ({modifier:+d})")
+            else:
+                parts.append(f"**{key[:3].upper()}**: {modifier:+d}")
+        return ", ".join(parts)
+
     async def _send_sheet_embed(self, target, char_data, view):
-        is_int = isinstance(target, discord.Interaction)
-        system_display = char_data.get('system', 'SWN').upper()
+        system_display = str(char_data.get('system', 'SWN')).upper()
         color = discord.Color.blue()
         if system_display == "WWN": color = discord.Color.dark_red()
         elif system_display == "CWN": color = discord.Color.dark_grey()
+        elif system_display == "AWN": color = discord.Color.dark_gold()
             
         embed = discord.Embed(title=f"Character Sheet: {char_data['name']}", color=color)
-        embed.set_author(name=f"Level {char_data['level']} {char_data.get('class', 'Hero')} ({system_display})")
+        class_label = char_data.get('class', 'Hero')
+        background = char_data.get('background')
+        author = f"Level {char_data['level']} {class_label} ({system_display})"
+        if background and str(background).lower() not in str(class_label).lower():
+            author = f"Level {char_data['level']} {class_label} · {background} ({system_display})"
+        embed.set_author(name=author)
         if char_data.get('portrait_url'): embed.set_thumbnail(url=char_data['portrait_url'])
         
+        hp_text = self._hp_display(char_data)
+        ac_text = str(char_data.get('ac', 10))
+        if char_data.get('melee_ac') not in (None, "", char_data.get('ac')):
+            ac_text = f"{ac_text} (Melee {char_data['melee_ac']})"
         combat_parts = [
-            f"**HP:** {char_data['hp']}",
-            f"**AC:** {char_data['ac']}",
-            f"**Attack Bonus:** +{char_data['attack_bonus']}",
+            f"**HP:** {hp_text}",
+            f"**AC:** {ac_text}",
+            f"**Attack Bonus:** +{char_data.get('attack_bonus', 0)}",
         ]
         if char_data.get('strain'):
             combat_parts.append(f"**Strain:** {char_data['strain']}")
@@ -323,17 +755,31 @@ class CharacterSheetCog(commands.Cog):
             if stress_text:
                 combat_parts.append(f"**Stress:** {stress_text}")
         embed.add_field(name="Combat", value="  |  ".join(combat_parts), inline=False)
-        embed.add_field(name="Attributes", value=", ".join([f"**{k.upper()}**: {v:+d}" for k, v in char_data['attributes'].items()]), inline=False)
+        embed.add_field(name="Attributes", value=self._attribute_display(char_data), inline=False)
         
-        trained = {k: v for k, v in char_data.get('skills', {}).items() if v >= 0}
-        if trained: embed.add_field(name="Skills", value=", ".join([f"{k.capitalize()} {v:+d}" for k, v in trained.items()]), inline=False)
+        trained = {k: v for k, v in (char_data.get('skills') or {}).items() if self._coerce_int(v, -99) >= 0}
+        if trained: embed.add_field(name="Skills", value=", ".join([f"{k} {v:+d}" for k, v in trained.items()]), inline=False)
+
+        if char_data.get('edges'):
+            embed.add_field(name="Edges", value=", ".join(char_data['edges'])[:1024], inline=False)
         
-        if char_data.get('weapons'):
-            embed.add_field(name="Weapons", value="\n".join([f"• **{w['name']}**: To Hit {w['to_hit']:+d}, Dmg {w['damage']}" for w in char_data['weapons']]), inline=False)
+        weapons = char_data.get('weapons') or []
+        if weapons:
+            lines = []
+            for weapon in weapons:
+                if isinstance(weapon, str):
+                    lines.append(f"• **{weapon}**")
+                    continue
+                name = weapon.get('name', 'Weapon')
+                to_hit = self._coerce_int(weapon.get('to_hit'), 0)
+                damage = weapon.get('damage') or '?'
+                lines.append(f"• **{name}**: To Hit {to_hit:+d}, Dmg {damage}")
+            embed.add_field(name="Weapons", value="\n".join(lines)[:1024], inline=False)
             
-        if char_data.get('weapons'):
             weapon_details = []
-            for weapon in char_data['weapons']:
+            for weapon in weapons:
+                if not isinstance(weapon, dict):
+                    continue
                 detail_parts = []
                 if weapon.get('range'):
                     detail_parts.append(f"Range {weapon['range']}")
@@ -351,10 +797,13 @@ class CharacterSheetCog(commands.Cog):
                 embed.add_field(name="Weapon Details", value="\n".join(weapon_details)[:1024], inline=False)
 
         if view == "full":
-            if char_data.get('foci'): embed.add_field(name="Foci", value=", ".join(char_data['foci']), inline=False)
+            if char_data.get('foci'): embed.add_field(name="Foci", value=", ".join(char_data['foci'])[:1024], inline=False)
             if char_data.get('equipment'):
-                eq_text = ", ".join(char_data['equipment'])
+                eq_text = ", ".join(str(item) for item in char_data['equipment'])
                 embed.add_field(name="Equipment", value=eq_text[:1020] + "..." if len(eq_text)>1024 else eq_text, inline=False)
+            builder = CWN_APP_BUILDERS.get(system_display)
+            if builder:
+                embed.set_footer(text=f"Update anytime from {CWN_APP_HOST} · {builder}")
 
         await self._send_target(target, embed=embed)
 
@@ -426,12 +875,19 @@ class CharacterSheetCog(commands.Cog):
             return
         await target.send(f"✅ Bound **{target_char}** to {real_scope}.")
 
-    @app_commands.command(name="importtext")
+    @app_commands.command(name="importtext", description="Paste Copy Text from characterswithoutnumber.app")
+    @app_commands.describe(system="SWN, CWN, WWN, or AWN")
+    @app_commands.choices(system=[
+        app_commands.Choice(name="Stars Without Number", value="SWN"),
+        app_commands.Choice(name="Cities Without Number", value="CWN"),
+        app_commands.Choice(name="Worlds Without Number", value="WWN"),
+        app_commands.Choice(name="Ashes Without Number", value="AWN"),
+    ])
     async def importtext(self, interaction: discord.Interaction, system: str = "SWN"):
         await interaction.response.send_modal(ImportTextModal(self, system))
 
-    @app_commands.command(name="importsheet", description="Import a character from a Google Sheet (AWN Template)")
-    @app_commands.describe(url="The Google Sheet URL", file="Optional uploaded CSV/JSON file")
+    @app_commands.command(name="importsheet", description="Import a character from a Google Sheet or characterswithoutnumber.app")
+    @app_commands.describe(url="Google Sheet, JSON, or characterswithoutnumber.app URL", file="Optional uploaded CSV/JSON file")
     async def importsheet_slash(self, interaction: discord.Interaction, url: str = None, file: discord.Attachment = None):
         await interaction.response.defer()
         char_data, error, source_url = await self._load_sheet_source(url, file)
@@ -451,23 +907,12 @@ class CharacterSheetCog(commands.Cog):
 
         await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="Google Sheets")
 
-    @app_commands.command(name="sync", description="Sync your active character from its Google Sheet source.")
+    @app_commands.command(name="sync", description="Refresh your active character from its linked URL or tell you how to re-drop JSON.")
     async def sync_slash(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        char_data = await self.get_active_character_data(interaction)
-        if not char_data or not char_data.get('source_url'):
-            await interaction.followup.send("❌ Active character has no Google Sheet link. Use `/importsheet` first.")
-            return
-            
-        new_data, error = await self.fetch_and_parse_sheet(char_data['source_url'])
-        if error:
-            await interaction.followup.send(f"❌ Sync failed: {error}")
-            return
-            
-        self.save_character(interaction.user.id, new_data, source_url=char_data['source_url'])
-        await interaction.followup.send(f"🔄 Synced **{char_data['name']}**!")
+        await self._refresh_active_character(interaction)
 
-    @app_commands.command(name="update", description="Instantly refresh your active character stats from its stored source URL.")
+    @app_commands.command(name="update", description="Refresh your active character from its stored source URL.")
     async def update_slash(self, interaction: discord.Interaction):
         await self.sync_slash(interaction)
 
@@ -477,54 +922,154 @@ class CharacterSheetCog(commands.Cog):
 
     @commands.command(name="sync")
     async def sync_prefix(self, ctx):
-        char_data = await self.get_active_character_data(ctx)
-        if not char_data or not char_data.get('source_url'):
-            await ctx.send("❌ Active character has no Google Sheet link.")
-            return
-            
-        new_data, error = await self.fetch_and_parse_sheet(char_data['source_url'])
-        if error:
-            await ctx.send(f"❌ Sync failed: {error}")
-            return
-            
-        self.save_character(ctx.author.id, new_data, source_url=char_data['source_url'])
-        await ctx.send(f"🔄 Synced **{char_data['name']}**!")
+        await self._refresh_active_character(ctx)
 
-    @app_commands.command(name="importjson", description="Import a character from a raw JSON URL or uploaded file.")
-    @app_commands.describe(url="The JSON URL", file="Optional uploaded JSON file")
+    async def _refresh_active_character(self, target):
+        char_data = await self.get_active_character_data(target)
+        if not char_data:
+            return
+        source_url = char_data.get("source_url")
+        if not source_url:
+            await self._send_target(
+                target,
+                f"**{char_data.get('name', 'That character')}** is already on this Discord bot, but it was imported from a file or Copy Text, so there is no live URL to pull.\n"
+                "Export JSON again from https://characterswithoutnumber.app and drop it here (same name updates the sheet).\n"
+                "`sheet`, `skill`, and `attack` keep using this character. Or `/link` a raw JSON URL if you host the file.",
+            )
+            return
+
+        new_data, error, _ = await self._load_character_url(source_url)
+        if error:
+            await self._send_target(target, f"❌ Sync failed: {error}")
+            return
+
+        user_id = target.user.id if isinstance(target, discord.Interaction) else target.author.id
+        self.save_character(user_id, new_data, source_url=source_url)
+        await self._send_target(
+            target,
+            f"🔄 Synced **{char_data.get('name')}** from the linked source. "
+            "`sheet`, `skill`, and `attack` now use the updated stats.",
+        )
+
+    @app_commands.command(name="importjson", description="Import a characterswithoutnumber.app JSON export or URL.")
+    @app_commands.describe(url="JSON URL or characterswithoutnumber.app link", file="Optional uploaded JSON file")
     async def importjson_slash(self, interaction: discord.Interaction, url: str = None, file: discord.Attachment = None):
         await interaction.response.defer()
-        char_data, error, source_url = await self._load_json_source(url, file)
+        kind, payload, error, source_url = await self.load_export_payload(url, file)
         if error:
-            await interaction.followup.send(f"Error: {error}\nAttach a character JSON file or provide a direct JSON URL with a character name.")
+            await interaction.followup.send(self._json_import_error(error))
             return
-
-        await self._save_imported_character(interaction, char_data, source_url=source_url, source_name="JSON")
+        if kind == "ship":
+            ships_cog = self.bot.get_cog("ShipsCog")
+            await ships_cog.import_ship_payload(interaction, payload, source_name=file.filename if file else "JSON")
+            return
+        await self._save_imported_character(interaction, payload, source_url=source_url, source_name="JSON")
 
     @commands.command(name="importjson", aliases=["uploadjson"])
     async def importjson_prefix(self, ctx, url: str = None):
         attachment = ctx.message.attachments[0] if ctx.message.attachments else None
-        char_data, error, source_url = await self._load_json_source(url, attachment)
+        kind, payload, error, source_url = await self.load_export_payload(url, attachment)
         if error:
-            await ctx.send(f"Error: {error}\nAttach a character JSON file or provide a direct JSON URL with a character name.")
+            await ctx.send(self._json_import_error(error))
             return
+        if kind == "ship":
+            ships_cog = self.bot.get_cog("ShipsCog")
+            await ships_cog.import_ship_payload(ctx, payload, source_name=attachment.filename if attachment else "JSON")
+            return
+        await self._save_imported_character(ctx, payload, source_url=source_url, source_name="JSON")
 
-        await self._save_imported_character(ctx, char_data, source_url=source_url, source_name="JSON")
+    def _json_import_error(self, error):
+        if error and "characterswithoutnumber.app" in str(error).lower():
+            return str(error)
+        return (
+            f"**Could not import that JSON:** {error}\n"
+            "Drop a characterswithoutnumber.app **Export → JSON** file, paste Copy Text, "
+            "or send a direct `.json` URL."
+        )
+
+    @app_commands.command(name="link", description="Attach a sheet URL to your active character, or import from it.")
+    @app_commands.describe(url="Google Sheet, JSON, or characterswithoutnumber.app URL")
+    async def link_slash(self, interaction: discord.Interaction, url: str):
+        await interaction.response.defer()
+        await self._link_character_source(interaction, url)
+
+    @commands.command(name="link")
+    async def link_prefix(self, ctx, url: str = None):
+        if not url:
+            await ctx.send("Usage: `!link <google sheet, JSON, or characterswithoutnumber.app URL>`")
+            return
+        await self._link_character_source(ctx, url)
+
+    async def _link_character_source(self, target, url):
+        if self._is_cwn_app_url(url) or url.lower().endswith(".json") or "json" in url.lower():
+            kind, payload, error, source_url = await self.load_export_payload(url, None)
+            if error:
+                await self._send_target(target, self._json_import_error(error))
+                return
+            if kind == "ship":
+                ships_cog = self.bot.get_cog("ShipsCog")
+                await ships_cog.import_ship_payload(target, payload, source_name=url)
+                return
+            await self._save_imported_character(target, payload, source_url=source_url or url, source_name="linked sheet")
+            return
+        char_data, error, source_url = await self._load_sheet_source(url, None)
+        if error:
+            await self._send_target(target, self._sheet_import_error(error))
+            return
+        await self._save_imported_character(target, char_data, source_url=source_url or url, source_name="linked sheet")
+
+    async def _load_character_url(self, url):
+        if not url:
+            return None, "Provide a Google Sheet, JSON, or characterswithoutnumber.app URL.", None
+        if self._is_cwn_app_url(url) or url.lower().endswith(".json") or "json" in url.lower():
+            return await self._load_json_source(url, None)
+        return await self._load_sheet_source(url, None)
+
+    async def fetch_json_payload(self, url):
+        try:
+            headers = {"Accept": "application/json,text/plain,*/*"}
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers) as resp:
+                    if resp.status != 200:
+                        if self._is_cwn_app_url(url):
+                            return None, self._cwn_app_share_help()
+                        return None, f"Failed to download JSON (Status {resp.status})."
+                    content_type = (resp.headers.get("Content-Type") or "").lower()
+                    text = await resp.text()
+                    if "json" not in content_type:
+                        try:
+                            data = json.loads(text)
+                        except Exception:
+                            if self._is_cwn_app_url(url) or "<html" in text[:200].lower():
+                                return None, self._cwn_app_share_help()
+                            return None, "That URL did not return JSON."
+                    else:
+                        try:
+                            data = json.loads(text)
+                        except Exception as e:
+                            return None, f"Invalid JSON: {e}"
+                    if isinstance(data, list):
+                        data = next((item for item in data if isinstance(item, dict)), None)
+                    if not isinstance(data, dict):
+                        return None, "JSON did not contain a character or ship object."
+                    return data, None
+        except Exception as e:
+            if self._is_cwn_app_url(url):
+                return None, self._cwn_app_share_help()
+            return None, str(e)
 
     async def fetch_json_character(self, url):
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as resp:
-                    if resp.status != 200:
-                        return None, f"Failed to download JSON (Status {resp.status})."
-                    data = await resp.json()
-                    return self._normalize_character_data(data)
-        except Exception as e:
-            return None, str(e)
+        data, error = await self.fetch_json_payload(url)
+        if error:
+            return None, error
+        from cogs.ships import looks_like_ship_payload
+        if looks_like_ship_payload(data):
+            return None, "That JSON is a starship. Drop it in this channel or use `/importship`."
+        return self._normalize_character_data(data)
 
     async def fetch_and_parse_sheet(self, url):
         # Extract Sheet ID and GID
-        if url.endswith('.json') or 'json' in url.lower():
+        if self._is_cwn_app_url(url) or url.endswith('.json') or 'json' in url.lower():
             return await self.fetch_json_character(url)
 
         match = re.search(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', url)
@@ -755,10 +1300,26 @@ class CharacterSheetCog(commands.Cog):
 
     def parse_cwn_app_text(self, text, system):
         lines = text.split('\n')
-        char_data = {'name': lines[0].strip(), 'level': 1, 'class': 'Expert', 'hp': 0, 'ac': 10, 'attack_bonus': 0, 'attributes': {}, 'skills': {}, 'weapons': [], 'system': system}
+        char_data = {
+            'name': lines[0].strip() if lines else 'Unknown',
+            'level': 1,
+            'class': 'Expert',
+            'hp': 0,
+            'ac': 10,
+            'attack_bonus': 0,
+            'attributes': {},
+            'skills': {},
+            'weapons': [],
+            'foci': [],
+            'equipment': [],
+            'system': system,
+        }
         try:
+            system_match = re.search(r'\[(SWN|CWN|WWN|AWN)\]', text, re.IGNORECASE)
+            if system_match:
+                char_data['system'] = system_match.group(1).upper()
             normalized_text = re.sub(
-                r'\s+(?=(?:HP|AC|AB|ATTRIBUTES|SAVING THROWS|SKILLS|FOCI|CONTACTS|EQUIPMENT)\s*:?)',
+                r'\s+(?=(?:HP|AC|AB|ATTRIBUTES|SAVING THROWS|SKILLS|FOCI|EDGES|CONTACTS|EQUIPMENT|WEAPONS)\s*:?)',
                 '\n',
                 text,
                 flags=re.IGNORECASE,
@@ -769,7 +1330,7 @@ class CharacterSheetCog(commands.Cog):
             section = None
             for line in lines:
                 upper = line.upper()
-                for heading in ('ATTRIBUTES', 'SAVING THROWS', 'SKILLS', 'FOCI', 'CONTACTS', 'EQUIPMENT'):
+                for heading in ('ATTRIBUTES', 'SAVING THROWS', 'SKILLS', 'FOCI', 'EDGES', 'CONTACTS', 'EQUIPMENT', 'WEAPONS'):
                     if upper == heading or upper.startswith(heading + ' '):
                         section = heading
                         line = line[len(heading):].strip()
@@ -779,16 +1340,41 @@ class CharacterSheetCog(commands.Cog):
                     continue
                 if match := re.search(r'\bLevel\s+(\d+)\s+(.+?)(?:\s*\||$)', line, re.IGNORECASE):
                     char_data['level'] = int(match.group(1))
-                    char_data['class'] = match.group(2).strip()
-                if match := re.search(r'\bHP:\s*(\d+)', line, re.IGNORECASE):
+                    class_text = match.group(2).strip()
+                    class_text = re.sub(r'\s*\|\s*.+$', '', class_text).strip()
+                    char_data['class'] = re.sub(r'\s+Background$', '', class_text, flags=re.IGNORECASE).strip()
+                if match := re.search(r'\|\s*([A-Za-z][A-Za-z ]+?)\s+Background\b', line, re.IGNORECASE):
+                    char_data['background'] = match.group(1).strip()
+                if match := re.search(r'\bHP:\s*(\d+)(?:/(\d+))?', line, re.IGNORECASE):
                     char_data['hp'] = int(match.group(1))
+                    if match.group(2):
+                        char_data['hp_max'] = int(match.group(2))
                 if match := re.search(r'\bAC:\s*(\d+)', line, re.IGNORECASE):
                     char_data['ac'] = int(match.group(1))
                 if match := re.search(r'\b(?:AB|Attack Bonus):\s*\+?(-?\d+)', line, re.IGNORECASE):
                     char_data['attack_bonus'] = int(match.group(1))
+                if match := re.search(r'\bStrain:\s*(\d+(?:/\d+)?)', line, re.IGNORECASE):
+                    char_data['strain'] = match.group(1)
+                if section == 'ATTRIBUTES':
+                    for attr, score, modifier in re.findall(
+                        r'\b(STR|DEX|CON|INT|WIS|CHA)[A-Z]*:\s*(\d+)\s*(?:\(([+-]?\d+)\))?',
+                        line,
+                        re.IGNORECASE,
+                    ):
+                        key = ATTR_ALIASES[attr.lower()[:3]]
+                        char_data['attributes'][key] = {
+                            'score': int(score),
+                            'mod': int(modifier) if modifier != '' else self._swn_modifier(int(score)),
+                        } if modifier != '' else int(score)
                 if section == 'SKILLS':
                     for skill_name, skill_value in re.findall(r'([A-Za-z][A-Za-z ]*?)-(-?\d+)(?=,|$)', line):
                         char_data['skills'][skill_name.strip()] = int(skill_value)
+                if section == 'FOCI' and line:
+                    char_data['foci'] = [part.strip() for part in re.split(r',\s*', line) if part.strip()]
+                if section == 'EDGES' and line:
+                    char_data['edges'] = [part.strip() for part in re.split(r',\s*', line) if part.strip()]
+                if section == 'EQUIPMENT' and line:
+                    char_data['equipment'] = [part.strip() for part in re.split(r',\s*', line) if part.strip()]
 
             return self._normalize_character_data(char_data)
         except Exception as e: return None, str(e)

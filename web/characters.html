@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Character | DICEwithoutNumber</title>
+    <meta name="description" content="Build a Stars, Cities, Worlds, or Ashes Without Number character on characterswithoutnumber.app, then drop it into Discord in seconds.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css?v=1.0.4">
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container nav-content">
+            <a href="/" class="logo">
+                <div class="logo-icon"><i class="fas fa-dice-d20"></i></div>
+                <span class="logo-text">DICEwithoutNumber</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a class="active" href="/characters">Characters</a></li>
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/storyteller">AI Storyteller</a></li>
+                <li><a href="/map">Tactical Map</a></li>
+                <li><a href="/#commands">Commands</a></li>
+            </ul>
+            <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary nav-cta">Add to Discord</a>
+        </div>
+    </nav>
+
+    <section class="hero" style="min-height: auto; padding-bottom: 40px;">
+        <div class="container">
+            <span class="section-tag">Wired to characterswithoutnumber.app</span>
+            <h1>Build it. <span class="text-gradient">Drop it. Play.</span></h1>
+            <p>Use the free Characters Without Number builder for SWN, CWN, WWN, and AWN. Export JSON or Copy Text, drop it in the Discord server where this bot already lives, and <code>sheet</code>, <code>skill</code>, <code>attack</code>, and <code>ship</code> use that export.</p>
+            <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+                <a href="https://characterswithoutnumber.app/" class="btn btn-primary" target="_blank" rel="noopener">Open Character Builder</a>
+                <a href="#import" class="btn btn-outline">See the 20-second import</a>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding-top: 40px;">
+        <div class="container">
+            <h2 class="section-title">Pick a <span class="text-gradient">system.</span></h2>
+            <p class="section-desc">Each card opens the live builder. Random links skip straight to a playable draft.</p>
+            <div class="builder-grid">
+                <a class="builder-card" style="--card-accent:#22d3ee" href="https://characterswithoutnumber.app/swn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">SWN</span>
+                    <h3>Stars Without Number</h3>
+                    <p>Warriors, experts, psychics, foci, and ships.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#f59e0b" href="https://characterswithoutnumber.app/cwn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">CWN</span>
+                    <h3>Cities Without Number</h3>
+                    <p>Operators, hackers, edges, chrome, and trauma.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#a855f7" href="https://characterswithoutnumber.app/wwn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">WWN</span>
+                    <h3>Worlds Without Number</h3>
+                    <p>Warriors, mages, shock, and arts.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#84cc16" href="https://characterswithoutnumber.app/awn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">AWN</span>
+                    <h3>Ashes Without Number</h3>
+                    <p>Survivors, mutants, gearheads, and wasteland edges.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#38bdf8" href="https://characterswithoutnumber.app/ship-builder/" target="_blank" rel="noopener">
+                    <span class="tag">SHIPS</span>
+                    <h3>Starship Builder</h3>
+                    <p>Hulls, fittings, guns, and defenses. Export JSON and drop it for <code>ship</code>.</p>
+                </a>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:24px;">
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=swn" target="_blank" rel="noopener">Random SWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=cwn" target="_blank" rel="noopener">Random CWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=wwn" target="_blank" rel="noopener">Random WWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build/?random=awn" target="_blank" rel="noopener">Random AWN</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="import">
+        <div class="container">
+            <h2 class="section-title">Bring it to <span class="text-gradient">Discord.</span></h2>
+            <div class="play-steps">
+                <div class="play-step">
+                    <div class="num">1</div>
+                    <h3>Export</h3>
+                    <p>In the builder, choose <strong>Export → JSON</strong> (best) or <strong>Copy Text</strong>.</p>
+                </div>
+                <div class="play-step">
+                    <div class="num">2</div>
+                    <h3>Drop it</h3>
+                    <p>Drag the <code>.json</code> file into the Discord channel where this bot is already running, or paste Copy Text. No command required. Same-name files update the sheet the bot is using.</p>
+                </div>
+                <div class="play-step">
+                    <div class="num">3</div>
+                    <h3>Play</h3>
+                    <p>Say <code>sheet</code>, <code>skill notice</code>, <code>attack</code>, or <code>ship</code>. Use <code>update</code> if the sheet has a linked URL; otherwise drop the new JSON.</p>
+                </div>
+            </div>
+            <p class="section-desc" style="margin-top: 24px;">In Discord, type <code>/help</code> and open <strong>Sheets &amp; Characters</strong> for this same walkthrough at the table.</p>
+        </div>
+    </section>
+
+    <section style="padding-top: 0;">
+        <div class="container">
+            <h2 class="section-title">Check an export <span class="text-gradient">before you play.</span></h2>
+            <p class="section-desc">Drop a JSON file or paste Copy Text. Character and starship exports both work. You will see the same stats the Discord bot will use. Nothing is uploaded.</p>
+            <div id="drop-zone" class="drop-zone" tabindex="0">
+                <p style="font-size:1.1rem; font-weight:700;">Drop a .json export here</p>
+                <p style="color:var(--text-muted); margin-top:8px;">or click to choose a file. Ctrl+V also works on this page.</p>
+                <input id="file-input" type="file" accept=".json,application/json,.txt,text/plain" hidden>
+            </div>
+            <textarea id="paste-box" class="paste-box" placeholder="Or paste Export → Copy Text / JSON here, then press Preview."></textarea>
+            <div style="margin-top:12px;">
+                <button id="preview-paste" class="btn btn-outline" type="button" style="padding:10px 22px;">Preview pasted sheet</button>
+            </div>
+            <div id="preview" class="preview-sheet" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <footer style="padding: 60px 0; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-muted);">
+        <div class="container">
+            <p>Character building happens on <a href="https://characterswithoutnumber.app/" style="color:#5865f2;">characterswithoutnumber.app</a>. Dice, maps, and voice play stay here.</p>
+            <p style="margin-top: 12px;"><a href="/" style="color:var(--text-muted);">Back to DICEwithoutNumber</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const ATTRS = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"];
+
+        function modifier(score) {
+            if (score <= 3) return -2;
+            if (score <= 7) return -1;
+            if (score <= 13) return 0;
+            if (score <= 17) return 1;
+            if (score <= 18) return 2;
+            return 3;
+        }
+
+        function signed(value) {
+            const n = Number(value);
+            if (!Number.isFinite(n)) return String(value ?? "");
+            return n >= 0 ? `+${n}` : String(n);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function pretty(value) {
+            return String(value || "")
+                .replace(/^(swn|cwn|wwn|awn)[-_]/i, "")
+                .replace(/[-_]+/g, " ")
+                .replace(/\b\w/g, (c) => c.toUpperCase());
+        }
+
+        function first(obj, keys) {
+            for (const key of keys) {
+                if (obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
+            }
+            return null;
+        }
+
+        function looksLikeCopyText(text) {
+            return /\bHP:\s*\d+/i.test(text) && (/\[(?:SWN|CWN|WWN|AWN)\]/i.test(text) || /\bLevel\s+\d+/i.test(text));
+        }
+
+        function looksLikeShip(data) {
+            if (!data || typeof data !== "object") return false;
+            if (Array.isArray(data)) data = data.find((item) => item && typeof item === "object") || {};
+            if (data.ship && typeof data.ship === "object") data = { ...data, ...data.ship };
+            if (data.hullId || data.hullType || data.hullClass) return true;
+            if (data.classId || data.attributes || data.skills || data.hitPointsCurrent) return false;
+            return Boolean(data.name && Array.isArray(data.fittings) && data.fittings.length);
+        }
+
+        function labelList(raw, idKeys) {
+            return (raw || []).map((entry) => {
+                if (typeof entry === "string") return pretty(entry);
+                if (!entry || typeof entry !== "object") return null;
+                for (const key of idKeys) {
+                    if (entry[key]) return pretty(entry[key]);
+                }
+                return null;
+            }).filter(Boolean);
+        }
+
+        function previewShip(data) {
+            if (Array.isArray(data)) data = data.find((item) => item && typeof item === "object") || {};
+            if (data.ship && typeof data.ship === "object") data = { ...data, ...data.ship };
+            const name = data.name;
+            if (!name) throw new Error("No ship name found in that file.");
+            const hull = pretty(data.hullId || data.hullType || data.hullClass || "Unknown hull");
+            const hp = first(data, ["hp", "hitPoints", "hullPoints"]) ?? "?";
+            const hpMax = first(data, ["maxHp", "hitPointsMax", "hullPointsMax"]) || hp;
+            const ac = first(data, ["ac", "armorClass"]) || 10;
+            const armor = first(data, ["armor"]) || 0;
+            const speed = first(data, ["speed"]) || 0;
+            const weapons = labelList(data.weapons, ["weaponId", "name", "id"]);
+            const fittings = labelList(data.fittings, ["fittingId", "name", "id"]);
+            return {
+                kind: "ship",
+                name,
+                hull,
+                hp,
+                hpMax,
+                ac,
+                armor,
+                speed,
+                weapons,
+                fittings,
+            };
+        }
+
+        function previewCopyText(text) {
+            const system = (text.match(/\[(SWN|CWN|WWN|AWN)\]/i) || [])[1] || "SWN";
+            const name = text.replace(/\s+\[(?:SWN|CWN|WWN|AWN)\].*$/i, "").split("\n")[0].trim();
+            if (!name) throw new Error("No character name found in that Copy Text.");
+            const levelMatch = text.match(/Level\s+(\d+)\s+([^|\n]+)/i);
+            const hpMatch = text.match(/HP:\s*(\d+)(?:\/(\d+))?/i);
+            const acMatch = text.match(/AC:\s*(\d+)/i);
+            const abMatch = text.match(/\b(?:AB|Attack Bonus):\s*\+?(-?\d+)/i);
+            const attrLine = [...text.matchAll(/\b(STR|DEX|CON|INT|WIS|CHA)[A-Z]*:\s*(\d+)\s*(?:\(([+-]?\d+)\))?/gi)]
+                .map((match) => {
+                    const score = Number(match[2]);
+                    const mod = match[3] !== undefined ? Number(match[3]) : modifier(score);
+                    return `${match[1].toUpperCase()} ${score} (${signed(mod)})`;
+                })
+                .join(" · ");
+            const skillsMatch = text.match(/SKILLS\s+(.+?)(?:\s+(?:FOCI|EDGES|EQUIPMENT|WEAPONS|CONTACTS)\b|$)/i);
+            const fociMatch = text.match(/FOCI\s+(.+?)(?:\s+(?:EDGES|EQUIPMENT|WEAPONS|CONTACTS)\b|$)/i);
+            const skills = skillsMatch
+                ? [...skillsMatch[1].matchAll(/([A-Za-z][A-Za-z ]*?)-(-?\d+)/g)].map((match) => `${match[1].trim()} ${signed(match[2])}`)
+                : [];
+            const foci = fociMatch ? fociMatch[1].split(/,\s*/).map((part) => part.trim()).filter(Boolean) : [];
+            return {
+                kind: "character",
+                name,
+                system: system.toUpperCase(),
+                level: levelMatch ? levelMatch[1] : "1",
+                klass: levelMatch ? pretty(levelMatch[2].replace(/\s+Background$/i, "").trim()) : "Hero",
+                hp: hpMatch ? hpMatch[1] : "?",
+                hpMax: hpMatch ? (hpMatch[2] || hpMatch[1]) : "",
+                ac: acMatch ? acMatch[1] : 10,
+                ab: abMatch ? abMatch[1] : 0,
+                attrLine,
+                skills,
+                foci,
+            };
+        }
+
+        function previewCharacter(data) {
+            if (Array.isArray(data)) data = data.find((item) => item && typeof item === "object") || {};
+            if (data.character && typeof data.character === "object") data = { ...data, ...data.character };
+            const name = data.name || data.character_name || data.Name;
+            if (!name) throw new Error("No character name found in that file.");
+            const system = String(data.gameSystem || data.system || "swn").replace(/[^a-z]/gi, "").toUpperCase() || "SWN";
+            const klass = pretty(data.class || data.classId || data.role || "Hero");
+            let hp = first(data, ["hp", "hitPointsCurrent", "currentHp"]);
+            let hpMax = first(data, ["hp_max", "hitPointsMax", "maxHp"]);
+            if (hp && typeof hp === "object") {
+                hpMax = hp.max || hpMax;
+                hp = hp.current || hp.value || hp.max;
+            }
+            const ac = first(data, ["ac", "armorClass", "armor_class"]) || 10;
+            const ab = first(data, ["attackBonus", "attack_bonus", "ab"]) || 0;
+            const attrs = data.attributes || {};
+            const attrLine = ATTRS.map((key) => {
+                const raw = attrs[key] || attrs[key.slice(0, 3)];
+                const score = raw && typeof raw === "object" ? (raw.score ?? raw.value) : raw;
+                const n = Number(score);
+                if (!Number.isFinite(n)) return null;
+                if (Math.abs(n) > 5) return `${key.slice(0, 3).toUpperCase()} ${n} (${signed(modifier(n))})`;
+                return `${key.slice(0, 3).toUpperCase()} ${signed(n)}`;
+            }).filter(Boolean).join(" · ");
+            let skills = [];
+            if (Array.isArray(data.skills)) {
+                skills = data.skills.map((skill) => {
+                    const label = pretty(skill.name || skill.skill || skill.skillId);
+                    const rank = skill.rank ?? skill.level ?? skill.value ?? 0;
+                    return label ? `${label} ${signed(rank)}` : null;
+                }).filter(Boolean);
+            } else if (data.skills && typeof data.skills === "object") {
+                skills = Object.entries(data.skills).map(([key, value]) => `${pretty(key)} ${signed(value)}`);
+            }
+            let foci = [];
+            if (Array.isArray(data.foci)) {
+                foci = data.foci.map((focus) => {
+                    if (typeof focus === "string") return focus;
+                    const label = pretty(focus.name || focus.focusId || focus.id);
+                    const level = focus.level || focus.rank;
+                    return level ? `${label} (Lvl ${level})` : label;
+                }).filter(Boolean);
+            }
+            return {
+                kind: "character",
+                name,
+                system,
+                level: data.level || 1,
+                klass,
+                hp: hp ?? "?",
+                hpMax: hpMax || hp,
+                ac,
+                ab,
+                attrLine,
+                skills,
+                foci,
+            };
+        }
+
+        function previewPayload(raw) {
+            const text = String(raw || "").trim();
+            if (!text) throw new Error("Paste Copy Text or drop a JSON export first.");
+            if (looksLikeCopyText(text)) return previewCopyText(text);
+            try {
+                const parsed = JSON.parse(text);
+                if (looksLikeShip(parsed)) return previewShip(parsed);
+                return previewCharacter(parsed);
+            } catch (err) {
+                if (looksLikeCopyText(text)) return previewCopyText(text);
+                throw new Error(err.message || "That is not a character JSON export or Copy Text.");
+            }
+        }
+
+        function renderPreview(result) {
+            const el = document.getElementById("preview");
+            el.classList.add("show");
+            if (result.kind === "ship") {
+                el.innerHTML = `
+                    <h3>${escapeHtml(result.name)}</h3>
+                    <div class="preview-meta">Starship · ${escapeHtml(result.hull)}</div>
+                    <div class="preview-stats">
+                        <span>HP ${escapeHtml(result.hp)}${result.hpMax ? "/" + escapeHtml(result.hpMax) : ""}</span>
+                        <span>AC ${escapeHtml(result.ac)}</span>
+                        <span>Armor ${escapeHtml(result.armor)}</span>
+                        <span>Speed ${escapeHtml(result.speed)}</span>
+                    </div>
+                    <p>${escapeHtml((result.weapons || []).join(", ") || "No weapons mounted")}</p>
+                    <p style="margin-top:10px;color:var(--text-muted)">${escapeHtml((result.fittings || []).slice(0, 8).join(", "))}</p>
+                    <p style="margin-top:16px">Looks good. Drop this same export in Discord and say <code>ship</code>.</p>
+                `;
+                return;
+            }
+            el.innerHTML = `
+                <h3>${escapeHtml(result.name)}</h3>
+                <div class="preview-meta">Level ${escapeHtml(result.level)} ${escapeHtml(result.system)} ${escapeHtml(result.klass)}</div>
+                <div class="preview-stats">
+                    <span>HP ${escapeHtml(result.hp)}${result.hpMax ? "/" + escapeHtml(result.hpMax) : ""}</span>
+                    <span>AC ${escapeHtml(result.ac)}</span>
+                    <span>AB ${escapeHtml(signed(result.ab))}</span>
+                </div>
+                <p>${escapeHtml(result.attrLine || "No attributes found")}</p>
+                <p style="margin-top:10px;color:var(--text-muted)">${escapeHtml((result.skills || []).slice(0, 12).join(", ") || "No skills found")}</p>
+                <p style="margin-top:10px;color:var(--text-muted)">${escapeHtml((result.foci || []).slice(0, 8).join(", "))}</p>
+                <p style="margin-top:16px">Looks good. Drop this same export in Discord and say <code>sheet</code>, <code>skill notice</code>, or <code>attack</code>.</p>
+            `;
+        }
+
+        function showError(message) {
+            const el = document.getElementById("preview");
+            el.classList.add("show");
+            el.innerHTML = `<p>${message}</p>`;
+        }
+
+        function handleText(text) {
+            try {
+                renderPreview(previewPayload(text));
+            } catch (err) {
+                showError(err.message || "That file is not a character export.");
+            }
+        }
+
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = () => handleText(reader.result);
+            reader.readAsText(file);
+        }
+
+        const zone = document.getElementById("drop-zone");
+        const input = document.getElementById("file-input");
+        const pasteBox = document.getElementById("paste-box");
+        const previewPaste = document.getElementById("preview-paste");
+        const navToggle = document.querySelector(".nav-toggle");
+        const navLinks = document.getElementById("nav-links");
+        zone.addEventListener("click", () => input.click());
+        zone.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") input.click(); });
+        input.addEventListener("change", () => { if (input.files[0]) handleFile(input.files[0]); });
+        zone.addEventListener("dragover", (event) => { event.preventDefault(); zone.classList.add("dragover"); });
+        zone.addEventListener("dragleave", () => zone.classList.remove("dragover"));
+        zone.addEventListener("drop", (event) => {
+            event.preventDefault();
+            zone.classList.remove("dragover");
+            const file = event.dataTransfer.files[0];
+            const text = event.dataTransfer.getData("text/plain");
+            if (file) handleFile(file);
+            else if (text) handleText(text);
+        });
+        previewPaste.addEventListener("click", () => handleText(pasteBox.value));
+        pasteBox.addEventListener("keydown", (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") handleText(pasteBox.value);
+        });
+        window.addEventListener("paste", (event) => {
+            if (["TEXTAREA", "INPUT"].includes((event.target || {}).tagName)) return;
+            const text = event.clipboardData && event.clipboardData.getData("text/plain");
+            if (text) {
+                pasteBox.value = text;
+                handleText(text);
+            }
+        });
+        window.addEventListener("scroll", () => {
+            document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 50);
+        });
+        if (navToggle && navLinks) {
+            navToggle.addEventListener("click", () => {
+                const open = navLinks.classList.toggle("open");
+                navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+            });
+        }
+    </script>
+</body>
+</html>

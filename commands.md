@@ -9,13 +9,26 @@ inactivity. Using a help category button resets the inactivity timer.
 Commands work with `/`, `!`, or no prefix when the bot is installed in the server. No-prefix commands must begin with an exact command name and stay on one line.
 
 ## 1. Character Management
+
+**How to play a character or ship (about 20 seconds)**
+
+1. **Build** at [characterswithoutnumber.app](https://characterswithoutnumber.app) — SWN, CWN, WWN, AWN, or the ship builder.
+2. **Export** → JSON (best) or Copy Text. A share-page `/c/` or `/s/` link is not enough.
+3. **Drop it in Discord** — drag the `.json` file into the channel where this bot already lives, or paste Copy Text. No command required.
+4. **Play** — `sheet` shows the character. `skill` and `attack` roll from it. `ship` shows a dropped starship.
+
+Drop the same filename again to update. In Discord, `/help` → **Sheets & Characters** walks this path.
+
 | Command | Description |
 |---------|-------------|
-| Paste a Google Sheet link or attach a sheet file | Automatically import, activate, bind, and register the character for Game Master Mode. No command is required. |
+| Paste a Google Sheet link, JSON file, Copy Text, or ship JSON | Automatically syncs it to the Discord bot already in the server. No command required. |
+| `/help` then Sheets & Characters | In-Discord walkthrough: Build → Export → Drop → Play. |
 | `/importsheet <url>` | Optional manual import from Google Sheets. You can also attach a `.csv`, `.txt`, or `.json` file. |
-| `/importjson <url>` | Import from raw JSON (characterswithoutnumber.app). You can also attach a `.json` file. |
-| `/update` | Sync your active character with its stored source URL |
-| `/link <url>` | Connect a character to a persistent sheet URL for syncing |
+| `/importjson <url>` | Import a characterswithoutnumber.app JSON export (character or starship). You can also attach a `.json` file. |
+| `/importship <url>` | Import a starship JSON from the CWN ship builder. |
+| `/importtext` | Paste Copy Text from characterswithoutnumber.app. |
+| `/update` | Sync your active character with its stored source URL, or re-drop JSON if it was a file import. |
+| `/link <url>` | Import from or attach a persistent sheet URL for syncing |
 | `/threshold_wizard` | Interactive character creation |
 | `/language [EN|FR|ES|DE|PT|SV]` | Change bot language |
 | `/help` | Overview of all commands. Prefix alias: `!help` |
@@ -103,6 +116,7 @@ When the bot is installed in a server, any registered command can be sent withou
 | `/campaign start` | Start a new campaign as GM |
 | `/campaign join` | Join active campaign as a player |
 | `/party info` | View shared party funds and ship status |
+| `/ship` `/shiplist` | View or list starships synced from characterswithoutnumber.app JSON |
 | `/party split <amount>` | Calculate even credit distribution |
 
 ## 5a. Polls
