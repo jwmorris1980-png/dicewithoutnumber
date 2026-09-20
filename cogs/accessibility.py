@@ -23,7 +23,11 @@ class QuickMenuView(discord.ui.View):
 
     @discord.ui.button(label="Characters", style=discord.ButtonStyle.primary)
     async def characters(self, interaction, button):
-        await self._tip(interaction, "Use `importsheet <link>`, then say `sheet`, `bind`, or `attack`.")
+        await self._tip(
+            interaction,
+            "Build at https://characterswithoutnumber.app then drop the JSON or paste Copy Text here. "
+            "You can also use `importsheet <link>`, then say `sheet`, `bind`, or `attack`.",
+        )
 
     @discord.ui.button(label="Maps", style=discord.ButtonStyle.primary)
     async def maps(self, interaction, button):
@@ -82,7 +86,7 @@ class AccessibilityCog(commands.Cog):
             target,
             "**DICEwithoutNumber Quick Tutorial**\n"
             "1. Try `roll one d20` - commands work without `/` or `!` when the bot is installed here.\n"
-            "2. Use `importsheet <public Google Sheet link>` to load a character.\n"
+            "2. Build at https://characterswithoutnumber.app then drop the JSON, paste Copy Text, or use `importsheet <link>`.\n"
             "3. Say `sheet` to view the active character, then `bind` to remember it in this channel.\n"
             "4. Say `map` or use `/tracker map` for interactive tactical maps.\n"
             "5. Say `help` for every command or `ticket <problem>` if something breaks.",

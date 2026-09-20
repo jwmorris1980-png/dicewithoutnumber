@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Character | DICEwithoutNumber</title>
+    <meta name="description" content="Build a Stars, Cities, Worlds, or Ashes Without Number character on characterswithoutnumber.app, then drop it into Discord in seconds.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css?v=1.0.3">
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container nav-content">
+            <a href="/" class="logo">
+                <div class="logo-icon"><i class="fas fa-dice-d20"></i></div>
+                <span class="logo-text">DICEwithoutNumber</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/characters">Characters</a></li>
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/storyteller">AI Storyteller</a></li>
+                <li><a href="/map">Tactical Map</a></li>
+                <li><a href="/#commands">Commands</a></li>
+            </ul>
+            <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary" style="padding: 12px 25px;">Add to Discord</a>
+        </div>
+    </nav>
+
+    <section class="hero" style="min-height: auto; padding-bottom: 40px;">
+        <div class="container">
+            <span class="section-tag">Wired to characterswithoutnumber.app</span>
+            <h1>Build it. <span class="text-gradient">Drop it. Play.</span></h1>
+            <p>Use the free Characters Without Number builder for SWN, CWN, WWN, and AWN. Export JSON or Copy Text, paste it in Discord, and the bot is ready to roll skills and attacks.</p>
+            <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+                <a href="https://characterswithoutnumber.app/" class="btn btn-primary" target="_blank" rel="noopener">Open Character Builder</a>
+                <a href="#import" class="btn btn-outline">See the 20-second import</a>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding-top: 40px;">
+        <div class="container">
+            <h2 class="section-title">Pick a <span class="text-gradient">system.</span></h2>
+            <p class="section-desc">Each card opens the live builder. Random links skip straight to a playable draft.</p>
+            <div class="builder-grid">
+                <a class="builder-card" style="--card-accent:#22d3ee" href="https://characterswithoutnumber.app/swn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">SWN</span>
+                    <h3>Stars Without Number</h3>
+                    <p>Warriors, experts, psychics, foci, and ships.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#f59e0b" href="https://characterswithoutnumber.app/cwn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">CWN</span>
+                    <h3>Cities Without Number</h3>
+                    <p>Operators, hackers, edges, chrome, and trauma.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#a855f7" href="https://characterswithoutnumber.app/wwn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">WWN</span>
+                    <h3>Worlds Without Number</h3>
+                    <p>Warriors, mages, shock, and arts.</p>
+                </a>
+                <a class="builder-card" style="--card-accent:#84cc16" href="https://characterswithoutnumber.app/awn-character-builder/" target="_blank" rel="noopener">
+                    <span class="tag">AWN</span>
+                    <h3>Ashes Without Number</h3>
+                    <p>Survivors, mutants, gearheads, and wasteland edges.</p>
+                </a>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:24px;">
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=swn" target="_blank" rel="noopener">Random SWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=cwn" target="_blank" rel="noopener">Random CWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=wwn" target="_blank" rel="noopener">Random WWN</a>
+                <a class="btn btn-outline" href="https://characterswithoutnumber.app/build?random=awn" target="_blank" rel="noopener">Random AWN</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="import">
+        <div class="container">
+            <h2 class="section-title">Bring it to <span class="text-gradient">Discord.</span></h2>
+            <div class="play-steps">
+                <div class="play-step">
+                    <div class="num">1</div>
+                    <h3>Export</h3>
+                    <p>In the builder, choose <strong>Export → JSON</strong> (best) or <strong>Copy Text</strong>.</p>
+                </div>
+                <div class="play-step">
+                    <div class="num">2</div>
+                    <h3>Drop it</h3>
+                    <p>Drag the <code>.json</code> file into your game channel, or paste Copy Text. No command required.</p>
+                </div>
+                <div class="play-step">
+                    <div class="num">3</div>
+                    <h3>Play</h3>
+                    <p>Say <code>sheet</code>, <code>skill notice</code>, or <code>attack</code>. Use <code>update</code> after you change the live sheet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding-top: 0;">
+        <div class="container">
+            <h2 class="section-title">Check an export <span class="text-gradient">before you play.</span></h2>
+            <p class="section-desc">Drop a characterswithoutnumber.app JSON file here to preview HP, AC, skills, and modifiers the bot will use.</p>
+            <div id="drop-zone" class="drop-zone" tabindex="0">
+                <p style="font-size:1.1rem; font-weight:700;">Drop a .json export here</p>
+                <p style="color:var(--text-muted); margin-top:8px;">or click to choose a file. Nothing is uploaded from this page.</p>
+                <input id="file-input" type="file" accept=".json,application/json" hidden>
+            </div>
+            <div id="preview" class="preview-sheet" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <footer style="padding: 60px 0; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-muted);">
+        <div class="container">
+            <p>Character building happens on <a href="https://characterswithoutnumber.app/" style="color:#5865f2;">characterswithoutnumber.app</a>. Dice, maps, and voice play stay here.</p>
+            <p style="margin-top: 12px;"><a href="/" style="color:var(--text-muted);">Back to DICEwithoutNumber</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const ATTRS = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"];
+
+        function modifier(score) {
+            if (score <= 3) return -2;
+            if (score <= 7) return -1;
+            if (score <= 13) return 0;
+            if (score <= 17) return 1;
+            if (score <= 18) return 2;
+            return 3;
+        }
+
+        function pretty(value) {
+            return String(value || "")
+                .replace(/^(swn|cwn|wwn|awn)[-_]/i, "")
+                .replace(/[-_]+/g, " ")
+                .replace(/\b\w/g, (c) => c.toUpperCase());
+        }
+
+        function first(obj, keys) {
+            for (const key of keys) {
+                if (obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
+            }
+            return null;
+        }
+
+        function previewCharacter(data) {
+            if (Array.isArray(data)) data = data.find((item) => item && typeof item === "object") || {};
+            if (data.character && typeof data.character === "object") data = { ...data, ...data.character };
+            const name = data.name || data.character_name || data.Name;
+            if (!name) throw new Error("No character name found in that file.");
+            const system = String(data.gameSystem || data.system || "swn").replace(/[^a-z]/gi, "").toUpperCase() || "SWN";
+            const klass = pretty(data.class || data.classId || data.role || "Hero");
+            let hp = first(data, ["hp", "hitPointsCurrent", "currentHp"]);
+            let hpMax = first(data, ["hp_max", "hitPointsMax", "maxHp"]);
+            if (hp && typeof hp === "object") {
+                hpMax = hp.max || hpMax;
+                hp = hp.current || hp.value || hp.max;
+            }
+            const ac = first(data, ["ac", "armorClass", "armor_class"]) || 10;
+            const ab = first(data, ["attackBonus", "attack_bonus", "ab"]) || 0;
+            const attrs = data.attributes || {};
+            const attrLine = ATTRS.map((key) => {
+                const raw = attrs[key] || attrs[key.slice(0, 3)];
+                const score = raw && typeof raw === "object" ? (raw.score ?? raw.value) : raw;
+                const n = Number(score);
+                if (!Number.isFinite(n)) return null;
+                if (Math.abs(n) > 5) return `${key.slice(0, 3).toUpperCase()} ${n} (${modifier(n) >= 0 ? "+" : ""}${modifier(n)})`;
+                return `${key.slice(0, 3).toUpperCase()} ${n >= 0 ? "+" : ""}${n}`;
+            }).filter(Boolean).join(" · ");
+            let skills = [];
+            if (Array.isArray(data.skills)) {
+                skills = data.skills.map((skill) => {
+                    const label = pretty(skill.name || skill.skill || skill.skillId);
+                    const rank = skill.rank ?? skill.level ?? skill.value ?? 0;
+                    return label ? `${label} ${rank >= 0 ? "+" : ""}${rank}` : null;
+                }).filter(Boolean);
+            } else if (data.skills && typeof data.skills === "object") {
+                skills = Object.entries(data.skills).map(([key, value]) => `${pretty(key)} ${Number(value) >= 0 ? "+" : ""}${value}`);
+            }
+            return { name, system, klass, hp: hp ?? "?", hpMax: hpMax || hp, ac, ab, attrLine, skills };
+        }
+
+        function renderPreview(result, warning) {
+            const el = document.getElementById("preview");
+            el.classList.add("show");
+            el.innerHTML = `
+                <h3>${result.name}</h3>
+                <div class="preview-meta">Level-ready ${result.system} ${result.klass}</div>
+                <div class="preview-stats">
+                    <span>HP ${result.hp}${result.hpMax ? "/" + result.hpMax : ""}</span>
+                    <span>AC ${result.ac}</span>
+                    <span>AB +${result.ab}</span>
+                </div>
+                <p>${result.attrLine || "No attributes found"}</p>
+                <p style="margin-top:10px;color:var(--text-muted)">${result.skills.slice(0, 12).join(", ") || "No skills found"}</p>
+                <p style="margin-top:16px">${warning || "Looks good. Drop this same file in Discord and say <code>sheet</code>."}</p>
+            `;
+        }
+
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const parsed = JSON.parse(reader.result);
+                    renderPreview(previewCharacter(parsed));
+                } catch (err) {
+                    const el = document.getElementById("preview");
+                    el.classList.add("show");
+                    el.innerHTML = `<p>${err.message || "That file is not a character JSON export."}</p>`;
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        const zone = document.getElementById("drop-zone");
+        const input = document.getElementById("file-input");
+        zone.addEventListener("click", () => input.click());
+        zone.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") input.click(); });
+        input.addEventListener("change", () => { if (input.files[0]) handleFile(input.files[0]); });
+        zone.addEventListener("dragover", (event) => { event.preventDefault(); zone.classList.add("dragover"); });
+        zone.addEventListener("dragleave", () => zone.classList.remove("dragover"));
+        zone.addEventListener("drop", (event) => {
+            event.preventDefault();
+            zone.classList.remove("dragover");
+            const file = event.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+        window.addEventListener("scroll", () => {
+            document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 50);
+        });
+    </script>
+</body>
+</html>

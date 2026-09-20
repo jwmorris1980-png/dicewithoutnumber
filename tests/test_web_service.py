@@ -27,3 +27,9 @@ async def test_server_starts_and_stops():
     assert service.runner is not None
 
     await service.stop()
+
+
+def test_characters_route_is_wired():
+    service = WebService(MagicMock(), port=0)
+    paths = [route.resource.canonical for route in service.app.router.routes()]
+    assert "/characters" in paths

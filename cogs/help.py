@@ -19,9 +19,11 @@ CATEGORIES = {
         "color": discord.Color.blue(),
         "fields": [
             ("Import", (
-                "Paste a Google Sheet link or attach CSV/TXT/JSON — auto-imports\n"
-                "`/importsheet` `!importsheet` — Manual import\n"
-                "`/importjson` `!importjson` `!uploadjson` — Import JSON from URL or attachment"
+                "Paste a Google Sheet link, a characterswithoutnumber.app JSON, or Copy Text — auto-imports\n"
+                "`/importjson` `!importjson` — JSON export or CWN app URL\n"
+                "`/importtext` — Paste Copy Text from characterswithoutnumber.app\n"
+                "`/importsheet` `!importsheet` — Google Sheet import\n"
+                "`/link` `!link` — Attach a source URL and sync"
             )),
             ("View & Sync", (
                 "`/sheet` `!sheet` `!s` `!sc` `!sf` — Show active sheet\n"

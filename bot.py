@@ -486,6 +486,10 @@ class WithoutNumberBot(commands.Bot):
                 handled = await self._handle_natural_voice_command(message)
                 if handled:
                     return
+        elif getattr(message, "attachments", None):
+            features = self.get_cog("FeaturesCog")
+            if (not features or features.is_enabled("sheets", message)) and await self._handle_character_sheet_drop(message):
+                return
 
         if message.content.startswith(self.command_prefix):
             await self.process_commands(message)
@@ -583,28 +587,51 @@ class WithoutNumberBot(commands.Bot):
             content,
             re.IGNORECASE,
         )
+        cwn_match = re.search(
+            r"https?://(?:www\.)?characterswithoutnumber\.app/[^\s<>]+",
+            content,
+            re.IGNORECASE,
+        )
+        json_match = re.search(r"https?://\S+\.json(?:\?\S*)?", content, re.IGNORECASE)
         attachment = None
         if len(getattr(message, "attachments", [])) == 1:
             candidate = message.attachments[0]
             if str(candidate.filename or "").lower().endswith((".csv", ".txt", ".json")):
                 attachment = candidate
 
+        copy_text = (not google_match and not cwn_match and not json_match and not attachment
+                     and sheet_cog._looks_like_cwn_app_text(content))
+
         # Only treat an attachment as a sheet drop when there is no unrelated message text.
-        if not google_match and not (attachment and not content):
+        if not google_match and not cwn_match and not json_match and not copy_text and not (attachment and not content):
             return False
 
         await message.channel.send("Character sheet detected. Importing it now...")
-        url = google_match.group(0) if google_match else None
-        char_data, error, source_url = await sheet_cog._load_sheet_source(url, attachment)
+        if copy_text:
+            char_data, error = sheet_cog.parse_cwn_app_text(content, "SWN")
+            source_url = None
+            source_name = "characterswithoutnumber.app Copy Text"
+        elif attachment or google_match:
+            url = google_match.group(0) if google_match else None
+            char_data, error, source_url = await sheet_cog._load_sheet_source(url, attachment)
+            source_name = "dropped character sheet"
+        else:
+            url = (cwn_match or json_match).group(0)
+            char_data, error, source_url = await sheet_cog._load_json_source(url, None)
+            source_name = "characterswithoutnumber.app" if cwn_match else "JSON"
+
         if error:
-            await message.channel.send(sheet_cog._sheet_import_error(error))
+            helper = sheet_cog._sheet_import_error(error)
+            if cwn_match or json_match or copy_text:
+                helper = sheet_cog._json_import_error(error)
+            await message.channel.send(helper)
             return True
 
         await sheet_cog._save_imported_character(
             message,
             char_data,
             source_url=source_url,
-            source_name="dropped character sheet",
+            source_name=source_name,
         )
         return True
 

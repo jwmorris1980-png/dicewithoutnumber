@@ -11,11 +11,12 @@ Commands work with `/`, `!`, or no prefix when the bot is installed in the serve
 ## 1. Character Management
 | Command | Description |
 |---------|-------------|
-| Paste a Google Sheet link or attach a sheet file | Automatically import, activate, bind, and register the character for Game Master Mode. No command is required. |
+| Paste a Google Sheet link, JSON file, or Copy Text | Automatically import, activate, bind, and register the character. No command is required. |
 | `/importsheet <url>` | Optional manual import from Google Sheets. You can also attach a `.csv`, `.txt`, or `.json` file. |
-| `/importjson <url>` | Import from raw JSON (characterswithoutnumber.app). You can also attach a `.json` file. |
+| `/importjson <url>` | Import a characterswithoutnumber.app JSON export (v0.8+). You can also attach a `.json` file. |
+| `/importtext` | Paste Copy Text from characterswithoutnumber.app. |
 | `/update` | Sync your active character with its stored source URL |
-| `/link <url>` | Connect a character to a persistent sheet URL for syncing |
+| `/link <url>` | Import from or attach a persistent sheet URL for syncing |
 | `/threshold_wizard` | Interactive character creation |
 | `/language [EN|FR|ES|DE|PT|SV]` | Change bot language |
 | `/help` | Overview of all commands. Prefix alias: `!help` |

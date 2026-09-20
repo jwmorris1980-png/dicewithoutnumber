@@ -77,7 +77,7 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="/static/style.css?v=1.0.2">
+    <link rel="stylesheet" href="/static/style.css?v=1.0.3">
 </head>
 <body>
 
@@ -89,6 +89,7 @@
                 <span class="logo-text">DICEwithoutNumber</span>
             </a>
             <ul class="nav-links">
+                <li><a href="/characters">Characters</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="/storyteller">AI Storyteller</a></li>
                 <li><a href="/map">Tactical Map</a></li>
@@ -120,6 +121,7 @@
                     <p>DICEwithoutNumber brings voice-friendly commands, multilingual tools, character sheets, support tickets, campaign management, and interactive tactical maps to your Discord table. In Game Master Mode, players only import their sheets in the server; no campaign join is required. Enemy HP and AC stay private, and the GM can say <strong>skip</strong> to leave out any setup section.</p>
                     <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px;">
                         <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands" class="btn btn-primary">Add to Discord</a>
+                        <a href="/characters" class="btn btn-outline"><i class="fas fa-user-astronaut" style="margin-right: 8px;"></i> Build a Character</a>
                         <a href="/storyteller" class="btn btn-outline" style="border-color: #5865f2; color: #5865f2;"><i class="fas fa-brain" style="margin-right: 8px;"></i> Try AI Storyteller</a>
                         <a href="#commands" class="btn btn-outline">View Commands</a>
                     </div>
@@ -209,7 +211,8 @@
                 <div class="feature-card">
                     <div class="feature-icon-box"><i class="fas fa-file-invoice"></i></div>
                     <h3>Sheet Sync</h3>
-                    <p>Import from Google Sheets or characterswithoutnumber.app. Your HP, AC, and gear stay in sync.</p>
+                    <p>Build on characterswithoutnumber.app, then drop the JSON or paste Copy Text. HP, AC, skills, and foci stay ready for <code>sheet</code>, <code>skill</code>, and <code>attack</code>.</p>
+                    <a href="/characters" class="btn btn-outline" style="margin-top: 15px; padding: 8px 15px; font-size: 0.8rem; border-radius: 8px; width: auto;">Open Character Hub</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: rgba(88, 101, 242, 0.2); color: #5865f2;"><i class="fas fa-brain"></i></div>
@@ -330,7 +333,11 @@
                 </div>
                 <div class="command-row">
                     <code>/importjson &lt;url&gt;</code> or attach `.json`
-                    <div>Import raw JSON from characterswithoutnumber.app and enable auto-sync.</div>
+                    <div>Import a characterswithoutnumber.app JSON export. Share pages need Export → JSON or Copy Text.</div>
+                </div>
+                <div class="command-row">
+                    <code>/importtext</code>
+                    <div>Paste Copy Text from the builder. You can also paste it directly in the channel.</div>
                 </div>
                 <div class="command-row">
                     <code>/update</code><br><code>/sheet update</code>
@@ -338,7 +345,7 @@
                 </div>
                 <div class="command-row">
                     <code>/link &lt;url&gt;</code>
-                    <div>Set or change the sync source (JSON or Google Sheet) for your active character.</div>
+                    <div>Import or attach a Google Sheet, JSON, or characterswithoutnumber.app source for later sync.</div>
                 </div>
                 <div class="command-row">
                     <code>/sheet</code>

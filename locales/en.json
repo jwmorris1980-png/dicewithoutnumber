@@ -3,7 +3,7 @@
         "swn": {
             "title": "🚀 Stars Without Number - Quick Start",
             "step1_title": "Step 1: Character Creation",
-            "step1_desc": "Use `/swn` for a random character or `/threshold_wizard` to roll stats.\nImport from **[characterswithoutnumber.app](https://characterswithoutnumber.app)** or Sectors Without Number using `/importsheet`.",
+            "step1_desc": "Use `/swn` for a random character or `/threshold_wizard` to roll stats.\nBuild at **[characterswithoutnumber.app](https://characterswithoutnumber.app)** then drop the JSON or paste Copy Text. Google Sheets still work with `/importsheet`.",
             "step2_title": "Step 2: Core Mechanics",
             "step2_desc": "• **Skill Checks**: Roll `2d6 + Skill + Attribute`. High is better.\n• **Combat**: Roll `1d20 + Attack Bonus + Attribute`. Meet or beat AC.\n• **Saves**: Roll `1d20`. Equal or higher than your Save target.",
             "step3_title": "Step 3: Bot Commands",
@@ -12,7 +12,7 @@
         "wwn": {
             "title": "⚔️ Worlds Without Number - Quick Start",
             "step1_title": "Step 1: Character Creation",
-            "step1_desc": "Use `/wwn` for a random character or `/threshold_wizard` for manual stats.\nImport sheets from Google or **[characterswithoutnumber.app](https://characterswithoutnumber.app)**.",
+            "step1_desc": "Use `/wwn` for a random character or `/threshold_wizard` for manual stats.\nBuild at **[characterswithoutnumber.app](https://characterswithoutnumber.app)** then drop the JSON or paste Copy Text.",
             "step2_title": "Step 2: Core Mechanics",
             "step2_desc": "• **Skills**: `2d6 + Skill + Attribute`. Target is usually 6-10.\n• **Combat**: `1d20 + AB + Attribute`. Target is Enemy AC.\n• **Shock**: Melee weapons often deal damage even on a miss!",
             "step3_title": "Step 3: Bot Commands",
@@ -21,7 +21,7 @@
         "cwn": {
             "title": "💾 Cities Without Number - Quick Start",
             "step1_title": "Step 1: Character Creation",
-            "step1_desc": "Use `/cwn` for a random character or `/threshold_wizard`.\nSync your gear from **[characterswithoutnumber.app](https://characterswithoutnumber.app)** using `/importjson`.",
+            "step1_desc": "Use `/cwn` for a random character or `/threshold_wizard`.\nBuild at **[characterswithoutnumber.app](https://characterswithoutnumber.app)** then drop JSON, paste Copy Text, or use `/importjson`.",
             "step2_title": "Step 2: Core Mechanics",
             "step2_desc": "• **Checks**: `2d6` for skills, `1d20` for combat. Standard OSR base.\n• **Hacking**: Use specialized programs and your cyberdeck.\n• **Trauma**: Watch out for specialized damage types!",
             "step3_title": "Step 3: Bot Commands",
@@ -41,7 +41,7 @@
         "title": "🎲 Without Number Bot Help",
         "description": "Welcome! This bot helps you roll dice, check equipment, and manage your character sheet.\n🌐 **Bot Info:** [dicewithoutnumber.duckdns.org](http://147.182.248.196:8080)\n🛠️ **Compatible with:** [characterswithoutnumber.app](https://characterswithoutnumber.app)\n\n**New? Type `/swnhelp`, `/wwnhelp`, or `/cwnhelp` for a quick guide!**\n**Change Language:** `/language lang:[EN|FR|ES|DE|PT|SV]`\n**All commands work with both `/` (Slash) and `!` (Prefix)!**",
         "char_imports_title": "1a. Character Imports",
-        "char_imports_body": "**`/update` | `/sync` | `!update`**\nInstantly refresh your active character stats from its stored source URL.\n\n**`/importsheet` | `!importsheet` <url>**\nLink your Google Sheet (SWN, WWN, or CWN). It loads stats and enables sync!\n\n**`/importjson` | `!importjson` <url>**\nImport from a raw JSON URL (fastest way to sync *characterswithoutnumber.app*).\n\n**`/link` | `!link` <url>**\nConnect your character to a persistent URL (JSON or Google Sheet) for easy syncing.\n\n**JSON File Upload**\nSimply drag and drop your `.json` export file into the chat. The bot handles it automatically!\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nView your character. **`/sc`** for Combat view, **`/sf`** for Full view.",
+        "char_imports_body": "**`/update` | `/sync` | `!update`**\nInstantly refresh your active character stats from its stored source URL.\n\n**`/importsheet` | `!importsheet` <url>**\nLink your Google Sheet (SWN, WWN, CWN, or AWN). It loads stats and enables sync!\n\n**`/importjson` | `!importjson` <url>**\nImport a characterswithoutnumber.app JSON export (v0.8+ classId/skillId format supported).\n\n**`/importtext`**\nPaste Copy Text from the builder.\n\n**`/link` | `!link` <url>**\nConnect your character to a persistent URL (JSON or Google Sheet) for easy syncing.\n\n**JSON File Upload / Copy Text**\nDrag and drop a `.json` export, or paste Copy Text into the channel. The bot handles it automatically!\n\n**`/sheet` | `!sheet` | `/sc` | `/sf`**\nView your character. **`/sc`** for Combat view, **`/sf`** for Full view.",
         "char_mgmt_title": "1b. Character Management",
         "char_mgmt_body": "**`/switchchar` | `!switchchar` <name>**\nSwap between your imported characters.\n\n**`/portrait` | `!portrait` [url]**\nSet an image for any of your characters. Attach a file OR paste a URL. Shows as a thumbnail on `/sheet`!\n\n**`/bind` | `/unbind`**\n🎭 Associate a character with the current channel. The bot will remember which hero you are playing in each game!\n\n**`/awardxp` | `!awardxp` <amount>**\nAward XP to your active character.\n\n**`/swn`, `/wwn`, `/cwn`**\nInstantly generate a random Level 1 character for that system.\n\n**`/threshold` | `/threshold_wizard`**\nRoll 3d6 attributes in order, or use the interactive Wizard!\n\n**`/swnhelp` | `/wwnhelp` | `/cwnhelp`**\nQuick-start guides for your chosen system (SWN, WWN, or CWN)!",
         "rolling_title": "2. Rolling & Combat",
