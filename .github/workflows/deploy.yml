@@ -1,0 +1,31 @@
+name: Deploy to Oracle Cloud
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}   # lets you also trigger it manually from the Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, needed for a normal git push
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ORACLE_SSH_KEY }}" > ~/.ssh/oracle_key.pem
+          chmod 600 ~/.ssh/oracle_key.pem
+          ssh-keyscan -H "${{ secrets.ORACLE_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Push to Oracle bare repo (triggers post-receive-new)
+        run: |
+          git remote add oracle "ssh://${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }}/home/ubuntu/bot.git"
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/oracle_key.pem -o StrictHostKeyChecking=yes" git push oracle HEAD:main
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/oracle_key.pem
