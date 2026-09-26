@@ -1,4 +1,4 @@
-name: Deploy to Oracle Cloud
+name: Deploy to Private Server
 
 on:
   push:
@@ -14,18 +14,25 @@ jobs:
         with:
           fetch-depth: 0   # full history, needed for a normal git push
 
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci   # must match a tag ACL-permitted to reach the server; see notes below
+
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.ORACLE_SSH_KEY }}" > ~/.ssh/oracle_key.pem
-          chmod 600 ~/.ssh/oracle_key.pem
-          ssh-keyscan -H "${{ secrets.ORACLE_HOST }}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key.pem
+          chmod 600 ~/.ssh/deploy_key.pem
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Push to Oracle bare repo (triggers post-receive-new)
+      - name: Push to bare repo (triggers post-receive-new)
         run: |
-          git remote add oracle "ssh://${{ secrets.ORACLE_USER }}@${{ secrets.ORACLE_HOST }}/home/ubuntu/bot.git"
-          GIT_SSH_COMMAND="ssh -i ~/.ssh/oracle_key.pem -o StrictHostKeyChecking=yes" git push oracle HEAD:main
+          git remote add deploy_target "ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}/home/ubuntu/bot.git"
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key.pem -o StrictHostKeyChecking=yes" git push deploy_target HEAD:main
 
       - name: Clean up key
         if: always()
-        run: rm -f ~/.ssh/oracle_key.pem
+        run: rm -f ~/.ssh/deploy_key.pem
